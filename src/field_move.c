@@ -15,16 +15,25 @@ static u8 sFieldMoveSource = FIELD_MOVE_SOURCE_POKEMON;
 
 static bool32 IsFieldMoveUnlocked_Cut(void)
 {
+    if (IS_FRLG)
+        return FlagGet(FLAG_BADGE02_GET);
+
     return FlagGet(FLAG_BADGE01_GET);
 }
 
 static bool32 IsFieldMoveUnlocked_Flash(void)
 {
+    if (IS_FRLG)
+        return FlagGet(FLAG_BADGE01_GET);
+
     return FlagGet(FLAG_BADGE02_GET);
 }
 
 static bool32 IsFieldMoveUnlocked_RockSmash(void)
 {
+    if (IS_FRLG)
+        return FlagGet(FLAG_BADGE06_GET);
+
     return FlagGet(FLAG_BADGE03_GET);
 }
 
@@ -40,6 +49,9 @@ static bool32 IsFieldMoveUnlocked_Surf(void)
 
 static bool32 IsFieldMoveUnlocked_Fly(void)
 {
+    if (IS_FRLG)
+        return FlagGet(FLAG_BADGE03_GET);
+
     return FlagGet(FLAG_BADGE06_GET);
 }
 
@@ -50,6 +62,9 @@ static bool32 IsFieldMoveUnlocked_Dive(void)
 
 static bool32 IsFieldMoveUnlocked_Waterfall(void)
 {
+    if (IS_FRLG)
+        return FlagGet(FLAG_BADGE07_GET);
+
     return FlagGet(FLAG_BADGE08_GET);
 }
 
