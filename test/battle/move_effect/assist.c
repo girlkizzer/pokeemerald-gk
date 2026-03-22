@@ -12,7 +12,6 @@ TO_DO_BATTLE_TEST("Assist can call moves with no PP left");
 TO_DO_BATTLE_TEST("Assist can call moves from a fainted party member");
 TO_DO_BATTLE_TEST("Assist can call moves that are blocked to its partners"); // Eg. double battle parter blocked by Disable
 TO_DO_BATTLE_TEST("Assist can only call the original moves of a Transformed partner (Gen4 only)");
-TO_DO_BATTLE_TEST("Assist can only call the current moves of a Transformed partner (Gen5+)");
 TO_DO_BATTLE_TEST("Assist cannot call a Mimicked move (Gen4 only)");
 TO_DO_BATTLE_TEST("Assist can call a Mimicked move but not the original Mimic (Gen5+)");
 TO_DO_BATTLE_TEST("Assist can call moves in unhatched Eggs (Gen5 only)");
@@ -36,7 +35,7 @@ SINGLE_BATTLE_TEST("Assist fails if there are no valid moves to choose from")
 
 SINGLE_BATTLE_TEST("Assisted move triggers correct weakness berry")
 {
-    u16 item;
+    enum Item item;
     PARAMETRIZE { item = ITEM_CHILAN_BERRY; }
     PARAMETRIZE { item = ITEM_PASSHO_BERRY; }
     GIVEN {

@@ -1,6 +1,7 @@
 #include "global.h"
 #include "test/battle.h"
 #include "battle_ai_util.h"
+#include "move.h"
 
 AI_SINGLE_BATTLE_TEST("AI will not try to lower opposing stats if target is protected by it's ability")
 {
@@ -16,7 +17,7 @@ AI_SINGLE_BATTLE_TEST("AI will not try to lower opposing stats if target is prot
     PARAMETRIZE { ability = ABILITY_CLEAR_BODY;   species = SPECIES_BELDUM;  move = MOVE_NOBLE_ROAR; }
 
     GIVEN {
-        WITH_CONFIG(CONFIG_ILLUMINATE_EFFECT, GEN_9);
+        WITH_CONFIG(B_ILLUMINATE_EFFECT, GEN_9);
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_OMNISCIENT);
         PLAYER(species) { Ability(ability); }
         OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_TACKLE, move); }
@@ -28,7 +29,7 @@ AI_SINGLE_BATTLE_TEST("AI will not try to lower opposing stats if target is prot
 
 AI_DOUBLE_BATTLE_TEST("AI will not try to lower opposing stats if target is protected by Flower Veil")
 {
-    u16 move;
+    enum Move move;
 
     PARAMETRIZE { move = MOVE_SCARY_FACE; }
     PARAMETRIZE { move = MOVE_GROWL; }
