@@ -43,7 +43,7 @@ static u32 ChooseMoveOrAction_Singles(enum BattlerId battler);
 static u32 ChooseMoveOrAction_Doubles(enum BattlerId battler);
 static inline void BattleAI_DoAIProcessing(struct AiThinkingStruct *aiThink, enum BattlerId battlerAtk, enum BattlerId battlerDef);
 static inline void BattleAI_DoAIProcessing_PredictedSwitchin(struct AiThinkingStruct *aiThink, struct AiLogicData *aiData, enum BattlerId battlerAtk, enum BattlerId battlerDef);
-static bool32 DoesAbilityBenefitFromSunOrRain(enum BattlerId battler, u32 weather);
+static bool32 DoesBattlerBenefitFromSunOrRain(enum BattlerId battler, u32 weather);
 static void AI_CompareDamagingMoves(enum BattlerId battlerAtk, enum BattlerId battlerDef);
 static u32 GetWindAbilityScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, struct AiLogicData *aiData);
 
@@ -544,8 +544,7 @@ void Ai_InitPartyStruct(void)
 
         if (isOmniscient)
         {
-            mon = &gPlayerParty[i];
-            for (j = 0; j < MAX_MON_ITEMS; j++)
+            for (u32 j = 0; j < MAX_MON_ITEMS; j++)
             {
                 gAiPartyData->mons[B_SIDE_PLAYER][monIndex].items[j] = GetMonData(mon, MON_DATA_HELD_ITEM + j);
                 gAiPartyData->mons[B_SIDE_PLAYER][monIndex].heldEffects[j] = GetItemHoldEffect(gAiPartyData->mons[B_SIDE_PLAYER][monIndex].items[j]);
@@ -567,7 +566,7 @@ void Ai_UpdateSwitchInData(enum BattlerId battler)
     {
         if (aiMon->ability)
             gBattleHistory->abilities[battler] = aiMon->ability;
-        for (i = 0; i < MAX_MON_ITEMS; i++)
+        for (u32 i = 0; i < MAX_MON_ITEMS; i++)
         {
             if (aiMon->heldEffects[i])
                 gBattleHistory->itemEffects[battler][i] = aiMon->heldEffects[i];
@@ -620,11 +619,10 @@ void RecordStatusMoves(enum BattlerId battler)
 
 void SetBattlerAiData(enum BattlerId battler, struct AiLogicData *aiData)
 {
-    u32 i
     enum Item item;
 
     aiData->abilities[battler] = AI_DecideKnownAbilityForTurn(battler);
-    for (i = 0; i < MAX_MON_ITEMS; i++)
+    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         item = aiData->items[battler][i] = gBattleMons[battler].items[i];
         aiData->holdEffects[battler][i] = AI_DecideHoldEffectForTurn(battler, i);
@@ -822,7 +820,6 @@ static u32 PpStallReduction(enum Move move, enum BattlerId battlerAtk)
     struct BattlePokemon backupBattleMon;
     struct BattleContext ctx = {0};
     ctx.battlerAtk = battlerAtk;
-    ctx.abilityAtk = gAiLogicData->abilities[battlerAtk];
     ctx.move = ctx.chosenMove = move;
     ctx.moveType = GetBattleMoveType(move); //  Probably doesn't handle dynamic types right now
     memcpy(&backupBattleMon, &gBattleMons[tempBattleMonIndex], sizeof(struct BattlePokemon));
@@ -1212,6 +1209,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     enum Move predictedMove = GetIncomingMove(battlerAtk, battlerDef, gAiLogicData);
     enum Move predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAtk, battlerDef, gAiLogicData);
     s32 atkPriority = GetBattleMovePriority(battlerAtk, move);
+    u32 i;
     bool32 ignoreAbility = FALSE;
     enum Ability AIBattlerTraits[MAX_MON_TRAITS];
     AI_STORE_BATTLER_TRAITS(battlerDef);
@@ -1225,9 +1223,9 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     if (IsPowderMove(move) && !IsAffectedByPowderMove(battlerDef))
         RETURN_SCORE_MINUS(10);
 
-    if (!BreaksThroughSemiInvulnerablity(battlerAtk, battlerDef, aiData->abilities[battlerAtk], aiData->abilities[battlerDef], move)
+    if (!BreaksThroughSemiInvulnerablity(battlerAtk, battlerDef, move)
      && moveEffect != EFFECT_SEMI_INVULNERABLE && AI_IsFaster(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY)
-     && abilityAtk != ABILITY_NO_GUARD && abilityDef != ABILITY_NO_GUARD)
+     && !AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_NO_GUARD) && !AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_NO_GUARD))
         RETURN_SCORE_MINUS(10);
 
     if (CanTargetFaintAi(battlerDef, battlerAtk))
@@ -1235,9 +1233,9 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         if (IsTwoTurnNotSemiInvulnerableMove(battlerAtk, move))
             RETURN_SCORE_MINUS(10);
 
-        if (moveEffect == EFFECT_SEMI_INVULNERABLE && aiData->holdEffects[battlerAtk] != HOLD_EFFECT_POWER_HERB)
+        if (moveEffect == EFFECT_SEMI_INVULNERABLE && !Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_POWER_HERB, gAiLogicData))
         {
-            if (abilityAtk == ABILITY_NO_GUARD || abilityDef == ABILITY_NO_GUARD)
+            if (AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_NO_GUARD) || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_NO_GUARD))
                 RETURN_SCORE_MINUS(10);
         }
     }
@@ -1253,14 +1251,14 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     }
 
     // Don't use anything but super effective thawing moves if target is frozen if any other attack available
-    if ((CanFireMoveThawTarget(move) || CanBurnHitThaw(move) || CanMoveThawTarget(abilityAtk, move))
+    if ((CanFireMoveThawTarget(move) || CanBurnHitThaw(move) || CanMoveThawTarget(battlerAtk, move))
      && effectiveness < UQ_4_12(2.0) && (gBattleMons[battlerDef].status1 & STATUS1_ICY_ANY))
     {
         enum Move aiMove;
         for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
         {
             aiMove = gBattleMons[battlerAtk].moves[moveIndex];
-            if (!CanFireMoveThawTarget(aiMove) && !CanBurnHitThaw(aiMove) && !CanMoveThawTarget(abilityAtk, aiMove))
+            if (!CanFireMoveThawTarget(aiMove) && !CanBurnHitThaw(aiMove) && !CanMoveThawTarget(battlerAtk, aiMove))
             {
                 ADJUST_SCORE(-1);
                 break;
@@ -1297,12 +1295,6 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         
         if (!ignoreAbility)
         {
-            // Redundancy for Traits (Multi)
-            if (CanAbilityBlockMove(battlerAtk, battlerDef, move, AI_CHECK))
-                RETURN_SCORE_MINUS(20);
-            if (CanAbilityAbsorbMove(battlerAtk, battlerDef, move, moveType, AI_CHECK))
-                RETURN_SCORE_MINUS(20);
-
             if (AISearchTraits(AIBattlerTraits, ABILITY_MAGIC_GUARD))
             {    
                 switch (moveEffect)
@@ -1359,7 +1351,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
                 && IsStatLoweringEffect(moveEffect))
                     RETURN_SCORE_MINUS(20);
                 if (AISearchTraits(AIBattlerTraits, ABILITY_COMATOSE)
-                && IsNonVolatileStatusMove(moveEffect))
+                && IsNonVolatileStatusMove(move))
                     RETURN_SCORE_MINUS(10);
                 if (AISearchTraits(AIBattlerTraits, ABILITY_SHIELDS_DOWN)
                 && IsShieldsDownProtected(battlerAtk) && IsNonVolatileStatusMove(move))
@@ -1388,7 +1380,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
                     && (nonVolatileStatus == MOVE_EFFECT_SLEEP))
                         RETURN_SCORE_MINUS(20);
                     if (AI_BATTLER_HAS_TRAIT(BATTLE_PARTNER(battlerDef), ABILITY_FLOWER_VEIL)
-                    && ((IS_BATTLER_OF_TYPE(battlerDef, TYPE_GRASS)) && (IsNonVolatileStatusMove(moveEffect) || IsStatLoweringEffect(moveEffect))))
+                    && ((IS_BATTLER_OF_TYPE(battlerDef, TYPE_GRASS)) && (IsNonVolatileStatusMove(move) || IsStatLoweringEffect(moveEffect))))
                         RETURN_SCORE_MINUS(10);
                     if (AI_BATTLER_HAS_TRAIT(BATTLE_PARTNER(battlerDef), ABILITY_AROMA_VEIL)
                     && (IsAromaVeilProtectedEffect(moveEffect)))
@@ -1440,7 +1432,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         {
             ADJUST_SCORE(-10);
         }
-        else if (IsAbilityOnField(ABILITY_DAMP) && !DoesBattlerIgnoreAbilityChecks(battlerAtk, aiData->abilities[battlerAtk], move))
+        else if (IsAbilityOnField(ABILITY_DAMP) && !DoesBattlerIgnoreAbilityChecks(battlerAtk, move))
         {
             ADJUST_SCORE(-10);
         }
@@ -2177,14 +2169,14 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     case EFFECT_TRICK:
             bool32 trickcheck = FALSE;
             
-            for (i=0; i < MAX_MON_ITEMS; i++)
+            for (i = 0; i < MAX_MON_ITEMS; i++)
             {
                 if (!((gBattleMons[battlerAtk].items[i] == ITEM_NONE && aiData->items[battlerDef][i] == ITEM_NONE)
-                || !CanBattlerGetOrLoseItem(battlerAtk, gBattleMons[battlerAtk].items[i])
-                || !CanBattlerGetOrLoseItem(battlerAtk, aiData->items[battlerDef][i])
-                || !CanBattlerGetOrLoseItem(battlerDef, aiData->items[battlerDef][i])
-                || !CanBattlerGetOrLoseItem(battlerDef, gBattleMons[battlerAtk].items[i])
-                || aiData->abilities[battlerDef] == ABILITY_STICKY_HOLD
+                || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])
+                || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, aiData->items[battlerDef][i])
+                || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, aiData->items[battlerDef][i])
+                || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
+                || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_STICKY_HOLD)
                 || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)))
                 {
                     trickcheck = TRUE;
@@ -2607,8 +2599,8 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
             {
                 if (gBattleMons[battlerAtk].items[i] == ITEM_NONE
                  || aiData->items[battlerDef][i] != ITEM_NONE
-                 || !CanBattlerGetOrLoseItem(battlerAtk, gBattleMons[battlerAtk].items[i])    // AI knows its own item
-                 || !CanBattlerGetOrLoseItem(battlerDef, gBattleMons[battlerAtk].items[i])
+                 || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])    // AI knows its own item
+                 || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
                     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move))
                     {
                         hasValidSlot = TRUE;
@@ -4005,77 +3997,32 @@ static bool32 HasPinchBerryItemEffect(u32 battler)
     return FALSE;
 }
 
-static bool32 DoesAbilityBenefitFromSunOrRain(enum BattlerId battler, u32 weather)
+static bool32 DoesBattlerBenefitFromSunOrRain(enum BattlerId battler, u32 weather)
 {
-    switch (ability)
-    {
-    case ABILITY_DRY_SKIN:
-    case ABILITY_HYDRATION:
-    case ABILITY_RAIN_DISH:
-    case ABILITY_SWIFT_SWIM:
+    
+    if (AI_BATTLER_HAS_TRAIT(battler, ABILITY_DRY_SKIN)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_HYDRATION)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_RAIN_DISH)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_SWIFT_SWIM))
         return (weather & B_WEATHER_RAIN);
-    case ABILITY_HARVEST:
-        if (GetItemPocket(gAiLogicData->items[battler]) != POCKET_BERRIES
-            && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) != POCKET_BERRIES)
+    if (AI_BATTLER_HAS_TRAIT(battler, ABILITY_HARVEST))
+    {
+        for(u32 i = 0; i < MAX_MON_ITEMS; i++)
         {
-            return FALSE;
+            if (GetItemPocket(gAiLogicData->items[battler][i]) == POCKET_BERRIES
+            || GetItemPocket(GetBattlerPartyState(battler)->usedHeldItems[i]) == POCKET_BERRIES)
+             {
+                return (weather & B_WEATHER_SUN);
+             }
         }
-    case ABILITY_CHLOROPHYLL:
-    case ABILITY_FLOWER_GIFT:
-    case ABILITY_LEAF_GUARD:
-    case ABILITY_SOLAR_POWER:
-    case ABILITY_ORICHALCUM_PULSE:
+    }
+    if (AI_BATTLER_HAS_TRAIT(battler, ABILITY_CHLOROPHYLL)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_FLOWER_GIFT)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_LEAF_GUARD)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_SOLAR_POWER)
+     || AI_BATTLER_HAS_TRAIT(battler, ABILITY_ORICHALCUM_PULSE))
         return (weather & B_WEATHER_SUN);
-    default:
-        break;
-    }
-    return FALSE;
-}
 
-static u32 GetWindAbilityScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, struct AiLogicData *aiData)
-{
-    u32 score = 0;
-
-    if (aiData->abilities[battlerAtk] == ABILITY_WIND_RIDER)
-    {
-        score = IncreaseStatUpScore(battlerAtk, battlerDef, STAT_CHANGE_ATK);
-    }
-    else if (aiData->abilities[battlerAtk] == ABILITY_WIND_POWER)
-    {
-        if (gBattleMons[battlerAtk].volatiles.chargeTimer == 0
-         && HasDamagingMoveOfType(battlerAtk, TYPE_ELECTRIC))
-        {
-            score = DECENT_EFFECT;
-        }
-    }
-
-    return score;
-}
-
-static bool32 DoesAbilityBenefitFromSunOrRain(enum BattlerId battler, enum Ability ability, u32 weather)
-{
-    switch (ability)
-    {
-    case ABILITY_DRY_SKIN:
-    case ABILITY_HYDRATION:
-    case ABILITY_RAIN_DISH:
-    case ABILITY_SWIFT_SWIM:
-        return (weather & B_WEATHER_RAIN);
-    case ABILITY_HARVEST:
-        if (GetItemPocket(gAiLogicData->items[battler]) != POCKET_BERRIES
-            && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItem) != POCKET_BERRIES)
-        {
-            return FALSE;
-        }
-    case ABILITY_CHLOROPHYLL:
-    case ABILITY_FLOWER_GIFT:
-    case ABILITY_LEAF_GUARD:
-    case ABILITY_SOLAR_POWER:
-    case ABILITY_ORICHALCUM_PULSE:
-        return (weather & B_WEATHER_SUN);
-    default:
-        break;
-    }
     return FALSE;
 }
 
@@ -4144,7 +4091,7 @@ static enum MoveComparisonResult CompareGuaranteeFaintTarget(enum BattlerId batt
 static enum MoveComparisonResult CompareResistBerryEffects(enum BattlerId battlerAtk, enum BattlerId battlerDef, u32 moveSlot1, u32 moveSlot2)
 {
     // Check for resist berries in OHKOs
-    if (gAiLogicData->holdEffects[battlerDef] == HOLD_EFFECT_RESIST_BERRY)
+    if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_RESIST_BERRY, gAiLogicData))
     {
         if (gAiLogicData->resistBerryAffected[battlerAtk][battlerDef][moveSlot2] && !gAiLogicData->resistBerryAffected[battlerAtk][battlerDef][moveSlot1])
             return MOVE_WON_COMPARISON;
@@ -4417,6 +4364,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
     bool32 hasPartner = HasPartner(battlerAtk);
     enum MoveTarget moveTarget = AI_GetBattlerMoveTargetType(battlerAtk, move);
     bool32 moveTargetsBothOpponents = hasTwoOpponents && (IsSpreadMove(moveTarget) || moveTarget == TARGET_ALL_BATTLERS || moveTarget == TARGET_FIELD);
+    u32 i;
 
     enum Ability AIBattlerTraits[MAX_MON_TRAITS];
     AI_STORE_BATTLER_TRAITS(battlerAtk);
@@ -4777,11 +4725,11 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
         {
             if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_CURE_SLP, aiData)
               || Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_CURE_STATUS, aiData)
-              || HasMoveWithEffect(EFFECT_SLEEP_TALK, battlerAtk)
+              || HasMoveWithEffect(battlerAtk, EFFECT_SLEEP_TALK)
               || HasUsableWhileAsleepMove(battlerAtk)
               || AISearchTraits(AIBattlerTraits, ABILITY_SHED_SKIN)
               || AISearchTraits(AIBattlerTraits, ABILITY_EARLY_BIRD)
-              || (AI_GetWeather() & B_WEATHER_RAIN && gBattleStruct.weatherDuration != 1 && AISearchTraits(AIBattlerTraits, ABILITY_HYDRATION) && !Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_UTILITY_UMBRELLA, aiData)))
+              || (AI_GetWeather() & B_WEATHER_RAIN && gBattleStruct->weatherDuration != 1 && AISearchTraits(AIBattlerTraits, ABILITY_HYDRATION) && !Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_UTILITY_UMBRELLA, aiData)))
                 ADJUST_SCORE(GOOD_EFFECT);
         }
         break;
@@ -5187,7 +5135,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
         if (hasPartner
           && AI_GetBattlerMoveTargetType(battlerAtk, move) == TARGET_USER
           && !IsBattlerIncapacitated(battlerDef)
-          && (!IsPowderMove(move) || IsAffectedByPowderMove(battlerDef, Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_SAFETY_GOGGLES, aiData))))
+          && (!IsPowderMove(move) || IsAffectedByPowderMove(battlerDef)))
           // Rage Powder doesn't affect powder immunities
         {
             enum Move predictedMoveOnPartner = aiData->lastUsedMove[BATTLE_PARTNER(battlerAtk)];
@@ -5256,7 +5204,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
         if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_UTILITY_UMBRELLA, TRUE))
         {
             if (!(AI_GetWeather() & B_WEATHER_SUN && !AISearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN))
-             && DoesAbilityBenefitFromSunOrRain(battlerDef, AI_GetWeather()))
+             && DoesBattlerBenefitFromSunOrRain(battlerDef, AI_GetWeather()))
             {
                 ADJUST_SCORE(DECENT_EFFECT);  // Remove their weather benefit
             }
@@ -5268,6 +5216,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
              || (hasPartner && HasDamagingMove(BATTLE_PARTNER(battlerAtk))))
             {
                 ADJUST_SCORE(DECENT_EFFECT); // Force 'em out next turn
+            }
         }
         for (i = 0; i < MAX_MON_ITEMS; i++)
         {
@@ -5301,7 +5250,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
     case EFFECT_CORROSIVE_GAS:
         for (i = 0; i < MAX_MON_ITEMS; i++)
         {
-            if (CanKnockOffItem(battlerDef, aiData->items[battlerDef][i]))
+            if (CanKnockOffItem(battlerDef, battlerAtk, aiData->items[battlerDef][i]))
             {
                 if (GetItemHoldEffect(aiData->items[battlerDef][i]) == HOLD_EFFECT_IRON_BALL
                  && HasMoveWithEffect(battlerDef, EFFECT_FLING))
@@ -5905,7 +5854,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
     case EFFECT_KNOCK_OFF:
         for (i = 0; i < MAX_MON_ITEMS; i++)
         {
-            if (CanKnockOffItem(battlerDef, aiData->items[battlerDef][i]))
+            if (CanKnockOffItem(battlerDef, battlerAtk, aiData->items[battlerDef][i]))
             {
                 if (GetItemHoldEffect(aiData->items[battlerDef][i]) == HOLD_EFFECT_IRON_BALL
                  && HasMoveWithEffect(battlerDef, EFFECT_FLING))
@@ -5932,8 +5881,8 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                 {
                     if (gBattleMons[gBattlerAttacker].items[i] == ITEM_NONE
                      && gBattleMons[gBattlerTarget].items[i] != ITEM_NONE
-                     && CanBattlerGetOrLoseItem(battlerDef, aiData->items[battlerDef][i])
-                     && CanBattlerGetOrLoseItem(battlerAtk, aiData->items[battlerDef][i]))
+                     && CanBattlerGetOrLoseItem(battlerDef, battlerAtk, aiData->items[battlerDef][i])
+                     && CanBattlerGetOrLoseItem(battlerAtk, battlerAtk, aiData->items[battlerDef][i]))
                     {
                         switch (aiData->holdEffects[battlerDef][i])
                         {
@@ -5987,6 +5936,7 @@ static s32 AI_CalcAdditionalEffectScore(enum BattlerId battlerAtk, enum BattlerI
     enum Move predictedMove = GetIncomingMove(battlerAtk, battlerDef, aiData);
     bool32 hasPartner = HasPartner(battlerAtk);
     u32 additionalEffectCount = GetMoveAdditionalEffectCount(move);
+    u32 i;
     bool32 hasBerry = BattlerHasBerry(battlerDef);
     enum Move defBestMoves[MAX_MON_MOVES] = {MOVE_NONE};
 

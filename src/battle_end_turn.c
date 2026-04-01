@@ -621,7 +621,7 @@ static bool32 HandleEndTurnWrap(enum BattlerId battler)
                 {
                     if (bindDamage == 0)
                         bindDamage += GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 6 : 8);
-                    else if (GetConfig(CONFIG_ALLOW_HELD_DUPES))
+                    else if (GetConfig(B_ALLOW_HELD_DUPES))
                         bindDamage += GetNonDynamaxMaxHP(battler) / (B_BINDING_DAMAGE >= GEN_6 ? 24 : 16);
                 }
             }
@@ -1325,8 +1325,8 @@ static bool32 HandleEndTurnFormChange(enum BattlerId battler)
 
     gBattleStruct->eventState.endTurnBattler++;
 
-    if (TryBattleFormChange(battler, FORM_CHANGE_BATTLE_TURN_END, ability)
-        || TryBattleFormChange(battler, FORM_CHANGE_BATTLE_HP_PERCENT_TURN_END, ability))
+    if (TryBattleFormChange(battler, FORM_CHANGE_BATTLE_TURN_END)
+        || TryBattleFormChange(battler, FORM_CHANGE_BATTLE_HP_PERCENT_TURN_END))
     {
         gBattleScripting.battler = battler;
         
@@ -1344,7 +1344,6 @@ static bool32 HandleEndTurnFormChange(enum BattlerId battler)
             gBattleScripting.abilityPopupOverwrite = ABILITY_HUNGER_SWITCH; // To prevent the new form's ability from pop up
             PushTraitStack(battler, ABILITY_HUNGER_SWITCH);
             BattleScriptExecute(BattleScript_BattlerFormChangeEnd3NoPopup);
-            break;
         }
         else if (SearchTraits(battlerTraits, ABILITY_ZEN_MODE))
         {

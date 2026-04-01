@@ -3087,8 +3087,6 @@ static void BattleStartClearSetData(void)
         gPalaceSelectionBattleScripts[i] = NULL;
         gBattleStruct->lastTakenMove[i] = MOVE_NONE;
         gBattleStruct->choicedMove[i] = MOVE_NONE;
-        for (j = 0; j < MAX_MON_ITEMS; j++)
-            gBattleStruct->changedItems[i][j] = 0;
         gBattleStruct->lastTakenMoveFrom[i][0] = MOVE_NONE;
         gBattleStruct->lastTakenMoveFrom[i][1] = MOVE_NONE;
         gBattleStruct->lastTakenMoveFrom[i][2] = MOVE_NONE;
@@ -3449,7 +3447,7 @@ const u8* FaintClearSetData(enum BattlerId battler)
     gBattleMons[battler].types[2] = TYPE_MYSTERY;
 
     Ai_UpdateFaintData(battler);
-    TryBattleFormChange(battler, FORM_CHANGE_FAINT, GetBattlerAbility(battler));
+    TryBattleFormChange(battler, FORM_CHANGE_FAINT);
 
     // If the fainted mon was involved in a Sky Drop
     if (gBattleStruct->skyDropTargets[battler] != SKY_DROP_NO_TARGET)
@@ -4806,11 +4804,11 @@ u32 GetBattlerTotalSpeedStat(enum BattlerId battler)
         speed += baseSpeed / 2;
     if (SearchTraits(battlerTraits, ABILITY_SURGE_SURFER) && gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN)
         speed += baseSpeed;
-    if (SearchTraits(battlerTraits, ABILITY_PROTOSYNTHESIS) && !(gBattleMons[battler].volatiles.transformed) && ((gBattleWeather & B_WEATHER_SUN && HasWeatherEffect()) || gDisableStructs[battler].boosterEnergyActivated))
+    if (SearchTraits(battlerTraits, ABILITY_PROTOSYNTHESIS) && !(gBattleMons[battler].volatiles.transformed) && ((gBattleWeather & B_WEATHER_SUN && HasWeatherEffect()) || gBattleMons[battler].volatiles.boosterEnergyActivated))
         speed += (GetHighestStatId(battler) == STAT_SPEED) ? baseSpeed / 2 : 0;
-    if (SearchTraits(battlerTraits, ABILITY_QUARK_DRIVE) && !(gBattleMons[battler].volatiles.transformed) && (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN || gDisableStructs[battler].boosterEnergyActivated))
+    if (SearchTraits(battlerTraits, ABILITY_QUARK_DRIVE) && !(gBattleMons[battler].volatiles.transformed) && (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN || gBattleMons[battler].volatiles.boosterEnergyActivated))
         speed += (GetHighestStatId(battler) == STAT_SPEED) ? baseSpeed / 2 : 0;
-    if (SearchTraits(battlerTraits, ABILITY_UNBURDEN) && gDisableStructs[battler].unburdenActive)
+    if (SearchTraits(battlerTraits, ABILITY_UNBURDEN) && gBattleMons[battler].volatiles.unburdenActive)
     {
         u8 occupiedSlots = MAX_MON_ITEMS;
         for (int i = 0; i < MAX_MON_ITEMS; i++)
@@ -4845,28 +4843,28 @@ u32 GetBattlerTotalSpeedStat(enum BattlerId battler)
     {
         itemEffect = GetSlotHeldItemEffect(battler, i, TRUE);
 
-        if ((itemEffect == HOLD_EFFECT_MACHO_BRACE) && (firstMach || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+        if ((itemEffect == HOLD_EFFECT_MACHO_BRACE) && (firstMach || GetConfig(B_ALLOW_HELD_DUPES)))
             {
                 firstMach = FALSE;
                 speed /= 2;
             }
-        if ((itemEffect == HOLD_EFFECT_POWER_ITEM) && (firstPower || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+        if ((itemEffect == HOLD_EFFECT_POWER_ITEM) && (firstPower || GetConfig(B_ALLOW_HELD_DUPES)))
             {
                 firstPower = FALSE;
                 speed /= 2;
             }
-        if ((itemEffect == HOLD_EFFECT_IRON_BALL) && (firstIron || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+        if ((itemEffect == HOLD_EFFECT_IRON_BALL) && (firstIron || GetConfig(B_ALLOW_HELD_DUPES)))
             {
                 firstIron = FALSE;
                 speed /= 2;
             }
-        if ((itemEffect == HOLD_EFFECT_CHOICE_SCARF) && GetActiveGimmick(battler) != GIMMICK_DYNAMAX && (firstChoice || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+        if ((itemEffect == HOLD_EFFECT_CHOICE_SCARF) && GetActiveGimmick(battler) != GIMMICK_DYNAMAX && (firstChoice || GetConfig(B_ALLOW_HELD_DUPES)))
             {
                 firstChoice = FALSE;
                 speed = (speed * 150) / 100;
             }
         if ((itemEffect == HOLD_EFFECT_QUICK_POWDER) && gBattleMons[battler].species == SPECIES_DITTO
-         && !(gBattleMons[battler].volatiles.transformed) && (firstQuick || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+         && !(gBattleMons[battler].volatiles.transformed) && (firstQuick || GetConfig(B_ALLOW_HELD_DUPES)))
             {
                 firstQuick = FALSE;
                 speed *= 2;
@@ -5152,11 +5150,11 @@ static void SetActionsAndBattlersTurnOrder(void)
                   && gChosenActionByBattler[battler] != B_ACTION_SWITCH
                   && gChosenActionByBattler[battler] != B_ACTION_THROW_BALL)
                 {
-                    for (i = 0; i < MAX_MON_ITEMS; i++)
+                    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
                     {
                         item = GetSlotHeldItem(battler, i, TRUE);
 
-                        if (GetBattlerItemHoldEffect(battler, item) == HOLD_EFFECT_QUICK_CLAW && (quickChance == 0 || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+                        if (GetBattlerItemHoldEffect(battler, item) == HOLD_EFFECT_QUICK_CLAW && (quickChance == 0 || GetConfig(B_ALLOW_HELD_DUPES)))
                             quickChance += (100 - quickChance) * GetItemHoldEffectParam(item) / 100;
                     }
 
@@ -5349,8 +5347,8 @@ static void TryChangeTurnOrder(void)
 
 static void TryChangingTurnOrderEffects(struct BattleCalcValues *calcValues, u32 *quickClawRandom, u32 *quickDrawRandom)
 {
-    enum BattlerId battler1 = ctx->battlerAtk;
-    enum BattlerId battler2 = ctx->battlerDef;
+    enum BattlerId battler1 = calcValues->battlerAtk;
+    enum BattlerId battler2 = calcValues->battlerDef;
 
     // Battler 1
     // Quick Draw

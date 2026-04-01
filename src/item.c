@@ -945,7 +945,7 @@ u32 GetItemSellPrice(enum Item itemId)
     return GetItemPrice(itemId) / ITEM_SELL_FACTOR;
 }
 
-bool32 BattlerHasHoldEffectChoice(u32 battler)
+bool32 BattlerHasHoldEffectChoice(enum BattlerId battler)
 {
     return (BattlerHasHeldItemEffect(battler, HOLD_EFFECT_CHOICE_BAND, TRUE)
          || BattlerHasHeldItemEffect(battler, HOLD_EFFECT_CHOICE_SCARF, TRUE)

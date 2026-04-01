@@ -187,7 +187,7 @@ void ActivateDynamax(enum BattlerId battler)
 
     // Try Gigantamax form change.
     if (!gBattleMons[battler].volatiles.transformed) // Ditto cannot Gigantamax.
-        TryBattleFormChange(battler, FORM_CHANGE_BATTLE_GIGANTAMAX, GetBattlerAbility(battler));
+        TryBattleFormChange(battler, FORM_CHANGE_BATTLE_GIGANTAMAX);
 
     BattleScriptPushCursorAndCallback(BattleScript_DynamaxBegins);
 }
@@ -210,7 +210,7 @@ void UndoDynamax(enum BattlerId battler)
 
     // Undo form change if needed.
     if (IsGigantamaxed(battler))
-        TryBattleFormChange(battler, FORM_CHANGE_END_BATTLE, GetBattlerAbility(battler));
+        TryBattleFormChange(battler, FORM_CHANGE_END_BATTLE);
 }
 
 // Certain moves are blocked by Max Guard that normally ignore protection.
@@ -239,10 +239,9 @@ static enum Move GetTypeBasedMaxMove(enum BattlerId battler, enum Type type)
     u32 i;
     u32 species = gBattleMons[battler].species;
     u32 targetSpecies = species;
-    enum Ability ability = GetBattlerAbility(battler);
 
     if (!gSpeciesInfo[species].isGigantamax)
-        targetSpecies = GetBattleFormChangeTargetSpecies(battler, FORM_CHANGE_BATTLE_GIGANTAMAX, ability);
+        targetSpecies = GetBattleFormChangeTargetSpecies(battler, FORM_CHANGE_BATTLE_GIGANTAMAX);
 
     if (targetSpecies != species)
         species = targetSpecies;

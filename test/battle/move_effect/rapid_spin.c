@@ -93,23 +93,30 @@ SINGLE_BATTLE_TEST("Rapid Spin blows away all hazards")
     }
 }
 
-#if MAX_MON_TRAITS > 1
-SINGLE_BATTLE_TEST("Rapid Spin activates after Toxic Debris (Traits)")
+TO_DO_BATTLE_TEST("Rapid Spin blows away Wrap, hazards, but doesn't raise Speed when Sheer Force boosted (Gen 8)");
+
+SINGLE_BATTLE_TEST("Rapid Spin doesn't blow away Wrap, hazards or raise Speed when Sheer Force boosted (Gen 9+)")
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_RAPID_SPIN) == EFFECT_RAPID_SPIN);
     #if B_SPEED_BUFFING_RAPID_SPIN >= GEN_8
         ASSUME(MoveHasAdditionalEffectSelf(MOVE_RAPID_SPIN, MOVE_EFFECT_SPD_PLUS_1) == TRUE);
     #endif
-        PLAYER(SPECIES_GLIMMORA) { Ability(ABILITY_CORROSION); Innates(ABILITY_TOXIC_DEBRIS); }
+        PLAYER(SPECIES_TAUROS) { Ability(ABILITY_SHEER_FORCE); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
-        TURN { MOVE(opponent, MOVE_RAPID_SPIN); }
+        TURN { MOVE(opponent, MOVE_WRAP); }
+        TURN { MOVE(opponent, MOVE_STEALTH_ROCK); MOVE(player, MOVE_RAPID_SPIN); }
     } SCENE {
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_RAPID_SPIN, opponent);
-        ABILITY_POPUP(player, ABILITY_TOXIC_DEBRIS);
-        MESSAGE("Poison spikes were scattered on the ground all around the opposing team!");
-        MESSAGE("The opposing Wobbuffet blew away Toxic Spikes!");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_STEALTH_ROCK, opponent);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_RAPID_SPIN, player);
+        NONE_OF {
+        #if B_SPEED_BUFFING_RAPID_SPIN >= GEN_8
+            ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
+            MESSAGE("Tauros's Speed rose!");
+        #endif
+            MESSAGE("Tauros got free of the opposing Wobbuffet's Wrap!");
+            MESSAGE("Tauros blew away Stealth Rock!");
+        }
     }
 }
-#endif

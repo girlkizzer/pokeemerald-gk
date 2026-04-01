@@ -2229,21 +2229,7 @@ void Innates_(u32 sourceLine, enum Ability innates[MAX_MON_INNATES])
     for (i = 0; i < MAX_MON_INNATES; i++)
     {
         INVALID_IF(innates[i] >= ABILITIES_COUNT, "Illegal ability id: %d", innates[i]);
-        DATA.forcedInnates[DATA.currentPosition][DATA.currentPartyIndex][i] = innates[i];
-    }
-}
-
-void Innates_(u32 sourceLine, enum Ability innates[MAX_MON_INNATES])
-{
-    s32 i;
-    INVALID_IF(!DATA.currentMon, "Innates outside of PLAYER/OPPONENT");
-
-    // Overwrites the target pokemon with the given Innate list.
-    // If the list is empty, the pokemon will have no Innates to remain compatible with vanilla tests.
-    for (i = 0; i < MAX_MON_INNATES; i++)
-    {
-        INVALID_IF(innates[i] >= ABILITIES_COUNT, "Illegal ability id: %d", innates[i]);
-        DATA.forcedInnates[DATA.currentPosition][DATA.currentPartyIndex][i] = innates[i];
+        DATA.forcedInnates[DATA.battleTrainer][DATA.currentPartyIndex][i] = innates[i];
     }
 }
 
@@ -2395,9 +2381,9 @@ void Items_(u32 sourceLine, u32 items[MAX_MON_ITEMS])
             
         SetMonData(DATA.currentMon, MON_DATA_HELD_ITEM + i, &items[i]);
         if (GetItemHoldEffect(items[i]) == HOLD_EFFECT_MEGA_STONE)
-            SetGimmick(sourceLine, DATA.currentPosition, DATA.currentPartyIndex, GIMMICK_MEGA);
+            SetGimmick(sourceLine, DATA.battleTrainer, DATA.currentPartyIndex, GIMMICK_MEGA);
         if (GetItemHoldEffect(items[i]) == HOLD_EFFECT_Z_CRYSTAL)
-            SetGimmick(sourceLine, DATA.currentPosition, DATA.currentPartyIndex, GIMMICK_Z_MOVE);
+            SetGimmick(sourceLine, DATA.battleTrainer, DATA.currentPartyIndex, GIMMICK_Z_MOVE);
     }
 }
 
@@ -3520,11 +3506,6 @@ void ValidateFinally(u32 sourceLine)
 u32 TestRunner_Battle_GetForcedAbility(enum BattleTrainer trainer, u32 partyIndex)
 {
     return DATA.forcedAbilities[trainer][partyIndex];
-}
-
-u32 TestRunner_Battle_GetForcedInnates(u32 array, u32 partyIndex, s32 i)
-{
-    return DATA.forcedInnates[array][partyIndex][i];
 }
 
 u32 TestRunner_Battle_GetForcedInnates(u32 array, u32 partyIndex, s32 i)

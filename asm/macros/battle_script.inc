@@ -1241,10 +1241,6 @@
 	callnative BS_JumpIfIntimidateAbilityPrevented
 	.endm
 
-	.macro tryintimidateejectpack
-	callnative BS_TryIntimidateEjectPack
-	.endm
-
 	.macro allyswitchswapbattlers
 	callnative BS_AllySwitchSwapBattler
 	.endm
@@ -1755,9 +1751,10 @@
 	.4byte \holdEffect
 	.endm
 
-	.macro setlastuseditemcorrosivefling battler:req, type:req
+	.macro setlastuseditemcorrosivefling battler:req, opposingBattler:req, type:req
 	callnative BS_SetLastUsedItemCorrosiveFling
 	.byte \battler
+	.byte \opposingBattler
 	.byte \type
 	.endm
 

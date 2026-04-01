@@ -5544,7 +5544,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
     for (j = 0; j < MAX_MON_ITEMS; j++)
     {
         if (GetItemHoldEffect(GetMonData(mon, MON_DATA_HELD_ITEM + j)) == HOLD_EFFECT_MACHO_BRACE
-        && (braceCount == 0 || GetConfig(CONFIG_ALLOW_HELD_DUPES)))
+        && (braceCount == 0 || GetConfig(B_ALLOW_HELD_DUPES)))
         {
             braceCount++;
         }
@@ -5628,7 +5628,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
                 break;
             }
 
-            if (CheckPartyHasHadPokerus(mon, 0))
+            if (CheckMonHasHadPokerus(mon))
                 multiplier *= 2;
 
             if (braceCount > 0)
@@ -6604,8 +6604,6 @@ u32 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, enum FormChanges
     {
         .method = method,
         .currentSpecies = species,
-        .heldItem = GetBoxMonData(boxMon, MON_DATA_HELD_ITEM),
-        .ability = GetAbilityBySpecies(species, GetBoxMonData(boxMon, MON_DATA_ABILITY_NUM)),
         .partyItemUsed = gSpecialVar_ItemId,
         .multichoiceSelection = gSpecialVar_Result,
         .status = GetBoxMonData(boxMon, MON_DATA_STATUS),
@@ -7467,11 +7465,10 @@ void ChangePokemonNicknameWithCallback(void (*callback)(void))
 //Traits Block
 
 //Returns the slot the Innate is found in, assuming the Ability is already slot 1.  Returns 0 if not found.
-u8 SpeciesHasInnate(u16 species, u16 ability) {
-    u8 i;
-    u8 innateNum = 0;
+u32 SpeciesHasInnate(u32 species, enum Ability ability) {
+    u32 innateNum = 0;
 
-    for (i = 0; i < MAX_MON_INNATES; i++)
+    for (u32 i = 0; i < MAX_MON_INNATES; i++)
     {
         if (gSpeciesInfo[species].innates[i] == ability)
             {
@@ -7483,21 +7480,21 @@ u8 SpeciesHasInnate(u16 species, u16 ability) {
         return innateNum;
 }
 
-bool8 BoxMonHasInnate(struct BoxPokemon *boxmon, u16 ability)
+bool32 BoxMonHasInnate(struct BoxPokemon *boxmon,  enum Ability ability)
 {
-    u16 species = GetBoxMonData(boxmon, MON_DATA_SPECIES, NULL);
+    u32 species = GetBoxMonData(boxmon, MON_DATA_SPECIES, NULL);
 
     return SpeciesHasInnate(species, ability);
 }
 
-bool8 MonHasTrait(struct Pokemon *mon, u16 ability)
+bool32 MonHasTrait(struct Pokemon *mon,  enum Ability ability)
 {
-    u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    u32 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
 
     return (GetMonAbility(mon) == ability || SpeciesHasInnate(species, ability));
 } 
 
-enum Ability GetSpeciesInnate(u16 species, u8 traitNum)
+enum Ability GetSpeciesInnate(u32 species, u32 traitNum)
 {
     if (MAX_MON_INNATES > 0)
             return gSpeciesInfo[species].innates[traitNum - 1];
@@ -7506,22 +7503,20 @@ enum Ability GetSpeciesInnate(u16 species, u8 traitNum)
 }
 
 //Multi Item Block
-u8 MonHasItem(struct Pokemon *mon, u16 item)
+u32 MonHasItem(struct Pokemon *mon, enum Item item)
 {
-    u8 i;
-
-    for(i = 0; i < MAX_MON_ITEMS; i++)
+    for(u32 i = 0; i < MAX_MON_ITEMS; i++)
         if(item == GetMonData(mon, MON_DATA_HELD_ITEM + i))
             return TRUE;
 
     return FALSE;
 }
-u8 MonHasItemHoldEffect(struct Pokemon *mon, u16 holdEffect)
+u32 MonHasItemHoldEffect(struct Pokemon *mon, enum HoldEffect holdEffect)
 {
-    u8 i;
-    u16 item, itemHoldEffect;
+    enum Item item;
+    enum HoldEffect itemHoldEffect;
 
-    for(i = 0; i < MAX_MON_ITEMS; i++)
+    for(u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         item = GetMonData(mon, MON_DATA_HELD_ITEM + i);
         itemHoldEffect = GetItemHoldEffect(item);
@@ -7532,12 +7527,11 @@ u8 MonHasItemHoldEffect(struct Pokemon *mon, u16 holdEffect)
     return FALSE;
 }
 
-u8 BoxMonHasItem(struct BoxPokemon *mon, u16 item)
+u32 BoxMonHasItem(struct BoxPokemon *mon, enum Item item)
 {
-    u8 i;
-    u16 helditem;
+    u32 helditem;
 
-    for(i = 0; i < MAX_MON_ITEMS; i++)
+    for(u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         helditem = GetBoxMonData(mon, MON_DATA_HELD_ITEM + i);
         if(item == helditem)
@@ -7547,12 +7541,11 @@ u8 BoxMonHasItem(struct BoxPokemon *mon, u16 item)
     return FALSE;
 }
 
-u8 BoxMonHasItemHoldEffect(struct BoxPokemon *mon, u16 holdEffect)
+u32 BoxMonHasItemHoldEffect(struct BoxPokemon *mon, enum HoldEffect holdEffect)
 {
-    u8 i;
-    u16 helditem;
+    u32 helditem;
 
-    for(i = 0; i < MAX_MON_ITEMS; i++)
+    for(u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         helditem = GetBoxMonData(mon, MON_DATA_HELD_ITEM + i);
         if(GetItemHoldEffect(helditem) == holdEffect)
@@ -7562,11 +7555,11 @@ u8 BoxMonHasItemHoldEffect(struct BoxPokemon *mon, u16 holdEffect)
     return FALSE;
 }
 
-u8 SwitchInCandidateHeldItemWithEffect(struct BattlePokemon switchinCandidate, u16 holdEffect)
+u32 SwitchInCandidateHeldItemWithEffect(struct BattlePokemon switchinCandidate, enum HoldEffect holdEffect)
 {
-    u16 item = ITEM_NONE;
+    enum Item item = ITEM_NONE;
 
-    for (int i = 0; i < MAX_MON_ITEMS; i++)
+    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         item = switchinCandidate.items[i];
         if(GetItemHoldEffect(item) == holdEffect)

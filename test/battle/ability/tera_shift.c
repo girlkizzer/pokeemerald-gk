@@ -34,20 +34,20 @@ SINGLE_BATTLE_TEST("Tera Shift can't be suppressed by Neutralizing Gas")
     }
 }
 
-#if MAX_MON_TRAITS > 1
-SINGLE_BATTLE_TEST("Tera Shift transforms Terapagos into its Terastal form on switch in (Traits)")
+SINGLE_BATTLE_TEST("Tera Shift activates before Neutralizing Gas regardless of Speed")
 {
+    u32 speed = 0;
+
+    PARAMETRIZE { speed = 50; }
+    PARAMETRIZE { speed = 150; }
+
     GIVEN {
-        PLAYER(SPECIES_TERAPAGOS_NORMAL) { Ability(ABILITY_LIGHT_METAL); Innates(ABILITY_TERA_SHIFT); }
-        OPPONENT(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_TERAPAGOS_NORMAL) { Speed(speed); Ability(ABILITY_TERA_SHIFT); }
+        OPPONENT(SPECIES_KOFFING) { Speed(100); Ability(ABILITY_NEUTRALIZING_GAS); }
     } WHEN {
-        TURN { ; }
+        TURN {}
     } SCENE {
         ABILITY_POPUP(player, ABILITY_TERA_SHIFT);
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_FORM_CHANGE, player);
-        MESSAGE("Terapagos transformed!");
-    } THEN {
-        EXPECT_EQ(player->species, SPECIES_TERAPAGOS_TERASTAL);
+        ABILITY_POPUP(opponent, ABILITY_NEUTRALIZING_GAS);
     }
 }
-#endif

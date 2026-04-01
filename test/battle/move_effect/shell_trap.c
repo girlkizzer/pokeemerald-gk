@@ -280,35 +280,25 @@ DOUBLE_BATTLE_TEST("Shell Trap does not trigger when hit into Substitute")
     }
 }
 
-#if MAX_MON_TRAITS > 1
-SINGLE_BATTLE_TEST("Shell Trap does not activate if attacker's Sheer Force applied (Traits)")
+DOUBLE_BATTLE_TEST("Shell Trap activates on both opposing Targets")
 {
-    u32 move;
-    bool32 activate;
-    PARAMETRIZE { move = MOVE_SCRATCH; activate = TRUE; }
-    PARAMETRIZE { move = MOVE_STOMP; activate = FALSE; }
-
     GIVEN {
+        ASSUME(GetMoveTarget(MOVE_EARTHQUAKE) == TARGET_FOES_AND_ALLY);
+        PLAYER(SPECIES_WYNAUT);
         PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_TAUROS) { Ability(ABILITY_ANGER_POINT); Innates(ABILITY_SHEER_FORCE); }
+        OPPONENT(SPECIES_WYNAUT);
+        OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
-        TURN { MOVE(player, MOVE_SHELL_TRAP); MOVE(opponent, move); }
-    } SCENE {
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_SHELL_TRAP_SETUP, player);
-        MESSAGE("Wobbuffet set a shell trap!");
-        ANIMATION(ANIM_TYPE_MOVE, move, opponent);
-        if (activate) {
-            MESSAGE("Wobbuffet used Shell Trap!");
-            ANIMATION(ANIM_TYPE_MOVE, MOVE_SHELL_TRAP, player);
-            HP_BAR(opponent);
-        } else {
-            MESSAGE("Wobbuffet's shell trap didn't work!");
-            NONE_OF {
-                MESSAGE("Wobbuffet used Shell Trap!");
-                ANIMATION(ANIM_TYPE_MOVE, MOVE_SHELL_TRAP, player);
-                HP_BAR(opponent);
-            }
+        TURN {
+            MOVE(playerLeft, MOVE_SHELL_TRAP);
+            MOVE(playerRight, MOVE_SHELL_TRAP);
+            MOVE(opponentLeft, MOVE_EARTHQUAKE);
         }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_EARTHQUAKE, opponentLeft);
+        // Order might be incorrect compared to vanilla
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SHELL_TRAP, playerLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SHELL_TRAP, playerRight);
     }
 }
-#endif
+

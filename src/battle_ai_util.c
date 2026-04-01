@@ -27,7 +27,18 @@ static u32 GetAIEffectGroup(enum BattleMoveEffects effect);
 static u32 GetAIEffectGroupFromMove(enum BattlerId battler, enum Move move);
 
 // Functions
-static bool32 AI_IsDoubleSpreadMove(enum BattlerId battlerAtk, u32 move)
+bool32 AI_MoldBreakerNegates(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum Move move)
+{
+    if (MoveIgnoresTargetAbility(move))
+        return TRUE;
+
+    if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_ABILITY_SHIELD, gAiLogicData) && HasMoldBreakerTypeAbility(battlerAtk))
+        return TRUE;
+
+    return FALSE;
+}
+
+static bool32 AI_IsDoubleSpreadMove(enum BattlerId battlerAtk, enum Move move)
 {
     u32 numOfTargets = 0;
     enum MoveTarget moveTargetType = AI_GetBattlerMoveTargetType(battlerAtk, move);
@@ -269,8 +280,7 @@ void RecordItemEffectBattle(enum BattlerId battlerId, enum HoldEffect itemEffect
 
 void ClearBattlerItemEffectHistory(enum BattlerId battlerId)
 {
-    u32 i;
-    for (i = 0; i < MAX_MON_ITEMS; i++)
+    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         gBattleHistory->itemEffects[battlerId][i] = HOLD_EFFECT_NONE;
     }
@@ -282,7 +292,7 @@ void SaveBattlerData(enum BattlerId battlerId)
     {
         gAiThinkingStruct->saved[battlerId].saved = TRUE;
         gAiThinkingStruct->saved[battlerId].ability = gBattleMons[battlerId].ability;
-        for (i = 0; i < MAX_MON_ITEMS; i++)
+        for (u32 i = 0; i < MAX_MON_ITEMS; i++)
             gAiThinkingStruct->saved[battlerId].heldItem[i] = gBattleMons[battlerId].items[i];
         gAiThinkingStruct->saved[battlerId].species = gBattleMons[battlerId].species;
         for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
@@ -422,7 +432,7 @@ void SetBattlerData(enum BattlerId battlerId)
         else
             gBattleMons[battlerId].ability = ABILITY_NONE;
 
-        for (i = 0; i < MAX_MON_ITEMS; i++)
+        for (u32 i = 0; i < MAX_MON_ITEMS; i++)
         {
             if (gAiPartyData->mons[side][gBattlerPartyIndexes[battlerId]].heldEffects[i] == 0)
                 gBattleMons[battlerId].items[i] = 0;
@@ -442,7 +452,7 @@ void RestoreBattlerData(enum BattlerId battlerId)
     {
         gAiThinkingStruct->saved[battlerId].saved = FALSE;
         gBattleMons[battlerId].ability = gAiThinkingStruct->saved[battlerId].ability;
-        for (i = 0; i < MAX_MON_ITEMS; i++)
+        for (u32 i = 0; i < MAX_MON_ITEMS; i++)
             gBattleMons[battlerId].items[i] = gAiThinkingStruct->saved[battlerId].heldItem[i];
         gBattleMons[battlerId].species = gAiThinkingStruct->saved[battlerId].species;
         for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
@@ -542,10 +552,10 @@ bool32 Ai_IsPriorityBlocked(enum BattlerId battlerAtk, enum BattlerId battlerDef
     if (HasMoldBreakerTypeAbility(battlerAtk) || MoveIgnoresTargetAbility(move))
         return FALSE;
 
-    if (HasDazzlingAbility(battlerDef))
+    if (BattlerHasDazzlingAbility(battlerDef))
         return TRUE;
 
-    if (IsDoubleBattle() && HasDazzlingAbility(BATTLE_PARTNER(battlerDef)))
+    if (IsDoubleBattle() && BattlerHasDazzlingAbility(BATTLE_PARTNER(battlerDef)))
         return TRUE;
 
     return FALSE;
@@ -553,7 +563,7 @@ bool32 Ai_IsPriorityBlocked(enum BattlerId battlerAtk, enum BattlerId battlerDef
 
 bool32 AI_CanMoveBeBlockedByTarget(struct BattleContext *ctx)
 {
-    return CanMoveBeBlockedByTarget(ctx, GetBattleMovePriority(ctx->battlerAtk, ctx->abilityAtk, ctx->move));
+    return CanMoveBeBlockedByTarget(ctx, GetBattleMovePriority(ctx->battlerAtk, ctx->move));
 }
 
 // This function checks if all physical/special moves are either unusable or unreasonable to use.
@@ -888,7 +898,6 @@ struct SimulatedDamage AI_CalcDamage(enum Move move, enum BattlerId battlerAtk, 
     enum BattleMoveEffects moveEffect = GetMoveEffect(move);
     bool32 toggledGimmickAtk = FALSE;
     bool32 toggledGimmickDef = FALSE;
-    struct AiLogicData *aiData = gAiLogicData;
     gAiLogicData->aiCalcInProgress = TRUE;
 
     if (moveEffect == EFFECT_HIT_ENEMY_HEAL_ALLY
@@ -1204,7 +1213,7 @@ static bool32 AI_IsMoveEffectInMinus(enum BattlerId battlerAtk, enum BattlerId b
 
     if (GetMoveStrikeCount(move) > 1 || IsMultiHitMove(move))
     {
-        if (AI_MoveMakesContact(battlerAtk, battlerDef, abilityAtk, gAiLogicData->holdEffects[battlerAtk], move)
+        if (AI_MoveMakesContact(battlerAtk, battlerDef, move)
          && !AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_MAGIC_GUARD)
          && (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_ROCKY_HELMET, gAiLogicData) || Ai_BattlerHasHoldEffect(battlerDef, ABILITY_IRON_BARBS, gAiLogicData)))
         {
@@ -1227,18 +1236,18 @@ static bool32 AI_IsMoveEffectInMinus(enum BattlerId battlerAtk, enum BattlerId b
             return TRUE;
         break;
     case EFFECT_SEMI_INVULNERABLE:
-        if (abilityAtk == ABILITY_NO_GUARD || abilityDef == ABILITY_NO_GUARD)
+        if (AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_NO_GUARD) || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_NO_GUARD))
         {
-            if (gAiLogicData->holdEffects[battlerAtk] != HOLD_EFFECT_POWER_HERB)
+            if (!Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_POWER_HERB, gAiLogicData))
                 return TRUE;
         }
         break;
     case EFFECT_ABSORB:
-        if (abilityDef == ABILITY_LIQUID_OOZE)
+        if (AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_LIQUID_OOZE))
             return TRUE;
         break;
     case EFFECT_DREAM_EATER:
-        if (abilityDef == ABILITY_LIQUID_OOZE && GetConfig(B_DREAM_EATER_LIQUID_OOZE) >= GEN_5)
+        if (AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_LIQUID_OOZE) && GetConfig(B_DREAM_EATER_LIQUID_OOZE) >= GEN_5)
             return TRUE;
         break;
     default:
@@ -1439,9 +1448,9 @@ s32 AI_WhoStrikesFirst(enum BattlerId battlerAI, enum BattlerId battler, enum Mo
     speedBattlerAI = GetBattlerTotalSpeedStat(battlerAI);
     speedBattler   = GetBattlerTotalSpeedStat(battler);
 
-    if (AI_BATTLER_HAS_TRAIT(battlerAI, HOLD_EFFECT_LAGGING_TAIL) && !AI_BATTLER_HAS_TRAIT(battler, HOLD_EFFECT_LAGGING_TAIL))
+    if (Ai_BattlerHasHoldEffect(battlerAI, HOLD_EFFECT_LAGGING_TAIL, gAiLogicData) && !Ai_BattlerHasHoldEffect(battler, HOLD_EFFECT_LAGGING_TAIL, gAiLogicData))
         return AI_IS_SLOWER;
-    else if (!AI_BATTLER_HAS_TRAIT(battlerAI, HOLD_EFFECT_LAGGING_TAIL) && AI_BATTLER_HAS_TRAIT(battler, HOLD_EFFECT_LAGGING_TAIL))
+    else if (!Ai_BattlerHasHoldEffect(battlerAI, HOLD_EFFECT_LAGGING_TAIL, gAiLogicData) && Ai_BattlerHasHoldEffect(battler, HOLD_EFFECT_LAGGING_TAIL, gAiLogicData))
         return AI_IS_FASTER;
 
     if (AI_BATTLER_HAS_TRAIT(battlerAI, ABILITY_STALL) && !AI_BATTLER_HAS_TRAIT(battler, ABILITY_STALL))
@@ -2164,7 +2173,7 @@ bool32 ShouldRaiseAnyStat(enum BattlerId battlerAtk, enum BattlerId battlerDef)
         return FALSE;
 
     // Don't increase stats if Yawn'd
-    if (gBattleMons[battlerAtk].volatiles.yawn && CanBeSlept(battlerDef, battlerDef, gAiLogicData->abilities[battlerDef], BLOCKED_BY_SLEEP_CLAUSE))
+    if (gBattleMons[battlerAtk].volatiles.yawn && CanBeSlept(battlerDef, battlerDef, BLOCKED_BY_SLEEP_CLAUSE))
         return FALSE;
 
     // Don't set up if AI is dead to residual damage from weather
@@ -4496,29 +4505,6 @@ void SetBattlerFieldStatusForSwitchin(enum BattlerId battler)
 }
 
 // party logic
-s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct BattlePokemon switchinCandidate, uq4_12_t *effectiveness, enum DamageCalcContext calcContext)
-{
-    memcpy(gAiLogicData, savedAiLogicData, SIZE_G_AI_LOGIC_DATA);
-    Free(savedAiLogicData);
-}
-
-// Set potential field effect from ability for switch in
-void SetBattlerFieldStatusForSwitchin(enum BattlerId battler)
-{
-    enum Ability AIBattlerTraits[MAX_MON_TRAITS];
-    AI_STORE_BATTLER_TRAITS(battler);
-
-    if (AISearchTraits(AIBattlerTraits, ABILITY_VESSEL_OF_RUIN))
-        gBattleMons[battler].volatiles.vesselOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_SWORD_OF_RUIN))
-        gBattleMons[battler].volatiles.swordOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_TABLETS_OF_RUIN))
-        gBattleMons[battler].volatiles.tabletsOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_BEADS_OF_RUIN))
-        gBattleMons[battler].volatiles.beadsOfRuin = TRUE;
-}
-
-// party logic
 s32 CountUsablePartyMons(enum BattlerId battlerId)
 {
     s32 battlerOnField1, battlerOnField2, ret;
@@ -4925,12 +4911,12 @@ bool32 HasHPForDamagingSetup(enum BattlerId battlerAtk, enum BattlerId battlerDe
     if (bestMoveIsPhysical
      && gAiLogicData->abilities[battlerAtk] == ABILITY_ICE_FACE
      && gBattleMons[battlerAtk].species == SPECIES_EISCUE_ICE
-     && !IsMoldBreakerTypeAbility(battlerDef, gAiLogicData->abilities[battlerDef])) // ice face will absorb the hit, safe to use setup
+     && !HasMoldBreakerTypeAbility(battlerDef)) // ice face will absorb the hit, safe to use setup
         return TRUE;
 
     if (gAiLogicData->abilities[battlerAtk] == ABILITY_DISGUISE
      && IsMimikyuDisguised(battlerAtk)
-     && !IsMoldBreakerTypeAbility(battlerDef, gAiLogicData->abilities[battlerDef])) // disguise will absorb the hit, safe to use setup
+     && !HasMoldBreakerTypeAbility(battlerDef)) // disguise will absorb the hit, safe to use setup
         return TRUE;
 
     return FALSE;
@@ -5160,7 +5146,7 @@ bool32 IsUnseenFistContactMove(enum BattlerId battlerAtk, enum BattlerId battler
         return FALSE;
     }
 
-    if (gAiLogicData->holdEffects[battlerAtk] == HOLD_EFFECT_PUNCHING_GLOVE && IsPunchingMove(move))
+    if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_PUNCHING_GLOVE, gAiLogicData) && IsPunchingMove(move))
         return FALSE;
 
     return TRUE;

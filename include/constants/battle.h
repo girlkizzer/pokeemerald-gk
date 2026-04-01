@@ -274,8 +274,9 @@ enum VolatileFlags
     F(VOLATILE_TRUANT_SWITCH_IN_HACK,       truantSwitchInHack,            (u32, 1)) \
     F(VOLATILE_TAR_SHOT,                    tarShot,                       (u32, 1)) \
     F(VOLATILE_OCTOLOCK,                    octolock,                      (u32, 1)) \
-    F(VOLATILE_CUD_CHEW,                    cudChew,                       (u32, 1)) \
+    F(VOLATILE_CUD_CHEW,                    cudChew,                       (u32, MAX_BITS(MAX_MON_ITEMS))) \
     F(VOLATILE_WEATHER_ABILITY_DONE,        weatherAbilityDone,            (u32, 1)) \
+    F(VOLATILE_TRANSFORM_WEATHER_ABILITY_DONE, transformWeatherAbilityDone,            (u32, 1)) \
     F(VOLATILE_TERRAIN_ABILITY_DONE,        terrainAbilityDone,            (u32, 1)) \
     F(VOLATILE_SYRUP_BOMB_IS_SHINY,         syrupBombIsShiny,              (u32, 1)) \
     F(VOLATILE_USED_PROTEAN_LIBERO,         usedProteanLibero,             (u32, 1)) \

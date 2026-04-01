@@ -351,7 +351,7 @@ BattleScript_EffectCorrosiveGas::
 	attackanimation
 	waitanimation
 	jumpifability BS_TARGET, ABILITY_STICKY_HOLD, BattleScript_StickyHoldActivates
-	setlastuseditemcorrosivefling BS_TARGET, LAST_ITEM_CORROSIVE
+	setlastuseditemcorrosivefling BS_TARGET, BS_ATTACKER, LAST_ITEM_CORROSIVE
 	removeitemwitheffect BS_TARGET, HOLD_EFFECT_NONE @ gLastUsedItem
 	printstring STRINGID_PKMNITEMMELTED
 	waitmessage B_WAIT_TIME_LONG
@@ -506,7 +506,7 @@ BattleScript_BeakBlastBurn::
 	return
 
 BattleScript_EffectFling::
-	setlastuseditemcorrosivefling BS_ATTACKER, LAST_ITEM_FLING
+	setlastuseditemcorrosivefling BS_ATTACKER, BS_TARGET, LAST_ITEM_FLING
 	attackcanceler
 	accuracycheck BattleScript_FlingMissed
 	pause B_WAIT_TIME_SHORT
@@ -549,7 +549,7 @@ BattleScript_TargetAvoidsAttackConsumeFlingItem::
 	pause B_WAIT_TIME_SHORT
 	printfromtable gMissStringIds
 	waitmessage B_WAIT_TIME_LONG
-	removeitem BS_ATTACKER
+	removeitemwitheffect BS_ATTACKER HOLD_EFFECT_NONE @ gLastUsedItem
 	return
 
 BattleScript_FlingBlockedByShieldDust::
@@ -2821,7 +2821,7 @@ BattleScript_PowerHerbActivation::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
 	printstring STRINGID_POWERHERB
 	waitmessage B_WAIT_TIME_LONG
-	removeitem BS_ATTACKER
+	removeitemwitheffect BS_ATTACKER HOLD_EFFECT_NONE @ gLastUsedItem
 	return
 
 BattleScript_TwoTurnMoveCharging::
@@ -5748,7 +5748,7 @@ BattleScript_PowderMoveNoEffect::
 	pause B_WAIT_TIME_SHORT
 	jumpiftype BS_SCRIPTING, TYPE_GRASS, BattleScript_PowderMoveNoEffectPrint
 	jumpifability BS_SCRIPTING, ABILITY_OVERCOAT, BattleScript_PowderMoveNoEffectOvercoat
-	setlastuseditem BS_SCRIPTING
+	setlastuseditem BS_SCRIPTING, HOLD_EFFECT_NONE
 	printstring STRINGID_SAFETYGOGGLESPROTECTED
 	goto BattleScript_PowderMoveNoEffectWaitMsg
 BattleScript_PowderMoveNoEffectOvercoat:
@@ -6027,6 +6027,15 @@ BattleScript_ItemSteal::
 	tryactivateabilitywithabilityshield BS_ATTACKER, FALSE
 	return
 
+BattleScript_DrizzleActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNMADEITRAIN
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_RAIN_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
 BattleScript_AbilityRaisesDefenderStat::
 	pause B_WAIT_TIME_SHORT
 	statbuffchange BS_TARGET, STAT_CHANGE_ONLY_CHECKING, BattleScript_AbilityCantRaiseDefenderStat
@@ -6206,6 +6215,15 @@ BattleScript_HealerActivates::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
+BattleScript_SandstreamActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNSXWHIPPEDUPSANDSTORM
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_SANDSTORM_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
 BattleScript_ShedSkinActivates::
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_PKMNSXCUREDYPROBLEM
@@ -6332,18 +6350,53 @@ BattleScript_SupersweetSyrupLoopIncrement:
 	restoretarget
 	restoreattacker
 	pause B_WAIT_TIME_MED
-	tryintimidateejectpack
 	return
 
 BattleScript_SupersweetSyrupWontDecrease:
 	printstring STRINGID_STATSWONTDECREASE
 	goto BattleScript_SupersweetSyrupEffect_WaitString
 
+BattleScript_DroughtActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNSXINTENSIFIEDSUN
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_SUN_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
+BattleScript_DesolateLandActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_EXTREMELYHARSHSUNLIGHT
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_SUN_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
+BattleScript_PrimordialSeaActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_HEAVYRAIN
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_RAIN_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
 BattleScript_PrimalWeatherBlocksMove::
 	pause B_WAIT_TIME_SHORT
 	printfromtable gPrimalWeatherBlocksStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
+
+BattleScript_DeltaStreamActivates::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_MYSTERIOUSAIRCURRENT
+	waitstate
+	playanimation BS_ATTACKER, B_ANIM_STRONG_WINDS
+	call BattleScript_ActivateWeatherAbilities
+	return
 
 BattleScript_ProtosynthesisActivates::
 	call BattleScript_AbilityPopUpScripting
@@ -6468,6 +6521,23 @@ BattleScript_MimicryActivates::
 	waitmessage B_WAIT_TIME_SHORT
 	return
 
+BattleScript_SnowWarningActivatesHail::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_SNOWWARNINGHAIL
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_HAIL_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
+
+BattleScript_SnowWarningActivatesSnow::
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_SNOWWARNINGSNOW
+	waitstate
+	playanimation BS_BATTLER_0, B_ANIM_SNOW_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
+	return
 BattleScript_ActivateTerrainEffects:
 	saveattacker
 	savetarget

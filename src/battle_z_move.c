@@ -112,6 +112,8 @@ bool32 IsZMove(enum Move move)
 
 bool32 CanUseZMove(enum BattlerId battler)
 {
+    enum BattlerPosition position = GetBattlerPosition(battler);
+
     // Check if Player has Z-Power Ring.
     if (!TESTING && (position == B_POSITION_PLAYER_LEFT
         || (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) && position == B_POSITION_PLAYER_RIGHT))
@@ -140,7 +142,7 @@ bool32 CanUseZMove(enum BattlerId battler)
 
 enum Move GetUsableZMove(enum BattlerId battler, enum Move move)
 {
-    if (BattlerHasHeldItemEffectIgnoreNegation(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE))
+    if (BattlerHasHeldItemEffectIgnoreAbility(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE))
     {
         u32 item = GetBattlerHeldItemWithEffect(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE);
         enum Move zMove = GetSignatureZMove(move, gBattleMons[battler].species, item);
@@ -183,7 +185,7 @@ bool32 IsViableZMove(enum BattlerId battler, enum Move move)
     // Check for signature Z-Move or type-based Z-Move.
     if (BattlerHasHeldItemEffect(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE))
     {
-        u32 item = GetBattlerHeldItemWithEffectIgnoreNegation(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE);
+        u32 item = BattlerHasHeldItemEffectIgnoreAbility(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE);
         enum Move zMove = GetSignatureZMove(move, gBattleMons[battler].species, item);
         if (zMove != MOVE_NONE)
             return TRUE;

@@ -18,24 +18,34 @@ SINGLE_BATTLE_TEST("Restore PP berry activates immediately on switch in")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_POUND, opponent);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_CELEBRATE, player);
     } THEN {
-        EXPECT(player->items[0] == ITEM_NONE);
+        EXPECT(player->item == ITEM_NONE);
     }
 }
 
-#if MAX_MON_ITEMS > 1
-SINGLE_BATTLE_TEST("Restore PP berry activates immediately on switch in (Multi)")
+SINGLE_BATTLE_TEST("Forced Leppa Berry consumption restores a move at 0 PP before other missing PP")
 {
     GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_LEPPA_BERRY); MovesWithPP({MOVE_SCRATCH, 0}, {MOVE_CELEBRATE, 20}); }
-        OPPONENT(SPECIES_WYNAUT);
+        ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
+        PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
+        OPPONENT(SPECIES_WYNAUT) { MovesWithPP({MOVE_SCRATCH, 6}, {MOVE_CELEBRATE, 0}, {MOVE_POUND, 35}); }
     } WHEN {
-        TURN { MOVE(opponent, MOVE_POUND); MOVE(player, MOVE_CELEBRATE); }
-    } SCENE {
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_POUND, opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_CELEBRATE, player);
+        TURN { MOVE(player, MOVE_FLING); MOVE(opponent, MOVE_POUND); }
     } THEN {
-        EXPECT(player->items[1] == ITEM_NONE);
+        EXPECT_EQ(opponent->pp[0], 6);
+        EXPECT_EQ(opponent->pp[1], 10);
     }
 }
-#endif
+
+SINGLE_BATTLE_TEST("Forced Leppa Berry consumption restores the first move found missing PP when none are at 0")
+{
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
+        PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
+        OPPONENT(SPECIES_WYNAUT) { MovesWithPP({MOVE_SCRATCH, 6}, {MOVE_CELEBRATE, 6}, {MOVE_POUND, 35}); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_FLING); MOVE(opponent, MOVE_POUND); }
+    } THEN {
+        EXPECT_EQ(opponent->pp[0], 16);
+        EXPECT_EQ(opponent->pp[1], 6);
+    }
+}

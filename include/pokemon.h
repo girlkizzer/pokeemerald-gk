@@ -373,6 +373,7 @@ struct BattlePokemon
     /*0x61*/ u8 metLevel;
     /*0x62*/ bool8 isShiny;
     /*0x64*/ enum Ability innates[MAX_MON_INNATES_INTERNAL];
+    /*0x66*/ enum Item item; //Only to allow vanilla tests to pass without errors
 };
 
 struct EvolutionParam
@@ -947,14 +948,14 @@ struct BoxPokemon *GetSelectedBoxMonFromPcOrParty(void);
 u32 GiveScriptedMonToPlayer(struct Pokemon *mon, u8 slot);
 void ChangePokemonNicknameWithCallback(void (*callback)(void));
 // Multi Items
-u8 MonHasItem(struct Pokemon *mon, enum Item item);
-u8 MonHasItemHoldEffect(struct Pokemon *mon, u16 holdEffect);
-u8 BoxMonHasItem(struct BoxPokemon *mon, enum Item item);
-u8 BoxMonHasItemHoldEffect(struct BoxPokemon *mon, u16 holdEffect);
-u8 SwitchInCandidateHeldItemWithEffect(struct BattlePokemon switchinCandidate, u16 holdEffect);
+u32 MonHasItem(struct Pokemon *mon, enum Item item);
+u32 MonHasItemHoldEffect(struct Pokemon *mon, enum HoldEffect holdEffect);
+u32 BoxMonHasItem(struct BoxPokemon *mon, enum Item item);
+u32 BoxMonHasItemHoldEffect(struct BoxPokemon *mon, enum HoldEffect holdEffect);
+u32 SwitchInCandidateHeldItemWithEffect(struct BattlePokemon switchinCandidate, enum HoldEffect holdEffect);
 
-u8 SpeciesHasInnate(u16 species, enum Ability ability);
-enum Ability GetSpeciesInnate(u16 species, u8 traitNum);
-bool8 BoxMonHasInnate(struct BoxPokemon* boxmon, enum Ability ability);
-bool8 MonHasTrait(struct Pokemon* mon, enum Ability ability);
+u32 SpeciesHasInnate(u32 species, enum Ability ability);
+enum Ability GetSpeciesInnate(u32 species, u32 traitNum);
+bool32 BoxMonHasInnate(struct BoxPokemon* boxmon, enum Ability ability);
+bool32 MonHasTrait(struct Pokemon* mon, enum Ability ability);
 #endif // GUARD_POKEMON_H

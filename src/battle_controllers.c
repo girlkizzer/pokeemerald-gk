@@ -134,7 +134,7 @@ void HandleLinkBattleSetup(void)
 
 void SetUpBattleVarsAndBirchZigzagoon(void)
 {
-    s32 i, j;
+    s32 i;
 
     gBattleMainFunc = BeginBattleIntroDummy;
 

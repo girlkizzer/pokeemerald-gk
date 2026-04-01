@@ -134,7 +134,7 @@ extern const u8 gStatusConditionString_LoveJpn[8];
 
 extern const u8 *const gStatusConditionStringsTable[7][2];
 
-static inline u32 SearchTraits(u16 *battlerTraits, u32 abilityToCheck)
+static inline u32 SearchTraits(enum Ability *battlerTraits, enum Ability abilityToCheck)
 {
   for (u32 i = 0; i < MAX_MON_TRAITS; i++)
   {

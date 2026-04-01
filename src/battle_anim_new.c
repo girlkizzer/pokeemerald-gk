@@ -7729,9 +7729,9 @@ static void SpriteCB_TwinkleOnBattler(struct Sprite *sprite)
 
 void AnimTask_PrimalReversion(u8 taskId)
 {
-    if (BattlerHasHeldItemEffect(gBattleAnimAttacker, ITEM_RED_ORB, TRUE))
+    if (BattlerHasHeldItem(gBattleAnimAttacker, ITEM_RED_ORB, FALSE))
         gBattleAnimArgs[0] = ITEM_RED_ORB;
-    else if (BattlerHasHeldItemEffect(gBattleAnimAttacker, ITEM_BLUE_ORB, TRUE))
+    else if (BattlerHasHeldItem(gBattleAnimAttacker, ITEM_BLUE_ORB, FALSE))
         gBattleAnimArgs[0] = ITEM_BLUE_ORB;
     else
         gBattleAnimArgs[0] = 0;

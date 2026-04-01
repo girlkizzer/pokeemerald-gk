@@ -4488,7 +4488,7 @@ static bool32 ShouldBoxmonSpriteBeTransparent(u32 boxId, u32 boxPosition)
 {
     bool32 hasItem = FALSE;
 
-    for (i = 0; i < MAX_MON_ITEMS; i++)
+    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
         if (GetBoxMonDataAt(sStorage->incomingBoxId, boxPosition, MON_DATA_HELD_ITEM + i) != ITEM_NONE)
         {
@@ -4512,7 +4512,6 @@ static void InitBoxMonSprites(u8 boxId)
     u16 i, j, count;
     u16 species;
     u32 personality;
-    bool32 hasItem;
 
     count = 0;
     boxPosition = 0;
@@ -6564,7 +6563,7 @@ static bool8 TryHideReleaseMon(void)
 static void ReleaseMon(void)
 {
     u8 boxId;
-    u16 i;
+    u32 i;
     enum Item item = ITEM_NONE;
 
     DestroyReleaseMonIcon();
@@ -7008,7 +7007,8 @@ void SetMonFormPSS_ItemHold(struct BoxPokemon *boxMon)
 
 static void SetDisplayMonData(void *pokemon, u8 mode)
 {
-    u8 *txtPtr, i;
+    u8 *txtPtr;
+    u32 i;
     u16 gender;
     bool8 sanityIsBadEgg;
 
@@ -7858,7 +7858,7 @@ static bool8 SetMenuTexts_Item(void)
 {
     bool32 hasItemNotMail = FALSE;
     bool32 hasSpace = FALSE;
-    u16 i;
+    u32 i;
 
     if (sStorage->displayMonSpecies == SPECIES_EGG)
         return FALSE;
@@ -9011,7 +9011,8 @@ static void TryHideItemIconAtPos(u8 cursorArea, u8 cursorPos)
 
 static void TakeItemFromMon(u8 cursorArea, u8 cursorPos)
 {
-    u8 id, i;
+    u8 id;
+    u32 i;
     enum Item itemId;
 
     if (sStorage->boxOption != OPTION_MOVE_ITEMS)
@@ -10177,8 +10178,6 @@ void UpdateSpeciesSpritePSS(struct BoxPokemon *boxMon)
 {
     u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES);
     bool8 isShiny = GetBoxMonData(boxMon, MON_DATA_IS_SHINY);
-    bool32 hasItem = FALSE;
-    u8 i;
     u32 pid = GetBoxMonData(boxMon, MON_DATA_PERSONALITY);
     bool32 isEgg = GetBoxMonData(boxMon, MON_DATA_IS_EGG);
 

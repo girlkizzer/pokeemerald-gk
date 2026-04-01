@@ -521,7 +521,7 @@ s32 CalcWeatherScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
 
             if (HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_WEATHER_BALL))
                 score += WEAK_EFFECT;
-            if (aiData->holdEffects[battlerAtk] == HOLD_EFFECT_DAMP_ROCK)
+            if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_DAMP_ROCK, aiData))
                 score += WEAK_EFFECT;
             if (HasBattlerSideMoveWithEffect(battlerDef, EFFECT_MORNING_SUN)
              || HasBattlerSideMoveWithEffect(battlerDef, EFFECT_SYNTHESIS)
@@ -539,7 +539,7 @@ s32 CalcWeatherScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
 
             if (HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_WEATHER_BALL))
                 score += WEAK_EFFECT;
-            if (aiData->holdEffects[battlerAtk] == HOLD_EFFECT_HEAT_ROCK)
+            if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_HEAT_ROCK, aiData))
                 score += WEAK_EFFECT;
             if (HasDamagingMoveOfType(battlerDef, TYPE_WATER) || HasDamagingMoveOfType(BATTLE_PARTNER(battlerDef), TYPE_WATER))
                 score += WEAK_EFFECT;
@@ -554,7 +554,7 @@ s32 CalcWeatherScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
 
             if (HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_WEATHER_BALL))
                 score += WEAK_EFFECT;
-            if (aiData->holdEffects[battlerAtk] == HOLD_EFFECT_SMOOTH_ROCK)
+            if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_SMOOTH_ROCK, aiData))
                 score += WEAK_EFFECT;
             if (HasMoveWithEffect(battlerDef, EFFECT_MORNING_SUN)
              || HasMoveWithEffect(battlerDef, EFFECT_SYNTHESIS)
@@ -571,7 +571,7 @@ s32 CalcWeatherScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
                 score += GOOD_EFFECT;
             if (HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_WEATHER_BALL))
                 score += WEAK_EFFECT;
-            if (aiData->holdEffects[battlerAtk] == HOLD_EFFECT_ICY_ROCK)
+            if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_ICY_ROCK, aiData))
                 score += WEAK_EFFECT;
             if (HasMoveWithEffect(battlerDef, EFFECT_MORNING_SUN)
              || HasMoveWithEffect(battlerDef, EFFECT_SYNTHESIS)
@@ -588,7 +588,7 @@ s32 CalcWeatherScore(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
                 score += GOOD_EFFECT;
             if (HasBattlerSideMoveWithEffect(battlerAtk, EFFECT_WEATHER_BALL))
                 score += WEAK_EFFECT;
-            if (aiData->holdEffects[battlerAtk] == HOLD_EFFECT_ICY_ROCK)
+            if (Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_ICY_ROCK, aiData))
                 score += WEAK_EFFECT;
             if (HasMoveWithEffect(battlerDef, EFFECT_MORNING_SUN)
              || HasMoveWithEffect(battlerDef, EFFECT_SYNTHESIS)

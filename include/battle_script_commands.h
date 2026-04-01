@@ -69,7 +69,7 @@ u8 GetFirstFaintedPartyIndex(enum BattlerId battler);
 void SaveBattlerTarget(enum BattlerId battler);
 void SaveBattlerAttacker(enum BattlerId battler);
 bool32 CanBurnHitThaw(enum Move move);
-bool32 CanMoveThawTarget(enum Ability abilityAtk, enum Move move);
+bool32 CanMoveThawTarget(enum BattlerId battlerAtk, enum Move move);
 bool32 CanFireMoveThawTarget(enum Move move);
 
 extern void (*const gBattleScriptingCommandsTable[])(void);
