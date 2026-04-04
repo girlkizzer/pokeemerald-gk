@@ -689,7 +689,7 @@ void (*const gBattleScriptingCommandsTable[])(void) =
     [B_SCR_OP_YESNOBOX]                              = Cmd_yesnobox,
     [B_SCR_OP_CANCELALLACTIONS]                      = Cmd_cancelallactions,
     [B_SCR_OP_SETGRAVITY]                            = Cmd_setgravity,
-    [B_SCR_OP_REMOVEITEMWITHEFFECT]                            = Cmd_removeitemwitheffect,
+    [B_SCR_OP_REMOVEITEMWITHEFFECT]                  = Cmd_removeitemwitheffect,
     [B_SCR_OP_ATKNAMEINBUFF1]                        = Cmd_atknameinbuff1,
     [B_SCR_OP_DRAWLVLUPBOX]                          = Cmd_drawlvlupbox,
     [B_SCR_OP_RESETSENTMONSVALUE]                    = Cmd_resetsentmonsvalue,
@@ -1040,6 +1040,7 @@ static void Cmd_attackcanceler(void)
         gBattleStruct->bouncedMoveIsUsed = TRUE;
         gBattleStruct->magicBounceActive = FALSE;
         gBattlerAbility = gBattlerTarget = gBattleStruct->moveBouncer;
+        PushTraitStack(gBattlerTarget, ABILITY_MAGIC_BOUNCE);
         BattleScriptCall(BattleScript_MagicBounce);
         return;
     }
@@ -5308,6 +5309,7 @@ static void Cmd_switchindataupdate(void)
         u32 partyIndex = gBattlerPartyIndexes[battler];
         if (TestRunner_Battle_GetForcedAbility(trainer, partyIndex))
             gBattleMons[battler].ability = TestRunner_Battle_GetForcedAbility(trainer, partyIndex);
+        gBattleMons[battler].item = gBattleMons[battler].items[0];
     }
     #endif
 
@@ -6585,7 +6587,7 @@ static void Cmd_removeitemwitheffect(void)
     enum Item itemId = ITEM_NONE;
     u8 slot = MAX_MON_ITEMS;
 
-    if (gBattleScripting.overrideBerryRequirements || itemId == ITEM_NONE)
+    if (gBattleScripting.overrideBerryRequirements)
     {
         // bug bite / pluck / no item - don't remove current item
         gBattlescriptCurrInstr = cmd->nextInstr;
@@ -6619,10 +6621,15 @@ static void Cmd_removeitemwitheffect(void)
      && GetMoveEffect(gCurrentMove) != EFFECT_CORROSIVE_GAS)
         GetBattlerPartyState(battler)->usedHeldItems[slot] = itemId; // Remember if switched out
 
-
-    // // Clear vanilla slot as a redundancy
-    // if (slot == 0)
-    //     gBattleMons[battler].item = ITEM_NONE;
+    #if TESTING
+        if (slot == 0)
+        {
+            gBattleMons[battler].item = ITEM_NONE;
+            BtlController_EmitSetMonData(battler, B_COMM_TO_CONTROLLER, REQUEST_HELDITEM_BATTLE, 0, sizeof(gBattleMons[battler].item), &gBattleMons[battler].item);
+        }
+    #endif
+    
+    //DebugPrintf("Removing item %d from slot %d", itemId, slot);
 
     gBattleMons[battler].items[slot] = ITEM_NONE;
     gBattleStruct->battlerState[battler].canPickupItem = TRUE;
@@ -13688,7 +13695,7 @@ void BS_JumpIfAbsent(void)
 
 void BS_JumpIfHoldEffect(void)
 {
-    NATIVE_ARGS(u8 battler, u8 holdEffect, const u8 *jumpInstr, u8 equal);
+    NATIVE_ARGS(u8 battler, u32 holdEffect, const u8 *jumpInstr, u8 equal);
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     if (BattlerHasHeldItemEffect(battler, cmd->holdEffect, TRUE) == cmd->equal)
     {
@@ -13716,7 +13723,7 @@ void BS_JumpIfNoAlly(void)
 
 void BS_SetLastUsedItem(void)
 {
-    NATIVE_ARGS(u8 battler, u8 holdEffect);
+    NATIVE_ARGS(u8 battler, u32 holdEffect);
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     u32 holdEffect = cmd->holdEffect;
     u32 i;
@@ -13761,6 +13768,8 @@ void BS_SetLastUsedItem(void)
         else // If battler does not have an item with the effect, set lastuseditem to none
             gLastUsedItem = ITEM_NONE;
     }
+
+    gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
 void BS_SetLastUsedItemCorrosiveFling(void)
@@ -14565,7 +14574,6 @@ void BS_TrySoak(void)
 void BS_HandleFormChange(void)
 {
     NATIVE_ARGS(u8 battler, u8 caseId, bool8 bufferSpeciesName);
-
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     if (cmd->caseId == 0) // Buffer name and emit species.
     {

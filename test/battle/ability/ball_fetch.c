@@ -38,7 +38,7 @@ WILD_BATTLE_TEST("Ball Fetch doesn't trigger if the Pokémon is already holding 
     PARAMETRIZE { item = ITEM_NUGGET; }
 
     GIVEN {
-        PLAYER(SPECIES_YAMPER) { Ability(ABILITY_BALL_FETCH); Item(item); }
+        PLAYER(SPECIES_YAMPER) { Ability(ABILITY_BALL_FETCH); Items(item, ITEM_NUGGET); }
         OPPONENT(SPECIES_METAGROSS);
     } WHEN {
         TURN { USE_ITEM(player, ITEM_GREAT_BALL, WITH_RNG(RNG_BALLTHROW_SHAKE, MAX_u16)); }

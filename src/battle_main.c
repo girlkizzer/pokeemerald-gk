@@ -3343,6 +3343,7 @@ void SwitchInClearSetData(enum BattlerId battler, struct Volatiles *volatilesCop
         u32 partyIndex = gBattlerPartyIndexes[battler];
         if (TestRunner_Battle_GetForcedAbility(trainer, partyIndex))
             gBattleMons[battler].ability = TestRunner_Battle_GetForcedAbility(trainer, partyIndex);
+        gBattleMons[battler].item = gBattleMons[battler].items[0];
     }
     #endif // TESTING
 
@@ -3553,6 +3554,7 @@ static void DoBattleIntro(void)
                     u32 partyIndex = gBattlerPartyIndexes[battler];
                     if (TestRunner_Battle_GetForcedAbility(trainer, partyIndex))
                         gBattleMons[battler].ability = TestRunner_Battle_GetForcedAbility(trainer, partyIndex);
+                    gBattleMons[battler].item = gBattleMons[battler].items[0];
                 }
                 #endif
             }
@@ -3858,6 +3860,7 @@ static void TryDoEventsBeforeFirstTurn(void)
                 u32 partyIndex = gBattlerPartyIndexes[battler];
                 if (TestRunner_Battle_GetForcedAbility(trainer, partyIndex))
                     gBattleMons[battler].ability = TestRunner_Battle_GetForcedAbility(trainer, partyIndex);
+                gBattleMons[battler].item = gBattleMons[battler].items[0];
             }
         }
         #endif // TESTING

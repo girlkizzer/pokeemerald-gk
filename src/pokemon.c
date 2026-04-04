@@ -6594,6 +6594,7 @@ u8 GetFormIdFromFormSpeciesId(u16 formSpeciesId)
 // Returns the current species if no form change is possible
 u32 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, enum FormChanges method)
 {
+    u32 i;
     u32 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
     const struct FormChange *formChanges = GetSpeciesFormChanges(species);
 
@@ -6608,6 +6609,16 @@ u32 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, enum FormChanges
         .multichoiceSelection = gSpecialVar_Result,
         .status = GetBoxMonData(boxMon, MON_DATA_STATUS),
     };
+
+    for (i = 0; i < MAX_MON_ITEMS; i++)
+        ctx.heldItems[i] = GetBoxMonData(boxMon, MON_DATA_HELD_ITEM + i);
+    for (i = 0; i < MAX_MON_TRAITS; i++)
+    {
+        if (i == 0)
+            ctx.traits[0] = GetAbilityBySpecies(species, GetBoxMonData(boxMon, MON_DATA_ABILITY_NUM));
+        else
+            ctx.traits[i] = gSpeciesInfo[ctx.currentSpecies].innates[i];
+    }
 
     return GetFormChangeTargetSpecies_Internal(ctx);
 }
@@ -6630,7 +6641,7 @@ u32 FormChangeHasItem(struct FormChangeContext ctx, enum Item item)
 
 u32 FormChangeHasTrait(struct FormChangeContext ctx, enum Ability ability)
 {
-    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
+    for (u32 i = 0; i < MAX_MON_TRAITS; i++)
     {
         if (ctx.traits[i] == ability)
             return TRUE;

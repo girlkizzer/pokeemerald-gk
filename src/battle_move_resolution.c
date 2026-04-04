@@ -1423,6 +1423,7 @@ static enum CancelerResult CancelerPriorityBlock(struct BattleContext *ctx)
 
     if (effect)
     {
+        PushTraitStack(battler, gLastUsedAbility);
         RecordAbilityBattle(battler, gLastUsedAbility); // gLastUsedAbility is set in BattlerHasDazzlingAbility
         gBattleScripting.battler = gBattlerAbility = battler;
         gBattlescriptCurrInstr = BattleScript_DazzlingProtected;
@@ -1452,9 +1453,11 @@ static enum CancelerResult CancelerProtean(struct BattleContext *ctx)
 static enum CancelerResult CancelerExplodingDamp(struct BattleContext *ctx)
 {
     u32 dampBattler = IsAbilityOnField(ABILITY_DAMP);
+
     if (dampBattler && IsMoveDampBanned(ctx->move))
     {
         gBattleScripting.battler = dampBattler - 1;
+        PushTraitStack(dampBattler - 1, ABILITY_DAMP);
         gBattlescriptCurrInstr = BattleScript_DampStopsExplosion;
         return CANCELER_RESULT_FAILURE;
     }
@@ -2137,6 +2140,7 @@ static void SetHealScript(s32 healAmount)
     {
         SetPassiveDamageAmount(gBattlerAttacker, healAmount);
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ABSORB_OOZE;
+        PushTraitStack(gBattlerTarget, ABILITY_LIQUID_OOZE);
         BattleScriptCall(BattleScript_EffectAbsorbLiquidOoze);
     }
     else if (!IsBattlerAtMaxHp(gBattlerAttacker) || GetConfig(B_ABSORB_MESSAGE) < GEN_5)

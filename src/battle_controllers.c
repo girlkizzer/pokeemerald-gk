@@ -1452,7 +1452,7 @@ static u32 GetBattlerMonData(enum BattlerId battler, struct Pokemon *party, u32 
     {
     case REQUEST_ALL_BATTLE:
         battleMon.species = GetMonData(&party[monId], MON_DATA_SPECIES);
-        battleMon.items[0] = GetMonData(&party[monId], MON_DATA_HELD_ITEM);  //Not used (Multi)
+        battleMon.item = GetMonData(&party[monId], MON_DATA_HELD_ITEM);  //Not used (Multi)
         for (size = 0; size < MAX_MON_ITEMS; size++)
             battleMon.items[size] = GetMonData(&party[monId], MON_DATA_HELD_ITEM + size);
         for (size = 0; size < MAX_MON_MOVES; size++)
@@ -1511,6 +1511,7 @@ static u32 GetBattlerMonData(enum BattlerId battler, struct Pokemon *party, u32 
             u32 partyIndex = gBattlerPartyIndexes[battler];
             if (TestRunner_Battle_GetForcedAbility(trainer, partyIndex))
                 gBattleMons[battler].ability = TestRunner_Battle_GetForcedAbility(trainer, partyIndex);
+            gBattleMons[battler].item = gBattleMons[battler].items[0];
         }
         #endif
         break;

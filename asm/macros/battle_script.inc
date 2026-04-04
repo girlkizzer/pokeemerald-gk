@@ -1734,7 +1734,7 @@
 	.macro jumpifholdeffect battler:req, holdEffect:req, jumpInstr:req, equal=TRUE
 	callnative BS_JumpIfHoldEffect
 	.byte \battler
-	.byte \holdEffect
+	.4byte \holdEffect
 	.4byte \jumpInstr
 	.byte \equal
 	.endm

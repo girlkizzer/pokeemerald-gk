@@ -4418,6 +4418,7 @@ BattleScript_WeatherAbilityActivatesContinue:
 	return
 
 BattleScript_SandSpitActivates::
+	call BattleScript_AbilityPopUp
 	printstring STRINGID_ASANDSTORMKICKEDUP
 	goto BattleScript_WeatherAbilityActivatesContinue
 
@@ -5621,10 +5622,11 @@ BattleScript_CottonDownLoopIncrement:
 	return
 
 BattleScript_AnticipationActivates::
+	pause 5
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_ANTICIPATIONACTIVATES
 	waitmessage B_WAIT_TIME_LONG
-	end3
+	return
 
 BattleScript_AftermathDmg::
 	pause B_WAIT_TIME_SHORT
@@ -5748,7 +5750,7 @@ BattleScript_PowderMoveNoEffect::
 	pause B_WAIT_TIME_SHORT
 	jumpiftype BS_SCRIPTING, TYPE_GRASS, BattleScript_PowderMoveNoEffectPrint
 	jumpifability BS_SCRIPTING, ABILITY_OVERCOAT, BattleScript_PowderMoveNoEffectOvercoat
-	setlastuseditem BS_SCRIPTING, HOLD_EFFECT_NONE
+	setlastuseditem BS_SCRIPTING, HOLD_EFFECT_SAFETY_GOGGLES
 	printstring STRINGID_SAFETYGOGGLESPROTECTED
 	goto BattleScript_PowderMoveNoEffectWaitMsg
 BattleScript_PowderMoveNoEffectOvercoat:
@@ -7030,7 +7032,7 @@ BattleScript_AttackerDownloadStatRaise::
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_AttackerDownloadStatRaise_End:
 	restoreattacker
-	end3
+	return
 
 BattleScript_AttackerAbilityStatRaise::
 	statbuffchange BS_SCRIPTING, STAT_CHANGE_ALLOW_PTR | STAT_CHANGE_ONLY_CHECKING, BattleScript_AttackerAbilityStatRaise_End
@@ -7529,7 +7531,7 @@ BattleScript_AirBalloonMsgInRet::
 BattleScript_AirBaloonIronBallMsgIn::
 	printstring STRINGID_AIRBALLOONIRON
 	waitmessage B_WAIT_TIME_LONG
-	end3
+	return
 
 BattleScript_AirBalloonMsgPop::
 	printstring STRINGID_AIRBALLOONPOP

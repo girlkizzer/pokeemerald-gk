@@ -1316,6 +1316,11 @@ static bool32 HandleEndTurnThirdEventBlock(enum BattlerId battler)
     }
     }
 
+    #if TESTING
+        if (gTestRunnerEnabled)
+            gBattleMons[battler].item = gBattleMons[battler].items[0];
+    #endif
+
     return effect;
 }
 
@@ -1364,7 +1369,7 @@ static bool32 HandleEndTurnFormChange(enum BattlerId battler)
             BattleScriptExecute(BattleScript_BattlerFormChangeEnd2); // Generic animation
         }
         else if (SearchTraits(battlerTraits, ABILITY_SHIELDS_DOWN))
-        {  
+        {
             gBattleScripting.abilityPopupOverwrite = ABILITY_SHIELDS_DOWN; // To prevent the new form's ability from pop up
             PushTraitStack(battler, ABILITY_SHIELDS_DOWN);
             BattleScriptExecute(BattleScript_BattlerFormChangeEnd2); // Generic animation
