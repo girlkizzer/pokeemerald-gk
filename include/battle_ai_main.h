@@ -130,16 +130,6 @@ enum MoveComparisonResult
 ({for (int traitLoop = 0; traitLoop < MAX_MON_TRAITS; traitLoop++)\
 {if(traitLoop == 0){AIBattlerTraits[traitLoop] = gAiLogicData->abilities[battlerID];}else{AIBattlerTraits[traitLoop] = GetBattlerTrait(battlerID, traitLoop, FALSE);}}})
 
-static inline u32 AISearchTraits(u16 *AIBattlerTraits, u32 abilityToCheck)
-{
-  for (u32 i = 0; i < MAX_MON_TRAITS; i++)
-  {
-    if (AIBattlerTraits[i] == abilityToCheck)
-      return i + 1;
-  }
-  return 0;
-}
-
 void BattleAI_SetupItems(void);
 void BattleAI_SetupFlags(void);
 void BattleAI_SetupAIData(u8 defaultScoreMoves, enum BattlerId battler);

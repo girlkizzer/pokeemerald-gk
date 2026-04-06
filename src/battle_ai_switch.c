@@ -741,7 +741,7 @@ static bool32 ShouldSwitchIfBadlyStatused(enum BattlerId battler)
     //Perish Song
     if (gBattleMons[battler].volatiles.perishSong
         && gBattleMons[battler].volatiles.perishSongTimer == 0
-        && !AISearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF)
+        && !SearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF)
         && RandomPercentage(RNG_AI_SWITCH_PERISH_SONG, GetSwitchChance(SHOULD_SWITCH_PERISH_SONG)))
         return SetSwitchinAndSwitch(battler, PARTY_SIZE);
 
@@ -765,9 +765,9 @@ static bool32 ShouldSwitchIfBadlyStatused(enum BattlerId battler)
                 switchMon = FALSE;
 
             // Checks to see if active Pokemon can do something against sleep
-            if ((AISearchTraits(AIBattlerTraits, ABILITY_NATURAL_CURE)
-                || AISearchTraits(AIBattlerTraits, ABILITY_SHED_SKIN)
-                || AISearchTraits(AIBattlerTraits, ABILITY_EARLY_BIRD))
+            if ((SearchTraits(AIBattlerTraits, ABILITY_NATURAL_CURE)
+                || SearchTraits(AIBattlerTraits, ABILITY_SHED_SKIN)
+                || SearchTraits(AIBattlerTraits, ABILITY_EARLY_BIRD))
                 || Ai_BattlerHasHoldEffect(battler, HOLD_EFFECT_CURE_SLP, gAiLogicData) || Ai_BattlerHasHoldEffect(battler, HOLD_EFFECT_CURE_STATUS, gAiLogicData)
                 || HasMoveWithEffect(battler, EFFECT_SLEEP_TALK)
                 || (HasMoveWithEffect(battler, EFFECT_SNORE) && gAiLogicData->effectiveness[battler][opposingBattler][GetBattlerMoveIndexWithEffect(battler, EFFECT_SNORE)] >= UQ_4_12(1.0))
@@ -781,10 +781,10 @@ static bool32 ShouldSwitchIfBadlyStatused(enum BattlerId battler)
             AI_STORE_BATTLER_TRAITS(opposingBattler);
 
             if (gBattleMons[battler].statStages[STAT_EVASION] > (DEFAULT_STAT_STAGE + 3)
-                && !AISearchTraits(AIBattlerTraits, ABILITY_UNAWARE)
-                && !AISearchTraits(AIBattlerTraits, ABILITY_KEEN_EYE)
-                && !AISearchTraits(AIBattlerTraits, ABILITY_MINDS_EYE)
-                && GetConfig(B_ILLUMINATE_EFFECT) >= GEN_9 && !(AISearchTraits(AIBattlerTraits, ABILITY_ILLUMINATE))
+                && !SearchTraits(AIBattlerTraits, ABILITY_UNAWARE)
+                && !SearchTraits(AIBattlerTraits, ABILITY_KEEN_EYE)
+                && !SearchTraits(AIBattlerTraits, ABILITY_MINDS_EYE)
+                && GetConfig(B_ILLUMINATE_EFFECT) >= GEN_9 && !(SearchTraits(AIBattlerTraits, ABILITY_ILLUMINATE))
                 && !gBattleMons[battler].volatiles.foresight
                 && !gBattleMons[battler].volatiles.miracleEye)
                 switchMon = FALSE;

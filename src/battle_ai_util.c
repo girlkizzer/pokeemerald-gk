@@ -3538,10 +3538,10 @@ static inline bool32 DoesBattlerBenefitFromAllVolatileStatus(enum BattlerId batt
     enum Ability AIBattlerTraits[MAX_MON_TRAITS];
     AI_STORE_BATTLER_TRAITS(battler);
 
-    if (AISearchTraits(AIBattlerTraits, ABILITY_MARVEL_SCALE)
-      || AISearchTraits(AIBattlerTraits, ABILITY_QUICK_FEET)
-      || AISearchTraits(AIBattlerTraits, ABILITY_MAGIC_GUARD)
-      || (AISearchTraits(AIBattlerTraits, ABILITY_GUTS) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_PHYSICAL))
+    if (SearchTraits(AIBattlerTraits, ABILITY_MARVEL_SCALE)
+      || SearchTraits(AIBattlerTraits, ABILITY_QUICK_FEET)
+      || SearchTraits(AIBattlerTraits, ABILITY_MAGIC_GUARD)
+      || (SearchTraits(AIBattlerTraits, ABILITY_GUTS) && HasMoveWithCategory(battler, DAMAGE_CATEGORY_PHYSICAL))
       || HasMoveWithEffect(battler, EFFECT_FACADE)
       || HasMoveWithEffect(battler, EFFECT_PSYCHO_SHIFT))
         return TRUE;    // battler can be poisoned and has move/ability that synergizes with being poisoned
@@ -4494,13 +4494,13 @@ void SetBattlerFieldStatusForSwitchin(enum BattlerId battler)
     enum Ability AIBattlerTraits[MAX_MON_TRAITS];
     AI_STORE_BATTLER_TRAITS(battler);
 
-    if (AISearchTraits(AIBattlerTraits, ABILITY_VESSEL_OF_RUIN))
+    if (SearchTraits(AIBattlerTraits, ABILITY_VESSEL_OF_RUIN))
         gBattleMons[battler].volatiles.vesselOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_SWORD_OF_RUIN))
+    if (SearchTraits(AIBattlerTraits, ABILITY_SWORD_OF_RUIN))
         gBattleMons[battler].volatiles.swordOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_TABLETS_OF_RUIN))
+    if (SearchTraits(AIBattlerTraits, ABILITY_TABLETS_OF_RUIN))
         gBattleMons[battler].volatiles.tabletsOfRuin = TRUE;
-    if (AISearchTraits(AIBattlerTraits, ABILITY_BEADS_OF_RUIN))
+    if (SearchTraits(AIBattlerTraits, ABILITY_BEADS_OF_RUIN))
         gBattleMons[battler].volatiles.beadsOfRuin = TRUE;
 }
 

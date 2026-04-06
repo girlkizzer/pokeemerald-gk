@@ -2565,87 +2565,87 @@ bool32 CanAbilityAbsorbMove(struct BattleContext *ctx)
     const u8 *battleScript = NULL;
 
     // Uses an extra check for the received ability in case the AI is trying to give a status to itself and thus should know the ability already
-    if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_VOLT_ABSORB) : SearchTraits(battlerTraits, ABILITY_VOLT_ABSORB))
+    if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_VOLT_ABSORB) : SearchTraits(battlerTraits, ABILITY_VOLT_ABSORB))
      && ctx->moveType == TYPE_ELECTRIC)
     {
         abilityDef = ABILITY_VOLT_ABSORB;
         battleScript = AbsorbedByDrainHpAbility(ctx->battlerDef);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_WATER_ABSORB) : SearchTraits(battlerTraits, ABILITY_WATER_ABSORB))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_WATER_ABSORB) : SearchTraits(battlerTraits, ABILITY_WATER_ABSORB))
      && ctx->moveType == TYPE_WATER)
     {
         abilityDef = ABILITY_WATER_ABSORB;
         battleScript = AbsorbedByDrainHpAbility(ctx->battlerDef);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN) : SearchTraits(battlerTraits, ABILITY_DRY_SKIN))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN) : SearchTraits(battlerTraits, ABILITY_DRY_SKIN))
      && ctx->moveType == TYPE_WATER)
     {
         abilityDef = ABILITY_DRY_SKIN;
         battleScript = AbsorbedByDrainHpAbility(ctx->battlerDef);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_EARTH_EATER) : SearchTraits(battlerTraits, ABILITY_EARTH_EATER))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_EARTH_EATER) : SearchTraits(battlerTraits, ABILITY_EARTH_EATER))
      && ctx->moveType == TYPE_GROUND)
     {
         abilityDef = ABILITY_EARTH_EATER;
         battleScript = AbsorbedByDrainHpAbility(ctx->battlerDef);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_MOTOR_DRIVE) : SearchTraits(battlerTraits, ABILITY_MOTOR_DRIVE))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_MOTOR_DRIVE) : SearchTraits(battlerTraits, ABILITY_MOTOR_DRIVE))
      && ctx->moveType == TYPE_ELECTRIC)
     {
         abilityDef = ABILITY_MOTOR_DRIVE;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_SPEED, 1);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_LIGHTNING_ROD) : SearchTraits(battlerTraits, ABILITY_LIGHTNING_ROD))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_LIGHTNING_ROD) : SearchTraits(battlerTraits, ABILITY_LIGHTNING_ROD))
      && GetConfig(B_REDIRECT_ABILITY_IMMUNITY) >= GEN_5 && ctx->moveType == TYPE_ELECTRIC)
     {
         abilityDef = ABILITY_LIGHTNING_ROD;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_SPATK, 1);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_STORM_DRAIN) : SearchTraits(battlerTraits, ABILITY_STORM_DRAIN))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_STORM_DRAIN) : SearchTraits(battlerTraits, ABILITY_STORM_DRAIN))
      && GetConfig(B_REDIRECT_ABILITY_IMMUNITY) >= GEN_5 && ctx->moveType == TYPE_WATER)
     {
         abilityDef = ABILITY_STORM_DRAIN;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_SPATK, 1);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_SAP_SIPPER) : SearchTraits(battlerTraits, ABILITY_SAP_SIPPER))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_SAP_SIPPER) : SearchTraits(battlerTraits, ABILITY_SAP_SIPPER))
      && ctx->moveType == TYPE_GRASS)
     {
         abilityDef = ABILITY_SAP_SIPPER;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_ATK, 1);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_WELL_BAKED_BODY) : SearchTraits(battlerTraits, ABILITY_WELL_BAKED_BODY))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_WELL_BAKED_BODY) : SearchTraits(battlerTraits, ABILITY_WELL_BAKED_BODY))
      && ctx->moveType == TYPE_FIRE)
     {
         abilityDef = ABILITY_WELL_BAKED_BODY;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_DEF, 2);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_WIND_RIDER) : SearchTraits(battlerTraits, ABILITY_WIND_RIDER))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_WIND_RIDER) : SearchTraits(battlerTraits, ABILITY_WIND_RIDER))
      && IsWindMove(ctx->move))
     {
         abilityDef = ABILITY_WIND_RIDER;
         battleScript = AbsorbedByStatIncreaseAbility(ctx->battlerDef, STAT_ATK, 1);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_FLASH_FIRE) : SearchTraits(battlerTraits, ABILITY_FLASH_FIRE))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_FLASH_FIRE) : SearchTraits(battlerTraits, ABILITY_FLASH_FIRE))
      && ctx->moveType == TYPE_FIRE && (B_FLASH_FIRE_FROZEN >= GEN_5 || !(gBattleMons[ctx->battlerDef].status1 & STATUS1_FREEZE)))
     {
         abilityDef = ABILITY_FLASH_FIRE;
         battleScript = AbsorbedByFlashFire(ctx->battlerDef);
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF) : SearchTraits(battlerTraits, ABILITY_SOUNDPROOF))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF) : SearchTraits(battlerTraits, ABILITY_SOUNDPROOF))
      && IsSoundMove(ctx->move))
     {
         abilityDef = ABILITY_SOUNDPROOF;
         PushTraitStack(ctx->battlerDef, ABILITY_SOUNDPROOF);
         battleScript = BattleScript_SoundproofProtected;
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_BULLETPROOF) : SearchTraits(battlerTraits, ABILITY_BULLETPROOF))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_BULLETPROOF) : SearchTraits(battlerTraits, ABILITY_BULLETPROOF))
      && IsBallisticMove(ctx->move))
     {
         abilityDef = ABILITY_BULLETPROOF;
         PushTraitStack(ctx->battlerDef, ABILITY_BULLETPROOF);
         battleScript = BattleScript_SoundproofProtected;
     }
-    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_GOOD_AS_GOLD) : SearchTraits(battlerTraits, ABILITY_GOOD_AS_GOLD))
+    else if ((gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_GOOD_AS_GOLD) : SearchTraits(battlerTraits, ABILITY_GOOD_AS_GOLD))
      && IsBattleMoveStatus(ctx->move))
     {
         enum MoveTarget target = GetBattlerMoveTargetType(ctx->battlerAtk, ctx->move);
@@ -5717,7 +5717,7 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         {
             battleScript = BattleScript_AlreadyPoisoned;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_IMMUNITY) : SearchTraits(battlerTraits, ABILITY_IMMUNITY))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_IMMUNITY) : SearchTraits(battlerTraits, ABILITY_IMMUNITY))
         {
             gLastUsedAbility = abilityDef = ABILITY_IMMUNITY;
             PushTraitStack(battlerDef, ABILITY_IMMUNITY);
@@ -5750,7 +5750,7 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         {
             battleScript = BattleScript_ButItFailed;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_LIMBER) : SearchTraits(battlerTraits, ABILITY_LIMBER))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_LIMBER) : SearchTraits(battlerTraits, ABILITY_LIMBER))
         {
             gLastUsedAbility = abilityDef = ABILITY_LIMBER;
             PushTraitStack(battlerDef, ABILITY_LIMBER);
@@ -5767,21 +5767,21 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         {
             battleScript = BattleScript_NotAffected;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_WATER_VEIL) : SearchTraits(battlerTraits, ABILITY_WATER_VEIL))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_WATER_VEIL) : SearchTraits(battlerTraits, ABILITY_WATER_VEIL))
         {
             gLastUsedAbility = abilityDef = ABILITY_WATER_VEIL;
             PushTraitStack(battlerDef, ABILITY_WATER_VEIL);
             abilityAffected = TRUE;
             battleScript = BattleScript_ImmunityProtected;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_WATER_BUBBLE) : SearchTraits(battlerTraits, ABILITY_WATER_BUBBLE))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_WATER_BUBBLE) : SearchTraits(battlerTraits, ABILITY_WATER_BUBBLE))
         {
             gLastUsedAbility = abilityDef = ABILITY_WATER_BUBBLE;
             PushTraitStack(battlerDef, ABILITY_WATER_BUBBLE);
             abilityAffected = TRUE;
             battleScript = BattleScript_ImmunityProtected;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_THERMAL_EXCHANGE) : SearchTraits(battlerTraits, ABILITY_THERMAL_EXCHANGE))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_THERMAL_EXCHANGE) : SearchTraits(battlerTraits, ABILITY_THERMAL_EXCHANGE))
         {
             gLastUsedAbility = abilityDef = ABILITY_THERMAL_EXCHANGE;
             PushTraitStack(battlerDef, ABILITY_THERMAL_EXCHANGE);
@@ -5806,14 +5806,14 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         {
             battleScript = BattleScript_ElectricTerrainPrevents;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_INSOMNIA) : SearchTraits(battlerTraits, ABILITY_INSOMNIA))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_INSOMNIA) : SearchTraits(battlerTraits, ABILITY_INSOMNIA))
         {
             gLastUsedAbility = abilityDef = ABILITY_INSOMNIA;
             PushTraitStack(battlerDef, ABILITY_INSOMNIA);
             abilityAffected = TRUE;
             battleScript = BattleScript_PrintAbilityMadeIneffective;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_VITAL_SPIRIT) : SearchTraits(battlerTraits, ABILITY_VITAL_SPIRIT))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_VITAL_SPIRIT) : SearchTraits(battlerTraits, ABILITY_VITAL_SPIRIT))
         {
             gLastUsedAbility = abilityDef = ABILITY_VITAL_SPIRIT;
             PushTraitStack(battlerDef, ABILITY_VITAL_SPIRIT);
@@ -5839,7 +5839,7 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         {
             battleScript = BattleScript_NotAffected;
         }
-        else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_MAGMA_ARMOR) : SearchTraits(battlerTraits, ABILITY_MAGMA_ARMOR))
+        else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_MAGMA_ARMOR) : SearchTraits(battlerTraits, ABILITY_MAGMA_ARMOR))
         {
             gLastUsedAbility = abilityDef = ABILITY_MAGMA_ARMOR;
             PushTraitStack(battlerDef, ABILITY_MAGMA_ARMOR);
@@ -5855,14 +5855,14 @@ bool32 CanSetNonVolatileStatus(enum BattlerId battlerAtk, enum BattlerId battler
         return FALSE;
 
     // Checks that apply to all non volatile statuses
-    if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_COMATOSE) : SearchTraits(battlerTraits, ABILITY_COMATOSE))
+    if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_COMATOSE) : SearchTraits(battlerTraits, ABILITY_COMATOSE))
     {
         gLastUsedAbility = abilityDef = ABILITY_COMATOSE;
         PushTraitStack(battlerDef, ABILITY_COMATOSE);
         abilityAffected = TRUE;
         battleScript = BattleScript_AbilityProtectsDoesntAffect;
     }
-    else if (gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_PURIFYING_SALT) : SearchTraits(battlerTraits, ABILITY_PURIFYING_SALT))
+    else if (gAiLogicData->aiCalcInProgress ? SearchTraits(AIBattlerTraits, ABILITY_PURIFYING_SALT) : SearchTraits(battlerTraits, ABILITY_PURIFYING_SALT))
     {
         gLastUsedAbility = abilityDef = ABILITY_PURIFYING_SALT;
         PushTraitStack(battlerDef, ABILITY_PURIFYING_SALT);
@@ -11971,7 +11971,7 @@ u32 GetSlot(u32 *availableSlots, u32 size)
     return MAX_MON_ITEMS;
     
     #if TESTING //Testing defaults to Proper Item Order 0
-    for (i = size; i >= 0; i--)
+    for (u32 i = size; i >= 0; i--)
         {
                 return availableSlots[i];
         } 
