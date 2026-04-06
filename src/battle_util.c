@@ -11967,8 +11967,6 @@ u32 GetBattlerNextEmptySlot(enum BattlerId battler, enum Item item)
 //Takes a list of valid item slots for an effect and returns a targeted slot based on preferences
 u32 GetSlot(u32 *availableSlots, u32 size)
 {
-    u32 i;
-
     if (availableSlots[0] == MAX_MON_ITEMS) //MAX_MON_ITEMS is an invalid slot
     return MAX_MON_ITEMS;
     
@@ -11982,7 +11980,7 @@ u32 GetSlot(u32 *availableSlots, u32 size)
     // Returns slot of first found item based on B_MULTI_ITEM_ORDER
     //0 = latest to earliest, 1 = earliest to latest, 2 = random
     if(B_MULTI_ITEM_ORDER == 0)
-        return gLastItemSlot = availableSlots[i];
+        return gLastItemSlot = availableSlots[size];
     else if(B_MULTI_ITEM_ORDER == 1) 
         return gLastItemSlot = availableSlots[0];
     else if(B_MULTI_ITEM_ORDER == 2)
