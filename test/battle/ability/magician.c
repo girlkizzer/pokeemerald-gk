@@ -36,7 +36,7 @@ DOUBLE_BATTLE_TEST("Magician steal the item from the fastest possible target")
     PARAMETRIZE { playerRightSpeed = 2; opponentLeftSpeed = 3; opponentRightSpeed = 4; }
 
     GIVEN {
-        PLAYER(SPECIES_DELPHOX) { Speed(1); Ability(ABILITY_MAGICIAN); Item(ITEM_NONE); }
+        PLAYER(SPECIES_DELPHOX) { Speed(1); Ability(ABILITY_MAGICIAN); Items(ITEM_NONE, ITEM_NUGGET); }
         PLAYER(SPECIES_WOBBUFFET) { Speed(playerRightSpeed); Item(ITEM_POKE_BALL); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(opponentLeftSpeed); Item(ITEM_GREAT_BALL); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(opponentRightSpeed); Item(ITEM_ULTRA_BALL); }

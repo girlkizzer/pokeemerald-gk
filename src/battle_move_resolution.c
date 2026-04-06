@@ -1086,6 +1086,7 @@ static enum CancelerResult CancelerBide(struct BattleContext *ctx)
 static enum CancelerResult CancelerMoveFailure(struct BattleContext *ctx)
 {
     const u8 *battleScript = NULL;
+    enum Ability ability = ABILITY_NONE;
 
     switch (GetMoveEffect(ctx->move))
     {
@@ -1180,15 +1181,28 @@ static enum CancelerResult CancelerMoveFailure(struct BattleContext *ctx)
         }
         break;
     case EFFECT_REST:
+        
+        if (BattlerHasTrait(ctx->battlerAtk, ABILITY_INSOMNIA))
+            ability = ABILITY_INSOMNIA;
+        else if (BattlerHasTrait(ctx->battlerAtk, ABILITY_VITAL_SPIRIT))
+            ability = ABILITY_VITAL_SPIRIT;
+        else if (BattlerHasTrait(ctx->battlerAtk, ABILITY_PURIFYING_SALT))
+            ability = ABILITY_PURIFYING_SALT;
+        else if (BattlerHasTrait(ctx->battlerAtk, ABILITY_COMATOSE))
+            ability = ABILITY_COMATOSE;
+
         if (gBattleMons[ctx->battlerAtk].status1 & STATUS1_SLEEP
-         || BattlerHasTrait(ctx->battlerAtk, ABILITY_COMATOSE))
+         || ability == ABILITY_COMATOSE)
             battleScript = BattleScript_RestIsAlreadyAsleep;
         else if (gBattleMons[ctx->battlerAtk].hp == gBattleMons[ctx->battlerAtk].maxHP)
             battleScript = BattleScript_AlreadyAtFullHp;
-        else if (BattlerHasTrait(ctx->battlerAtk, ABILITY_INSOMNIA)
-              || BattlerHasTrait(ctx->battlerAtk, ABILITY_VITAL_SPIRIT)
-              || BattlerHasTrait(ctx->battlerAtk, ABILITY_PURIFYING_SALT))
+        else if (ability == ABILITY_INSOMNIA
+              || ability == ABILITY_VITAL_SPIRIT
+              || ability == ABILITY_PURIFYING_SALT)
             battleScript = BattleScript_InsomniaProtects;
+        
+        gLastUsedAbility = ability;
+        PushTraitStack(ctx->battlerAtk, ability);
         break;
     case EFFECT_SNORE:
         if (!(gBattleMons[ctx->battlerAtk].status1 & STATUS1_SLEEP)
@@ -1690,6 +1704,11 @@ static enum CancelerResult CancelerTookAttack(struct BattleContext *ctx)
 {
     if (gSpecialStatuses[gBattlerTarget].abilityRedirected)
     {
+        // gDisplay set manually because the redirection text appears before the ability popup (Multi)
+        if (BattlerHasTrait(gBattlerTarget, ABILITY_LIGHTNING_ROD))
+            gDisplayAbility = ABILITY_LIGHTNING_ROD;
+        else if (BattlerHasTrait(gBattlerTarget, ABILITY_STORM_DRAIN))
+            gDisplayAbility = ABILITY_STORM_DRAIN;
         gSpecialStatuses[gBattlerTarget].abilityRedirected = FALSE;
         BattleScriptCall(BattleScript_TookAttack);
         return CANCELER_RESULT_BREAK;
@@ -3042,6 +3061,7 @@ static enum MoveEndResult MoveEndMoveBlock(void)
             BattleScriptCall(BattleScript_ItemSteal);
             result = MOVEEND_RESULT_RUN_SCRIPT;
         }
+        break;
     case EFFECT_HIT_SWITCH_TARGET:
         if (IsBattlerTurnDamaged(gBattlerTarget)
          && IsBattlerAlive(gBattlerTarget)
@@ -3053,6 +3073,7 @@ static enum MoveEndResult MoveEndMoveBlock(void)
 
             if (BattlerHasTrait(gBattlerTarget, ABILITY_SUCTION_CUPS))
             {
+                PushTraitStack(gBattlerTarget, ABILITY_SUCTION_CUPS);
                 BattleScriptCall(BattleScript_AbilityPreventsPhasingOutRet);
             }
             else if (gBattleMons[gBattlerTarget].volatiles.root)

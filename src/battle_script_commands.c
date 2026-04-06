@@ -4088,7 +4088,7 @@ static void Cmd_jumpifstatignorecontrary(void)
     u8 value = cmd->value;
     u8 comparison = cmd->comparison;
 
-    ret = CompareStat(battler, stat, value, comparison);
+    ret = CompareStatIgnoreContrary(battler, stat, value, comparison);
 
     if (ret)
         gBattlescriptCurrInstr = cmd->jumpInstr;

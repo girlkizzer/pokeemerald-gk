@@ -1449,7 +1449,7 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     AI_STORE_BATTLER_TRAITS(battlerAtk);
 
     switch (moveEffect)
-    {
+    {        
     case EFFECT_HIT: // only applies to Vital Throw
         if (GetBattleMovePriority(battlerAtk, move) < 0 && AI_IsFaster(battlerAtk, battlerDef, move, predictedMoveSpeedCheck, CONSIDER_PRIORITY) && aiData->hpPercents[battlerAtk] < 40)
             ADJUST_SCORE(-2);    // don't want to move last
@@ -2168,23 +2168,22 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
         break;
     case EFFECT_TRICK:
             bool32 trickcheck = FALSE;
-            
             for (i = 0; i < MAX_MON_ITEMS; i++)
             {
-                if (!((gBattleMons[battlerAtk].items[i] == ITEM_NONE && aiData->items[battlerDef][i] == ITEM_NONE)
-                || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])
-                || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, aiData->items[battlerDef][i])
-                || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, aiData->items[battlerDef][i])
-                || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
-                || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_STICKY_HOLD)
-                || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)))
+                if (!(gBattleMons[battlerAtk].items[i] == ITEM_NONE && aiData->items[battlerDef][i] == ITEM_NONE)
+                && CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])
+                && CanBattlerGetOrLoseItem(battlerAtk, battlerDef, aiData->items[battlerDef][i])
+                && CanBattlerGetOrLoseItem(battlerDef, battlerAtk, aiData->items[battlerDef][i])
+                && CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
+                && !DoesSubstituteBlockMove(battlerAtk, battlerDef, move))
                 {
                     trickcheck = TRUE;
                     break;
                 }
             }
+
             if (!trickcheck)
-            ADJUST_SCORE(-10);
+                ADJUST_SCORE(-10);
     case EFFECT_KNOCK_OFF:
     case EFFECT_CORROSIVE_GAS:
         if (AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_STICKY_HOLD))
@@ -3616,7 +3615,7 @@ static s32 AI_DoubleBattle(enum BattlerId battlerAtk, enum BattlerId battlerDef,
                     }
                 }
                 else
-                {   
+                {
                     isMoveAffectedByPartnerAbility = FALSE;
                 }
             }
@@ -3999,7 +3998,6 @@ static bool32 HasPinchBerryItemEffect(u32 battler)
 
 static bool32 DoesBattlerBenefitFromSunOrRain(enum BattlerId battler, u32 weather)
 {
-    
     if (AI_BATTLER_HAS_TRAIT(battler, ABILITY_DRY_SKIN)
      || AI_BATTLER_HAS_TRAIT(battler, ABILITY_HYDRATION)
      || AI_BATTLER_HAS_TRAIT(battler, ABILITY_RAIN_DISH)
@@ -5157,21 +5155,21 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
         break;
     case EFFECT_TRICK:
     case EFFECT_BESTOW:
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_CHOICE_SCARF, TRUE))
+        if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_CHOICE_SCARF, aiData))
         {
             ADJUST_SCORE(DECENT_EFFECT); // assume its beneficial
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_CHOICE_BAND, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_CHOICE_BAND, aiData))
         {
             if (!HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
                 ADJUST_SCORE(DECENT_EFFECT);
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_CHOICE_SPECS, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_CHOICE_SPECS, aiData))
         {
             if (!HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
                 ADJUST_SCORE(DECENT_EFFECT);
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_TOXIC_ORB, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_TOXIC_ORB, aiData))
         {
             if (!ShouldPoison(battlerAtk, battlerAtk)
              || (gBattleMons[battlerAtk].status1 & STATUS1_PSN_ANY))
@@ -5179,7 +5177,7 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                 ADJUST_SCORE(DECENT_EFFECT);
             }
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_FLAME_ORB, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_FLAME_ORB, aiData))
         {
             if (!ShouldBurn(battlerAtk, battlerAtk)
              || (gBattleMons[battlerAtk].status1 & STATUS1_BURN))
@@ -5187,29 +5185,29 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                 ADJUST_SCORE(DECENT_EFFECT);
             }
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_BLACK_SLUDGE, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_BLACK_SLUDGE, aiData))
         {
             if (!IS_BATTLER_OF_TYPE(battlerDef, TYPE_POISON) && !AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_MAGIC_GUARD))
                 ADJUST_SCORE(DECENT_EFFECT);
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_IRON_BALL, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_IRON_BALL, aiData))
         {
             if (!HasMoveWithEffect(battlerDef, EFFECT_FLING) || !AI_IsBattlerGrounded(battlerDef))
                 ADJUST_SCORE(DECENT_EFFECT);
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_LAGGING_TAIL, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_LAGGING_TAIL, aiData))
         {
             ADJUST_SCORE(DECENT_EFFECT);
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_UTILITY_UMBRELLA, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_UTILITY_UMBRELLA, aiData))
         {
-            if (!(AI_GetWeather() & B_WEATHER_SUN && !AISearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN))
+            if (!(AI_GetWeather() & B_WEATHER_SUN && AISearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN))
              && DoesBattlerBenefitFromSunOrRain(battlerDef, AI_GetWeather()))
             {
                 ADJUST_SCORE(DECENT_EFFECT);  // Remove their weather benefit
             }
         }
-        if(BattlerHasHeldItemEffect(battlerAtk, HOLD_EFFECT_EJECT_BUTTON, TRUE))
+        else if(Ai_BattlerHasHoldEffect(battlerAtk, HOLD_EFFECT_EJECT_BUTTON, aiData))
         {
             //if (!IsRaidBattle() && GetActiveGimmick(battlerDef) == GIMMICK_DYNAMAX && gNewBS->dynamaxData.timer[battlerDef] > 1 &&
             if (HasDamagingMove(battlerAtk)
@@ -5218,33 +5216,58 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                 ADJUST_SCORE(DECENT_EFFECT); // Force 'em out next turn
             }
         }
-        for (i = 0; i < MAX_MON_ITEMS; i++)
+        else if (GetMoveEffect(move) != EFFECT_BESTOW)
         {
-            if (GetMoveEffect(move) != EFFECT_BESTOW)
+            bool32 canTrick = FALSE;
+            bool32 trickChecked = FALSE;
+            for (i = 0; i < MAX_MON_ITEMS; i++)
+            {
                 if (aiData->items[battlerAtk][i] == ITEM_NONE && aiData->items[battlerDef][i] != ITEM_NONE)
                 {
-                    if(BattlerHasHeldItemEffect(battlerDef, HOLD_EFFECT_TOXIC_ORB, TRUE)){
-                        if (ShouldPoison(battlerAtk, battlerAtk))
-                            ADJUST_SCORE(DECENT_EFFECT);
-                    }
-                    if(BattlerHasHeldItemEffect(battlerDef, HOLD_EFFECT_FLAME_ORB, TRUE)){
-                        if (ShouldBurn(battlerAtk, battlerAtk))
-                            ADJUST_SCORE(DECENT_EFFECT);
-                    }
-                    if(BattlerHasHeldItemEffect(battlerDef, HOLD_EFFECT_BLACK_SLUDGE, TRUE)){
-                        if (IS_BATTLER_OF_TYPE(battlerAtk, TYPE_POISON) || AISearchTraits(AIBattlerTraits, ABILITY_MAGIC_GUARD))
-                            ADJUST_SCORE(DECENT_EFFECT);
-                    }
-                    if(BattlerHasHeldItemEffect(battlerDef, HOLD_EFFECT_IRON_BALL, TRUE)){
-                        if (HasMoveWithEffect(battlerAtk, EFFECT_FLING))
-                            ADJUST_SCORE(DECENT_EFFECT);
-                    }
-                    if(!BattlerHasHeldItemEffect(battlerDef, HOLD_EFFECT_NONE, TRUE)) //TODO: not 1-1 with vanilla code: other hold effects generally universally good
-                    {
-                        ADJUST_SCORE(WEAK_EFFECT);
-                    }
+                    canTrick = TRUE;
                     break;
                 }
+            }
+
+            if (canTrick)
+            {
+                if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_TOXIC_ORB, aiData))
+                {
+                    if (ShouldPoison(battlerAtk, battlerAtk))
+                        ADJUST_SCORE(DECENT_EFFECT);
+                    trickChecked = TRUE;
+                }
+                if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_FLAME_ORB, aiData))
+                {
+                    if (ShouldBurn(battlerAtk, battlerAtk))
+                        ADJUST_SCORE(DECENT_EFFECT);
+                    trickChecked = TRUE;
+                }
+                if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_BLACK_SLUDGE, aiData))
+                {
+                    if (IS_BATTLER_OF_TYPE(battlerAtk, TYPE_POISON) || AISearchTraits(AIBattlerTraits, ABILITY_MAGIC_GUARD))
+                        ADJUST_SCORE(DECENT_EFFECT);
+                    trickChecked = TRUE;
+                }
+                if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_IRON_BALL, aiData))
+                {
+                    if (HasMoveWithEffect(battlerAtk, EFFECT_FLING))
+                        ADJUST_SCORE(DECENT_EFFECT);
+                    trickChecked = TRUE;
+                }
+                if (Ai_BattlerHasHoldEffect(battlerDef, HOLD_EFFECT_UTILITY_UMBRELLA, aiData))
+                {
+                    if ((AI_GetWeather() & B_WEATHER_SUN) && (AISearchTraits(AIBattlerTraits, ABILITY_DRY_SKIN) || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_DRY_SKIN)))
+                        ADJUST_SCORE(DECENT_EFFECT);
+                    else if (!DoesBattlerBenefitFromSunOrRain(battlerAtk, AI_GetWeather()))
+                        ADJUST_SCORE(WEAK_EFFECT);
+                    trickChecked = TRUE;
+                }
+                if (!trickChecked) // Apply weak effect if item doesn't have notable properties
+                {
+                    ADJUST_SCORE(WEAK_EFFECT);
+                }
+            }
         }
         break;
     case EFFECT_CORROSIVE_GAS:

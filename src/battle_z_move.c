@@ -185,7 +185,7 @@ bool32 IsViableZMove(enum BattlerId battler, enum Move move)
     // Check for signature Z-Move or type-based Z-Move.
     if (BattlerHasHeldItemEffect(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE))
     {
-        u32 item = BattlerHasHeldItemEffectIgnoreAbility(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE);
+        u32 item = GetBattlerHeldItemWithEffect(battler, HOLD_EFFECT_Z_CRYSTAL, FALSE);
         enum Move zMove = GetSignatureZMove(move, gBattleMons[battler].species, item);
         if (zMove != MOVE_NONE)
             return TRUE;

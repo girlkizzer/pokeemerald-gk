@@ -2543,6 +2543,11 @@ static bool32 IsPowderMoveBlocked(struct BattleContext *ctx)
     if (ctx->runScript)
     {
         gBattlerAbility = ctx->battlerDef;
+        if (!(GetConfig(B_POWDER_GRASS) >= GEN_6 && IS_BATTLER_OF_TYPE(ctx->battlerDef, TYPE_GRASS))
+         && BattlerHasTrait(ctx->battlerDef, ABILITY_OVERCOAT))
+        {
+            PushTraitStack(ctx->battlerDef, ABILITY_OVERCOAT);
+        }
         BattleScriptCall(BattleScript_PowderMoveNoEffect);
     }
 
@@ -2626,7 +2631,7 @@ bool32 CanAbilityAbsorbMove(struct BattleContext *ctx)
         abilityDef = ABILITY_FLASH_FIRE;
         battleScript = AbsorbedByFlashFire(ctx->battlerDef);
     }
-    if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF) : SearchTraits(battlerTraits, ABILITY_SOUNDPROOF))
+    else if ((gAiLogicData->aiCalcInProgress ? AISearchTraits(AIBattlerTraits, ABILITY_SOUNDPROOF) : SearchTraits(battlerTraits, ABILITY_SOUNDPROOF))
      && IsSoundMove(ctx->move))
     {
         abilityDef = ABILITY_SOUNDPROOF;
@@ -4466,8 +4471,6 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
             effect++;
         }
         if (SearchTraits(battlerTraits, ABILITY_COTTON_DOWN)
-         && IsBattlerAlive(gBattlerAttacker)
-         && !gBattleStruct->unableToUseMove
          && IsBattlerTurnDamaged(gBattlerTarget))
         {
             gEffectBattler = gBattlerTarget;
@@ -4724,70 +4727,72 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
 
         if (SearchTraits(battlerTraits, ABILITY_MAGICIAN))
         {
-            u32 slot, i, targetableSlots[MAX_MON_ITEMS];
+            u32 slot, j, targetableSlots[MAX_MON_ITEMS];
             u32 index = 0;
-            targetableSlots[0] = MAX_MON_ITEMS; // Invalid value for first slot if no valid slots found
 
-                if (GetMoveEffect(move) != EFFECT_FLING
-                && GetMoveEffect(move) != EFFECT_NATURAL_GIFT
-                && IsBattlerAlive(battler)
-                && !gSpecialStatuses[battler].gemBoost)   // In base game, gems are consumed after magician would activate.
+            if (GetMoveEffect(move) != EFFECT_FLING
+             && GetMoveEffect(move) != EFFECT_NATURAL_GIFT
+             && IsBattlerAlive(battler)
+             && !gSpecialStatuses[battler].gemBoost) // In base game, gems are consumed after magician would activate.
+            {
+                u32 numMagicianTargets = 0;
+                u32 magicianTargets = 0;
+
+                for (enum BattlerId battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
                 {
-                    u32 numMagicianTargets = 0;
-                    u32 magicianTargets = 0;
-
-                    for (enum BattlerId battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
+                    if (gBattleMons[battlerDef].item != ITEM_NONE
+                     && battlerDef != battler
+                     && !BattlerHasHeldItem(battlerDef, ITEM_NONE, FALSE) // Skip battler early if no items to check (Multi)
+                     && IsBattlerTurnDamaged(battlerDef)
+                     && !GetBattlerPartyState(battlerDef)->isKnockedOff
+                     && !DoesSubstituteBlockMove(battler, battlerDef, move)
+                     && (!BattlerHasTrait(battlerDef, ABILITY_STICKY_HOLD) || !IsBattlerAlive(battlerDef)))
                     {
-                        for (i = 0; i < MAX_MON_ITEMS; i++) //Gather all stealable item slots
-                        {
-                            if (CanStealItem(battler, battlerDef, gBattleMons[battlerDef].items[i])
-                                && gBattleMons[battler].items[i] == ITEM_NONE
-                                && gBattleMons[battlerDef].items[i] != ITEM_NONE)
-                            {
-                                if (targetableSlots[0] != MAX_MON_ITEMS)
-                                    index++;
-                                targetableSlots[index] = i;
-                            }
-                        }
+                        magicianTargets |= 1u << battlerDef;
+                        numMagicianTargets++;
+                    }
+                }
 
-                        if (targetableSlots[0] != MAX_MON_ITEMS)
-                        {
-                        
-                            slot = gLastItemSlot = GetSlot(targetableSlots, index);
+                if (numMagicianTargets == 0)
+                {
+                    effect = FALSE;
+                    break;
+                }
 
-                            if (battlerDef != battler
-                            && IsBattlerTurnDamaged(battlerDef)
-                            && !GetBattlerPartyState(battlerDef)->isKnockedOff
-                            && !DoesSubstituteBlockMove(battler, battlerDef, move)
-                            && (!BattlerHasTrait(battlerDef, ABILITY_STICKY_HOLD) || !IsBattlerAlive(battlerDef)))
-                            {
-                                magicianTargets |= 1u << battlerDef;
-                                numMagicianTargets++;
-                            }
-                        }
+                enum BattlerId battlers[MAX_BATTLERS_COUNT] = {0, 1, 2, 3};
+                if (numMagicianTargets > 1)
+                    SortBattlersBySpeed(battlers, FALSE);
 
-                    if (numMagicianTargets != 0)
+                for (u32 i = 0; i < gBattlersCount; i++)
+                {
+                    enum BattlerId targetBattler = battlers[i];
+                    if (!(magicianTargets & 1u << targetBattler))
+                        continue;
+
+                    for (j = 0; j < MAX_MON_ITEMS; j++)
+                        targetableSlots[j] = MAX_MON_ITEMS; //clear targetableSlots for each battler
+
+                    for (j = 0; j < MAX_MON_ITEMS; j++) //Gather all stealable item slots
                     {
-                        enum BattlerId battlers[MAX_BATTLERS_COUNT] = {0, 1, 2, 3};
-                        if (numMagicianTargets > 1)
-                            SortBattlersBySpeed(battlers, FALSE);
-
-                        for (u32 i = 0; i < gBattlersCount; i++)
+                        if (CanStealItem(battler, targetBattler, gBattleMons[targetBattler].items[j])
+                            && gBattleMons[battler].items[j] == ITEM_NONE
+                            && gBattleMons[targetBattler].items[j] != ITEM_NONE)
                         {
-                            enum BattlerId targetBattler = battlers[i];
-
-                            if (!(magicianTargets & 1u << targetBattler))
-                                continue;
-
-                                gLastUsedAbility = ABILITY_MAGICIAN;
-                                StealTargetItem(battler, targetBattler, slot);
-                                gBattlerAbility = battler;
-                                gEffectBattler = targetBattler;
-                                PushTraitStack(battler, ABILITY_MAGICIAN);
-                                BattleScriptCall(BattleScript_MagicianActivates);
-                                effect = TRUE;
-                                break; // found target to steal from
+                            if (targetableSlots[0] != MAX_MON_ITEMS)
+                                index++;
+                            targetableSlots[index] = j;
                         }
+                    }
+
+                    if (targetableSlots[0] != MAX_MON_ITEMS)
+                    {
+                        slot = gLastItemSlot = GetSlot(targetableSlots, index);
+                        StealTargetItem(battler, targetBattler, slot);
+                        gBattlerAbility = battler;
+                        gEffectBattler = targetBattler;
+                        PushTraitStack(battler, ABILITY_MAGICIAN);
+                        BattleScriptCall(BattleScript_MagicianActivates);
+                        effect = TRUE;
                     }
                 }
             }
@@ -5146,7 +5151,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
                 gBattleMons[battler].volatiles.weatherAbilityDone = TRUE;
             }
 
-            if (((!gBattleMons[battler].volatiles.transformWeatherAbilityDone && battlerWeatherAffected)
+            if (((!gBattleMons[battler].volatiles.weatherAbilityDone && battlerWeatherAffected)
              || gBattleWeather == B_WEATHER_NONE
              || !HasWeatherEffect()) // Air Lock active
              && TryBattleFormChange(battler, FORM_CHANGE_BATTLE_WEATHER))
@@ -7053,7 +7058,8 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct BattleContext *ctx)
         else if (AreBattlersOfOppositeGender(battlerAtk, battlerDef))
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.75));
     }
-    if (SearchTraits(battlerTraits, ABILITY_ANALYTIC) && moveEffect != EFFECT_FUTURE_SIGHT)
+    if (SearchTraits(battlerTraits, ABILITY_ANALYTIC)
+     && IsLastMonToMove(battlerAtk) && moveEffect != EFFECT_FUTURE_SIGHT)
         modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
     if (SearchTraits(battlerTraits, ABILITY_TOUGH_CLAWS) && IsMoveMakingContact(battlerAtk, battlerDef, ctx->move))
         modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
@@ -8024,38 +8030,35 @@ static inline uq4_12_t GetAttackerItemsModifier(enum BattlerId battlerAtk, uq4_1
 
 static inline uq4_12_t GetDefenderItemsModifier(struct BattleContext *ctx)
 {
-    u32 battlerDef = ctx->battlerDef;
-    u32 moveType = ctx->moveType; // Becomes secondary type for dual type moves and type changes
     u32 itemDef = ITEM_NONE;
 
     for (int i = 0; i < MAX_MON_ITEMS; i++)
     {
-        if (GetItemHoldEffect(gBattleMons[battlerDef].items[i]) == HOLD_EFFECT_RESIST_BERRY)
+        if (GetItemHoldEffect(gBattleMons[ctx->battlerDef].items[i]) == HOLD_EFFECT_RESIST_BERRY)
         {
             //If B_FLYING_PRESS_RESIST is TRUE, included the second type of dual type moves like Flying Press in the check.
-            if ((GetBattlerItemHoldEffectParam(battlerDef, gBattleMons[battlerDef].items[i]) == GetMoveType(ctx->move)
+            if ((GetBattlerItemHoldEffectParam(ctx->battlerDef, gBattleMons[ctx->battlerDef].items[i]) == ctx->moveType
              || (B_FLYING_PRESS_RESIST == (GetMoveEffect(ctx->move) == EFFECT_TWO_TYPED_MOVE) //Logic for dual type moves
-             && GetBattlerItemHoldEffectParam(battlerDef, gBattleMons[battlerDef].items[i]) == moveType)))
+             && GetBattlerItemHoldEffectParam(ctx->battlerDef, gBattleMons[ctx->battlerDef].items[i]) == ctx->moveType)))
             {
-                itemDef = GetSlotHeldItem(battlerDef, i, TRUE);
+                itemDef = GetSlotHeldItem(ctx->battlerDef, i, TRUE);
                 break;
             }
         }
     }
     if(itemDef != ITEM_NONE)
     {
-        if (IsUnnerveBlocked(battlerDef, itemDef))
+        if (IsUnnerveBlocked(ctx->battlerDef, itemDef))
             return UQ_4_12(1.0);
-        if ((moveType == TYPE_NORMAL || ctx->typeEffectivenessModifier >= UQ_4_12(2.0)))
-        {
+        if ((ctx->moveType == TYPE_NORMAL || ctx->typeEffectivenessModifier >= UQ_4_12(2.0)))
+        {ctx->updateFlags = TRUE;
             if (ctx->updateFlags)
             {
-                gSpecialStatuses[battlerDef].berryReduced = TRUE;
-                gSpecialStatuses[battlerDef].berryReducedType = GetBattlerItemHoldEffectParam(battlerDef, itemDef); //prevents multiple reduction berry activations and transfers hiddenpower type to eating function
-                if (ctx->aiCalc && AI_DAMAGES_THROUGH_BERRIES)
-                    ctx->aiCheckBerryModifier = TRUE;
+                gSpecialStatuses[ctx->battlerDef].berryReduced = TRUE;
+                gSpecialStatuses[ctx->battlerDef].berryReducedType = GetBattlerItemHoldEffectParam(ctx->battlerDef, itemDef); //prevents multiple reduction berry activations and transfers hiddenpower type to eating function
             }
-
+            if (ctx->aiCalc && AI_DAMAGES_THROUGH_BERRIES)
+                ctx->aiCheckBerryModifier = TRUE;
             return (BattlerHasTrait(ctx->battlerDef, ABILITY_RIPEN)) ? UQ_4_12(0.25) : UQ_4_12(0.5);
         }
     }
@@ -9921,6 +9924,45 @@ bool32 CompareStat(enum BattlerId battler, enum Stat statId, u32 cmpTo, u32 cmpK
     return ret;
 }
 
+bool32 CompareStatIgnoreContrary(enum BattlerId battler, enum Stat statId, u32 cmpTo, u32 cmpKind)
+{
+    bool32 ret = FALSE;
+    u32 statValue = gBattleMons[battler].statStages[statId];
+
+    // Because this command is used as a way of checking if a stat can be lowered/raised,
+    // we need to do some modification at run-time.
+
+    switch (cmpKind)
+    {
+    case CMP_EQUAL:
+        if (statValue == cmpTo)
+            ret = TRUE;
+        break;
+    case CMP_NOT_EQUAL:
+        if (statValue != cmpTo)
+            ret = TRUE;
+        break;
+    case CMP_GREATER_THAN:
+        if (statValue > cmpTo)
+            ret = TRUE;
+        break;
+    case CMP_LESS_THAN:
+        if (statValue < cmpTo)
+            ret = TRUE;
+        break;
+    case CMP_COMMON_BITS:
+        if (statValue & cmpTo)
+            ret = TRUE;
+        break;
+    case CMP_NO_COMMON_BITS:
+        if (!(statValue & cmpTo))
+            ret = TRUE;
+        break;
+    }
+
+    return ret;
+}
+
 bool32 BlocksPrankster(enum Move move, enum BattlerId battlerPrankster, enum BattlerId battlerDef, bool32 checkTarget)
 {
     if (GetConfig(B_PRANKSTER_DARK_TYPES) < GEN_7)
@@ -11300,7 +11342,7 @@ bool32 IsUsableWhileAsleepEffect(enum BattleMoveEffects effect)
 void SetWrapTurns(enum BattlerId battler)
 {
     u32 normalWrapTurns = B_WRAP_TURNS - 2; // 5 turns
-    if (BattlerHasHeldItemEffect(battler, HOLD_EFFECT_GRIP_CLAW, TRUE))
+    if (BattlerHasHeldItemEffect(gBattlerAttacker, HOLD_EFFECT_GRIP_CLAW, TRUE))
         gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? B_WRAP_TURNS : normalWrapTurns;
     else
         gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? RandomUniform(RNG_WRAP, 4, normalWrapTurns) : RandomUniform(RNG_WRAP, 2, normalWrapTurns);
@@ -11939,9 +11981,8 @@ u32 GetSlot(u32 *availableSlots, u32 size)
     
     // Returns slot of first found item based on B_MULTI_ITEM_ORDER
     //0 = latest to earliest, 1 = earliest to latest, 2 = random
-    if(B_MULTI_ITEM_ORDER == 0) 
-        for (i = size; i >= 0; i--)
-            return gLastItemSlot = availableSlots[i];
+    if(B_MULTI_ITEM_ORDER == 0)
+        return gLastItemSlot = availableSlots[i];
     else if(B_MULTI_ITEM_ORDER == 1) 
         return gLastItemSlot = availableSlots[0];
     else if(B_MULTI_ITEM_ORDER == 2)

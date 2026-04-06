@@ -5754,7 +5754,6 @@ BattleScript_PowderMoveNoEffect::
 	printstring STRINGID_SAFETYGOGGLESPROTECTED
 	goto BattleScript_PowderMoveNoEffectWaitMsg
 BattleScript_PowderMoveNoEffectOvercoat:
-	pushtraitstack BS_TARGET ABILITY_OVERCOAT
 	call BattleScript_AbilityPopUp
 BattleScript_PowderMoveNoEffectPrint:
 	printstring STRINGID_SCR_ITDOESNTAFFECT
