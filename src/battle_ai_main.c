@@ -2596,15 +2596,15 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
 
             for (i = 0; i < MAX_MON_ITEMS; i++)
             {
-                if (gBattleMons[battlerAtk].items[i] == ITEM_NONE
-                 || aiData->items[battlerDef][i] != ITEM_NONE
-                 || !CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])    // AI knows its own item
-                 || !CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
-                    || DoesSubstituteBlockMove(battlerAtk, battlerDef, move))
-                    {
-                        hasValidSlot = TRUE;
-                        break;
-                    }
+                if (gBattleMons[battlerAtk].items[i] != ITEM_NONE
+                 && aiData->items[battlerDef][i] == ITEM_NONE
+                 && CanBattlerGetOrLoseItem(battlerAtk, battlerDef, gBattleMons[battlerAtk].items[i])    // AI knows its own item
+                 && CanBattlerGetOrLoseItem(battlerDef, battlerAtk, gBattleMons[battlerAtk].items[i])
+                 && !DoesSubstituteBlockMove(battlerAtk, battlerDef, move))
+                {
+                    hasValidSlot = TRUE;
+                    break;
+                }
             }
 
             if (!hasValidSlot)
@@ -5263,9 +5263,9 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                         ADJUST_SCORE(WEAK_EFFECT);
                     trickChecked = TRUE;
                 }
-                if (!trickChecked) // Apply weak effect if item doesn't have notable properties
+                if (!trickChecked)
                 {
-                    ADJUST_SCORE(WEAK_EFFECT);
+                    ADJUST_SCORE(WEAK_EFFECT);    //other hold effects generally universally good
                 }
             }
         }

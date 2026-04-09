@@ -18,7 +18,7 @@
 #define MAX_TRAINER_ITEMS 4
 #define PARTY_SIZE 255
 #define MAX_MON_MOVES 4
-#define MAX_MON_ITEMS 2
+#define MAX_MON_ITEMS 2 // Separate from the battle_util MAX_MON_ITEMS option.
 #define MAX_MON_TAGS 32
 #define STARTING_STATUS_COUNT 64
 int excludedSlots[MAX_MON_ITEMS] = {}; //Used to designate slots that should not auto populate with form specific held items.  Only needed when using slot categories.

@@ -175,7 +175,7 @@ struct AI_SavedBattleMon
 {
     enum Ability ability;
     enum Move moves[MAX_MON_MOVES];
-    u16 heldItem[MAX_MON_ITEMS];
+    u16 heldItem[MAX_MON_ITEMS_INTERNAL];
     u16 species:15;
     u16 saved:1;
     enum Type types[3];
@@ -184,8 +184,8 @@ struct AI_SavedBattleMon
 struct AiPartyMon
 {
     u16 species;
-    enum Item items[MAX_MON_ITEMS];
-    enum HoldEffect heldEffects[MAX_MON_ITEMS];
+    enum Item items[MAX_MON_ITEMS_INTERNAL];
+    enum HoldEffect heldEffects[MAX_MON_ITEMS_INTERNAL];
     enum Ability ability;
     u16 level;
     enum Move moves[MAX_MON_MOVES];
@@ -215,9 +215,9 @@ struct AiLogicData
 {
     enum Ability abilities[MAX_BATTLERS_COUNT];
     enum Ability innates[MAX_BATTLERS_COUNT][MAX_MON_INNATES];
-    enum Item items[MAX_BATTLERS_COUNT][MAX_MON_ITEMS];
-    enum HoldEffect holdEffects[MAX_BATTLERS_COUNT][MAX_MON_ITEMS];
-    u8 holdEffectParams[MAX_BATTLERS_COUNT][MAX_MON_ITEMS];
+    enum Item items[MAX_BATTLERS_COUNT][MAX_MON_ITEMS_INTERNAL];
+    enum HoldEffect holdEffects[MAX_BATTLERS_COUNT][MAX_MON_ITEMS_INTERNAL];
+    u8 holdEffectParams[MAX_BATTLERS_COUNT][MAX_MON_ITEMS_INTERNAL];
     enum Move lastUsedMove[MAX_BATTLERS_COUNT];
     u8 hpPercents[MAX_BATTLERS_COUNT];
     enum Move partnerMove;
@@ -262,13 +262,13 @@ struct AiThinkingStruct
 struct BattleHistory
 {
     enum Ability abilities[MAX_BATTLERS_COUNT];
-    u8 itemEffects[MAX_BATTLERS_COUNT][MAX_MON_ITEMS];
+    u8 itemEffects[MAX_BATTLERS_COUNT][MAX_MON_ITEMS_INTERNAL];
     u16 usedMoves[MAX_BATTLERS_COUNT][MAX_MON_MOVES];
     u16 moveHistory[MAX_BATTLERS_COUNT][AI_MOVE_HISTORY_COUNT]; // 3 last used moves for each battler
     u8 moveHistoryIndex[MAX_BATTLERS_COUNT];
     u16 trainerItems[MAX_BATTLERS_COUNT];
     u8 itemsNo;
-    u16 heldItem[MAX_BATTLERS_COUNT][MAX_MON_ITEMS];
+    u16 heldItem[MAX_BATTLERS_COUNT][MAX_MON_ITEMS_INTERNAL];
 };
 
 struct BattleScriptsStack
@@ -529,7 +529,7 @@ struct PartyState
     u32 sentOut:1;
     u32 isKnockedOff:1;
     u32 padding:8;
-    u16 usedHeldItems[MAX_MON_ITEMS];
+    u16 usedHeldItems[MAX_MON_ITEMS_INTERNAL];
 };
 
 struct EventStates

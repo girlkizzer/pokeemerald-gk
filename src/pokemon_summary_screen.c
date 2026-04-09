@@ -100,7 +100,7 @@
 
 // Dynamic fields for the Pokémon Skills page
 #define PSS_DATA_WINDOW_SKILLS_HELD_ITEM 0
-#define PSS_DATA_WINDOW_SKILLS_HELD_ITEM_2 1
+#define PSS_DATA_WINDOW_SKILLS_RIBBON_ITEM_2 1
 #define PSS_DATA_WINDOW_SKILLS_STATS_LEFT 2 // HP, Attack, Defense
 #define PSS_DATA_WINDOW_SKILLS_STATS_RIGHT 3 // Sp. Attack, Sp. Defense, Speed
 #define PSS_DATA_WINDOW_EXP 4 // Exp, next level
@@ -163,7 +163,7 @@ static EWRAM_DATA struct PokemonSummaryScreenData
         u16 spatk; // 0x28
         u16 spdef; // 0x2A
         u16 speed; // 0x2C
-        enum Item item[MAX_MON_ITEMS]; // 0x2E
+        enum Item item[MAX_MON_ITEMS_INTERNAL]; // 0x2E
         u16 friendship; // 0x30
         u8 OTGender; // 0x32
         u8 nature; // 0x33
@@ -282,7 +282,7 @@ static void PrintEggState(void);
 static void PrintEggMemo(void);
 static void Task_PrintSkillsPage(u8);
 static void PrintHeldItemName(void);
-static void PrintHeldItemName2(void);
+static void PrintHeldRibbonItem2(void);
 static void PrintSkillsPageText(void);
 static void BufferLeftColumnStats(void);
 static void PrintLeftColumnStats(void);
@@ -671,45 +671,48 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .baseBlock = 575 + offset,
     },
 };
-static const struct WindowTemplate sPageTraitsTemplate[] =
-{
-	[PSS_DATA_WINDOW_TRAITS1] = {
-		.bg = 0,
-		.tilemapLeft = 11,
-		.tilemapTop = 4,
-		.width = 18,
-		.height = 4,
-		.paletteNum = 6,
-		.baseBlock = 467 + offset,  
-	},
-    [PSS_DATA_WINDOW_TRAITS2] = {
-		.bg = 0,
-		.tilemapLeft = 11,
-		.tilemapTop = 8,
-		.width = 18,
-		.height = 4,
-		.paletteNum = 6,
-		.baseBlock = 539 + offset,
-	},
-    [PSS_DATA_WINDOW_TRAITS3] = {
-		.bg = 0,
-		.tilemapLeft = 11,
-		.tilemapTop = 12,
-		.width = 18,
-		.height = 4,
-		.paletteNum = 6,
-		.baseBlock = 611 + offset,
-	},
-    [PSS_DATA_WINDOW_TRAITS4] = {
-		.bg = 0,
-		.tilemapLeft = 11,
-		.tilemapTop = 16,
-		.width = 18,
-		.height = 4,
-		.paletteNum = 6,
-		.baseBlock = 683 + offset,
-	},
-};
+
+#if MAX_MON_TRAITS > 1
+    static const struct WindowTemplate sPageTraitsTemplate[] =
+    {
+        [PSS_DATA_WINDOW_TRAITS1] = {
+            .bg = 0,
+            .tilemapLeft = 11,
+            .tilemapTop = 4,
+            .width = 18,
+            .height = 4,
+            .paletteNum = 6,
+            .baseBlock = 467 + offset,  
+        },
+        [PSS_DATA_WINDOW_TRAITS2] = {
+            .bg = 0,
+            .tilemapLeft = 11,
+            .tilemapTop = 8,
+            .width = 18,
+            .height = 4,
+            .paletteNum = 6,
+            .baseBlock = 539 + offset,
+        },
+        [PSS_DATA_WINDOW_TRAITS3] = {
+            .bg = 0,
+            .tilemapLeft = 11,
+            .tilemapTop = 12,
+            .width = 18,
+            .height = 4,
+            .paletteNum = 6,
+            .baseBlock = 611 + offset,
+        },
+        [PSS_DATA_WINDOW_TRAITS4] = {
+            .bg = 0,
+            .tilemapLeft = 11,
+            .tilemapTop = 16,
+            .width = 18,
+            .height = 4,
+            .paletteNum = 6,
+            .baseBlock = 683 + offset,
+        },
+    };
+#endif
 static const struct WindowTemplate sPageSkillsTemplate[] =
 {
     [PSS_DATA_WINDOW_SKILLS_HELD_ITEM] = {
@@ -721,7 +724,7 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
         .paletteNum = 6,
         .baseBlock = 467 + offset,
     },
-    [PSS_DATA_WINDOW_SKILLS_HELD_ITEM_2] = {
+    [PSS_DATA_WINDOW_SKILLS_RIBBON_ITEM_2] = {
         .bg = 0,
         .tilemapLeft = 20,
         .tilemapTop = 4,
@@ -813,7 +816,9 @@ static const u8 sButtons_Gfx[][4 * TILE_SIZE_4BPP] = {
 static void (*const sTextPrinterFunctions[])(void) =
 {
     [PSS_PAGE_INFO] = PrintInfoPageText,
-    [PSS_PAGE_TRAITS] = PrintTraits,
+    #if MAX_MON_TRAITS > 1
+	    [PSS_PAGE_TRAITS] = PrintTraits,
+    #endif
     [PSS_PAGE_SKILLS] = PrintSkillsPageText,
     [PSS_PAGE_BATTLE_MOVES] = PrintBattleMoves,
     [PSS_PAGE_CONTEST_MOVES] = PrintContestMoves
@@ -822,7 +827,9 @@ static void (*const sTextPrinterFunctions[])(void) =
 static const TaskFunc sTextPrinterTasks[] =
 {
     [PSS_PAGE_INFO] = Task_PrintInfoPage,
-    [PSS_PAGE_TRAITS] = Task_PrintTraits,
+    #if MAX_MON_TRAITS > 1
+        [PSS_PAGE_TRAITS] = Task_PrintTraits,
+    #endif
     [PSS_PAGE_SKILLS] = Task_PrintSkillsPage,
     [PSS_PAGE_BATTLE_MOVES] = Task_PrintBattleMoves,
     [PSS_PAGE_CONTEST_MOVES] = Task_PrintContestMoves
@@ -1513,7 +1520,9 @@ static bool8 DecompressGraphics(void)
         sMonSummaryScreen->switchCounter++;
         break;
     case 3:
+    #if MAX_MON_TRAITS > 1
         DecompressDataWithHeaderWram(gSummaryPage_Traits_Tilemap, sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_TRAITS][1]);
+    #endif
         sMonSummaryScreen->switchCounter++;
         break;
     case 4:
@@ -3920,69 +3929,70 @@ static void PrintEggMemo(void)
 
     PrintTextOnWindow(AddWindowFromTemplateList(sPageInfoTemplate, PSS_DATA_WINDOW_INFO_MEMO), text, 0, 1, 0, 0);
 }
-
-static void PrintTraits(void)
-{
-    PrintMonTraits(0);
-    PrintMonTraits(1);
-    PrintMonTraits(2);
-    PrintMonTraits(3);
-}
-
-static void Task_PrintTraits(u8 taskId)
-{
-    s16* data = gTasks[taskId].data;
-
-    switch (data[0])
+#if MAX_MON_TRAITS > 1
+    static void PrintTraits(void)
     {
-    case 1:
         PrintMonTraits(0);
-        break;
-    case 2:
         PrintMonTraits(1);
-        break;
-    case 3:
         PrintMonTraits(2);
-        break;
-    case 4:
         PrintMonTraits(3);
-        break;
-    case 5:
-        DestroyTask(taskId);
-        return;
     }
-    data[0]++;
-}
 
-static void PrintMonTraits(u8 innateIndex)
-{
-    u16 trait = 0;
-    struct PokeSummary* sum = &sMonSummaryScreen->summary;
-
-    if (innateIndex == 0)
-        trait = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
-    else if (innateIndex <= MAX_MON_INNATES)
-        trait = gSpeciesInfo[sum->species].innates[innateIndex-1];
-        
-    int x = GetStringRightAlignXOffset(FONT_NORMAL, gAbilitiesInfo[trait].name, 18*8);
-
-    if (trait == 0)
+    static void Task_PrintTraits(u8 taskId)
     {
-        StringCopy(gStringVar1, gText_Blank);
-        PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gStringVar1, x, 1, 0, 1);
-        PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gStringVar1, 0, 17, 0, 0);
+        s16* data = gTasks[taskId].data;
+
+        switch (data[0])
+        {
+        case 1:
+            PrintMonTraits(0);
+            break;
+        case 2:
+            PrintMonTraits(1);
+            break;
+        case 3:
+            PrintMonTraits(2);
+            break;
+        case 4:
+            PrintMonTraits(3);
+            break;
+        case 5:
+            DestroyTask(taskId);
+            return;
+        }
+        data[0]++;
     }
-    else
+
+    static void PrintMonTraits(u8 innateIndex)
     {
-        PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gAbilitiesInfo[trait].name, x, 1, 0, 1);
-        PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gAbilitiesInfo[trait].description, 0, 17, 0, 0);
+        u16 trait = 0;
+        struct PokeSummary* sum = &sMonSummaryScreen->summary;
+
+        if (innateIndex == 0)
+            trait = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
+        else if (innateIndex <= MAX_MON_INNATES)
+            trait = gSpeciesInfo[sum->species].innates[innateIndex-1];
+            
+        int x = GetStringRightAlignXOffset(FONT_NORMAL, gAbilitiesInfo[trait].name, 18*8);
+
+        if (trait == 0)
+        {
+            StringCopy(gStringVar1, gText_Blank);
+            PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gStringVar1, x, 1, 0, 1);
+            PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gStringVar1, 0, 17, 0, 0);
+        }
+        else
+        {
+            PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gAbilitiesInfo[trait].name, x, 1, 0, 1);
+            PrintTextOnWindow(AddWindowFromTemplateList(sPageTraitsTemplate, innateIndex), gAbilitiesInfo[trait].description, 0, 17, 0, 0);
+        }
     }
-}
+#endif
 
 static void PrintSkillsPageText(void)
 {
     PrintHeldItemName();
-    PrintHeldItemName2();
+    PrintHeldRibbonItem2();
     if (ShouldShowIvEvPrompt())
         ShowUtilityPrompt(SUMMARY_SKILLS_MODE_STATS);
     BufferLeftColumnStats();
@@ -4002,7 +4012,7 @@ static void Task_PrintSkillsPage(u8 taskId)
         PrintHeldItemName();
         break;
     case 2:
-        PrintHeldItemName2();
+        PrintHeldRibbonItem2();
         break;
     case 3:
         ChangeStatLabel(SUMMARY_SKILLS_MODE_STATS);
@@ -4068,33 +4078,49 @@ static inline void TruncateToFirstWordOnly(u8 *str)
     }
 }
 
-static void PrintHeldItemName2(void)
+static void PrintHeldRibbonItem2(void)
 {
     const u8 *text;
-    u32 fontId;
     int x;
 
-    if (sMonSummaryScreen->summary.item[1] == ITEM_ENIGMA_BERRY_E_READER
-        && IsMultiBattle() == TRUE
-        && (sMonSummaryScreen->curMonIndex == 1 || sMonSummaryScreen->curMonIndex == 4 || sMonSummaryScreen->curMonIndex == 5))
-    {
-        text = GetItemName(ITEM_ENIGMA_BERRY_E_READER);
-    }
-    else if (sMonSummaryScreen->summary.item[1] == ITEM_NONE)
-    {
-        text = gText_None;
-    }
-    else
-    {
-        CopyItemName(sMonSummaryScreen->summary.item[1], gStringVar1);
-        //TruncateToFirstWordOnly(gStringVar1);  // Truncate to first word, can be used for a Berry exclusive item slot since they all end with "Berry"
-        text = gStringVar1;
-        
-    }
+    #if MAX_MON_ITEMS <= 1
+        if (sMonSummaryScreen->summary.ribbonCount == 0)
+        {
+            text = gText_None;
+        }
+        else
+        {
+            ConvertIntToDecimalStringN(gStringVar1, sMonSummaryScreen->summary.ribbonCount, STR_CONV_MODE_RIGHT_ALIGN, 2);
+            StringExpandPlaceholders(gStringVar4, gText_RibbonsVar1);
+            text = gStringVar4;
+        }
 
-    fontId = GetFontIdToFit(text, FONT_NORMAL, 0, WindowTemplateWidthPx(&sPageSkillsTemplate[PSS_DATA_WINDOW_SKILLS_HELD_ITEM_2]) - 8);
-    x = GetStringCenterAlignXOffset(fontId, text, 72) + 6;
-    PrintTextOnWindowWithFont(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_HELD_ITEM_2), text, x, 1, 0, 0, fontId);
+        x = GetStringCenterAlignXOffset(FONT_NORMAL, text, 70) + 6;
+        PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_RIBBON_ITEM_2), text, x, 1, 0, 0);
+    #else
+        u32 fontId;
+        if (sMonSummaryScreen->summary.item[1] == ITEM_ENIGMA_BERRY_E_READER
+            && IsMultiBattle() == TRUE
+            && (sMonSummaryScreen->curMonIndex == 1 || sMonSummaryScreen->curMonIndex == 4 || sMonSummaryScreen->curMonIndex == 5))
+        {
+            text = GetItemName(ITEM_ENIGMA_BERRY_E_READER);
+        }
+        else if (sMonSummaryScreen->summary.item[1] == ITEM_NONE)
+        {
+            text = gText_None;
+        }
+        else
+        {
+            CopyItemName(sMonSummaryScreen->summary.item[1], gStringVar1);
+            //TruncateToFirstWordOnly(gStringVar1);  // Truncate to first word, can be used for a Berry exclusive item slot since they all end with "Berry"
+            text = gStringVar1;
+            
+        }
+
+        fontId = GetFontIdToFit(text, FONT_NORMAL, 0, WindowTemplateWidthPx(&sPageSkillsTemplate[PSS_DATA_WINDOW_SKILLS_RIBBON_ITEM_2]) - 8);
+        x = GetStringCenterAlignXOffset(fontId, text, 72) + 6;
+        PrintTextOnWindowWithFont(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_RIBBON_ITEM_2), text, x, 1, 0, 0, fontId);
+    #endif
 }
 
 static void BufferStat(u8 *dst, enum Stat statIndex, u32 stat, u32 strId, u32 n)

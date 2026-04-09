@@ -134,10 +134,11 @@ enum FrontierLevelMode
 #define TRAINER_ID_LENGTH 4
 #define MAX_MON_MOVES 4
 #define ALL_MOVES_MASK ((1 << MAX_MON_MOVES) - 1)
-#define MAX_MON_INNATES 3 // The max number of Innates that are enabled in gameplay
+#define MAX_MON_INNATES 3 // The max number of Innates that are enabled in gameplay. Could be altered in game if you add an option for it.
 #define MAX_MON_INNATES_INTERNAL 3 // The max number of Innates that a pokemon can have in the species definition lists.
 #define MAX_MON_TRAITS (MAX_MON_INNATES + 1) // The max number of Innates with Abilities included
-#define MAX_MON_ITEMS 2 // Number of items that can be held by a pokemon (Must be greater than 1 for this standalone branch)
+#define MAX_MON_ITEMS 2 // Number of items that can be held by a pokemon during gameplay (Must be at least 1)
+#define MAX_MON_ITEMS_INTERNAL 2 // Max number of Items that pokemon can have in code, currently minimum 2 to accomodate minimum multi item variable definitions.
 
 #define CONTESTANT_COUNT 4
 

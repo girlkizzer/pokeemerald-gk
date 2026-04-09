@@ -2370,7 +2370,7 @@ void Item_(u32 sourceLine, u32 item)
     }
 }
 
-void Items_(u32 sourceLine, u32 items[MAX_MON_ITEMS])
+void Items_(u32 sourceLine, u32 items[MAX_MON_ITEMS_INTERNAL])
 {
     s32 i;
     INVALID_IF(!DATA.currentMon, "Item outside of PLAYER/OPPONENT");

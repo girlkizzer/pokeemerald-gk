@@ -361,7 +361,7 @@ struct BattlePokemon
     /*0x2B*/ u8 level;
     /*0x2C*/ u8 friendship;
     /*0x2D*/ u16 maxHP;
-    /*0x2F*/ enum Item items[MAX_MON_ITEMS]; //Set to at least 2 for this standalone mod branch
+    /*0x2F*/ enum Item items[MAX_MON_ITEMS_INTERNAL]; //Set to at least 2 for this standalone mod branch
     /*0x31*/ u8 nickname[POKEMON_NAME_LENGTH + 1];
     /*0x3C*/ u8 ppBonuses;
     /*0x3D*/ u8 otName[PLAYER_NAME_LENGTH + 1];
@@ -641,7 +641,7 @@ struct FormChangeContext
     u16 currentSpecies;
     u16 partyItemUsed;
     u16 multichoiceSelection;
-    u16 heldItems[MAX_MON_ITEMS];
+    u16 heldItems[MAX_MON_ITEMS_INTERNAL];
     u16 traits[MAX_MON_TRAITS];
     u16 learnedMove;
     u32 status;

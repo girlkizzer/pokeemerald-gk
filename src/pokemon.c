@@ -1672,7 +1672,7 @@ void CreateApprenticeMon(struct Pokemon *mon, const struct Apprentice *src, u8 m
 void ConvertPokemonToBattleTowerPokemon(struct Pokemon *mon, struct BattleTowerPokemon *dest)
 {
     s32 i;
-    u16 heldItem[MAX_MON_ITEMS];
+    u16 heldItem[MAX_MON_ITEMS_INTERNAL];
 
     dest->species = GetMonData(mon, MON_DATA_SPECIES);
     

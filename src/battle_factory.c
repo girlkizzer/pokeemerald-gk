@@ -236,7 +236,7 @@ static void GenerateOpponentMons(void)
 {
     int i, j, k, l, m;
     u16 species[FRONTIER_PARTY_SIZE];
-    u16 heldItems[FRONTIER_PARTY_SIZE][MAX_MON_ITEMS];
+    u16 heldItems[FRONTIER_PARTY_SIZE][MAX_MON_ITEMS_INTERNAL];
     int firstMonId = 0;
     u16 trainerId = 0;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
@@ -401,7 +401,7 @@ static void GenerateInitialRentalMons(void)
     u16 currSpecies;
     u16 species[PARTY_SIZE];
     u16 monIds[PARTY_SIZE];
-    u16 heldItems[PARTY_SIZE][MAX_MON_ITEMS];
+    u16 heldItems[PARTY_SIZE][MAX_MON_ITEMS_INTERNAL];
 
     gFacilityTrainers = gBattleFrontierTrainers;
     for (i = 0; i < PARTY_SIZE; i++)
@@ -673,7 +673,7 @@ void FillFactoryBrainParty(void)
 {
     int i, j, k, l, m;
     u16 species[FRONTIER_PARTY_SIZE];
-    u16 heldItems[FRONTIER_PARTY_SIZE][MAX_MON_ITEMS];
+    u16 heldItems[FRONTIER_PARTY_SIZE][MAX_MON_ITEMS_INTERNAL];
     int monLevel;
     u8 fixedIV;
     u32 otId;

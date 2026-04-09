@@ -483,7 +483,7 @@ struct PokemonStorageSystemData
     const u16 *displayMonPalette;
     u32 displayMonPersonality;
     u16 displayMonSpecies;
-    u16 displayMonItemId[MAX_MON_ITEMS];
+    u16 displayMonItemId[MAX_MON_ITEMS_INTERNAL];
     u16 displayUnusedVar;
     bool8 setMosaic;
     u8 displayMonMarkings;

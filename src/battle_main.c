@@ -4786,7 +4786,7 @@ u32 GetBattlerTotalSpeedStat(enum BattlerId battler)
     speed *= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][0];
     speed /= gStatStageRatios[gBattleMons[battler].statStages[STAT_SPEED]][1];
 
-    u16 battlerItems[MAX_MON_ITEMS];
+    u16 battlerItems[MAX_MON_ITEMS_INTERNAL];
     STORE_BATTLER_ITEMS(battler);
 
     // weather abilities

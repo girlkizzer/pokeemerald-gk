@@ -53,7 +53,7 @@ SINGLE_BATTLE_TEST("Tough Claws boosts contact moves when user has Protective Pa
 }
 #endif
 
-#if MAX_MON_TRAITS > 1
+#if MAX_MON_ITEMS > 1
 SINGLE_BATTLE_TEST("Tough Claws boosts contact moves when user has Protective Pads, but not with Punching Glove (Items)", s16 damage)
 {
     u32 item;

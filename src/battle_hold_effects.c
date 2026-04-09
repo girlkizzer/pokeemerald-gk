@@ -1099,7 +1099,7 @@ enum ItemEffect ItemBattleEffects(enum BattlerId itemBattler, enum BattlerId sec
     enum Item item;
     u32 i;
     bool16 skipLastUsed = FALSE, hasRockyHelmet = FALSE, hasAirBalloon = FALSE;
-    u16 battlerItems[MAX_MON_ITEMS];
+    u16 battlerItems[MAX_MON_ITEMS_INTERNAL];
     STORE_BATTLER_ITEMS(itemBattler);
 
     for (i = 0; i < MAX_MON_ITEMS; i++)

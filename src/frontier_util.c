@@ -2043,7 +2043,7 @@ static void AppendCaughtBannedMonSpeciesName(u16 species, u8 count, s32 numBanne
     StringAppend(gStringVar1, GetSpeciesName(species));
 }
 
-static void AppendIfValid(u16 species, u16 heldItem, u16 hp, enum FrontierLevelMode lvlMode, u8 monLevel, u16 *speciesArray, u16 itemsArray[][MAX_MON_ITEMS], u8 slot, u8 *count)
+static void AppendIfValid(u16 species, u16 heldItem, u16 hp, enum FrontierLevelMode lvlMode, u8 monLevel, u16 *speciesArray, u16 itemsArray[][MAX_MON_ITEMS_INTERNAL], u8 slot, u8 *count)
 {
     s32 i = 0;
 
@@ -2078,7 +2078,7 @@ static void AppendIfValid(u16 species, u16 heldItem, u16 hp, enum FrontierLevelM
 static void CheckPartyIneligibility(void)
 {
     u16 speciesArray[PARTY_SIZE];
-    enum Item itemArray[PARTY_SIZE][MAX_MON_ITEMS];
+    enum Item itemArray[PARTY_SIZE][MAX_MON_ITEMS_INTERNAL];
     s32 monId = 0;
     s32 toChoose = 0;
     u8 count = 0, i, slot;
