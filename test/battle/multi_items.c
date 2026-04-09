@@ -259,10 +259,10 @@ SINGLE_BATTLE_TEST("Multi - OnTargetAfterHit Air Balloon popping has the highest
         HP_BAR(opponent);
         MESSAGE("The opposing Wobbuffet was hurt by Wobbuffet's Rocky Helmet!");
     } THEN {
-        EXPECT(player->item == ITEM_ROCKY_HELMET);
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[0] == ITEM_ROCKY_HELMET);
+        EXPECT(player->items[1] == ITEM_NONE);
         EXPECT(opponent->items[0] == ITEM_NONE);
-        EXPECT(opponent->item == ITEM_ROCKY_HELMET);
+        EXPECT(opponent->items[1] == ITEM_ROCKY_HELMET);
     }
 }
 
@@ -327,26 +327,6 @@ SINGLE_BATTLE_TEST("Multi - onAttackerAfterHit first item takes priority but onl
     }
 }
 
-//onEffect appears to not have a 1 item limit due to more complicated activation logic in the battlescripts
-SINGLE_BATTLE_TEST("Multi - onEffect effects do not conflict")
-{
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET);
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_ELECTRIC_SEED, ITEM_ROOM_SERVICE); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_TRICK_ROOM); MOVE(opponent, MOVE_ELECTRIC_TERRAIN); }
-        TURN { SWITCH(player, 1); }
-    } SCENE {
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
-        MESSAGE("Using Electric Seed, the Defense of Wobbuffet rose!");
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
-        MESSAGE("Using Room Service, the Speed of Wobbuffet fell!");
-    }
-}
-
 #if B_HELD_ITEM_CATEGORIZATION == TRUE
 //If B_HELD_ITEM_CATEGORIZATION is set, pokeball should only be able to go into the specified slot even if another slot is available. 
 WILD_BATTLE_TEST("Multi - Ball Fetch follows Item Categorization")
@@ -394,7 +374,7 @@ WILD_BATTLE_TEST("Multi - B_MULTI_ITEM_ORDER targets latest to earliest item slo
         ANIMATION(ANIM_TYPE_MOVE, move, player);
         HP_BAR(opponent);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 #endif

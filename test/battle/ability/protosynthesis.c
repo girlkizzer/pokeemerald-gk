@@ -688,7 +688,7 @@ SINGLE_BATTLE_TEST("Protosynthesis activates in Sun before Booster Energy (Items
         ABILITY_POPUP(opponent, ABILITY_DROUGHT);
         ABILITY_POPUP(player, ABILITY_PROTOSYNTHESIS);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_BOOSTER_ENERGY);
+        EXPECT_EQ(player->items[1], ITEM_BOOSTER_ENERGY);
     }
 }
 
@@ -706,8 +706,8 @@ SINGLE_BATTLE_TEST("Protosynthesis doesn't activate for a transformed battler (I
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRANSFORM, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_PROTOSYNTHESIS);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_BOOSTER_ENERGY);
-        EXPECT_EQ(opponent->item, ITEM_BOOSTER_ENERGY);
+        EXPECT_EQ(player->items[1], ITEM_BOOSTER_ENERGY);
+        EXPECT_EQ(opponent->items[1], ITEM_BOOSTER_ENERGY);
         EXPECT_EQ(opponent->ability, ABILITY_PROTOSYNTHESIS);
     }
 }

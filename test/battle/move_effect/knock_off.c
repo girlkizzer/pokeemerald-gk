@@ -496,11 +496,11 @@ WILD_BATTLE_TEST("Knock Off does not remove item when used by Wild Pokemon (Gen 
         ANIMATION(ANIM_TYPE_MOVE, MOVE_KNOCK_OFF, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF, opponent);
     } THEN {
-        EXPECT(player->item == ITEM_LEFTOVERS);
+        EXPECT(player->items[1]== ITEM_LEFTOVERS);
         if (B_KNOCK_OFF_REMOVAL >= GEN_5)
-            EXPECT(opponent->item == ITEM_NONE);
+            EXPECT(opponent->items[1]== ITEM_NONE);
         else
-            EXPECT(opponent->item == ITEM_EVIOLITE);
+            EXPECT(opponent->items[1]== ITEM_EVIOLITE);
     }
 }
 
@@ -520,7 +520,7 @@ SINGLE_BATTLE_TEST("Knock Off knocks a healing berry before it has the chance to
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF);
         MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Sitrus Berry!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -550,7 +550,7 @@ SINGLE_BATTLE_TEST("Knock Off activates after Rocky Helmet and Weakness Policy (
             MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Rocky Helmet!");
         }
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -577,7 +577,7 @@ SINGLE_BATTLE_TEST("Knock Off deals additional damage to opponents holding an it
         else
             EXPECT_EQ(results[0].damage, results[1].damage);
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -592,7 +592,7 @@ SINGLE_BATTLE_TEST("Knock Off does not remove items through Substitute (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_KNOCK_OFF, player);
         NOT { ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF); }
     } THEN {
-        EXPECT(opponent->item == ITEM_LEFTOVERS);
+        EXPECT(opponent->items[1]== ITEM_LEFTOVERS);
     }
 }
 
@@ -608,7 +608,7 @@ SINGLE_BATTLE_TEST("Knock Off does not remove items through Substitute even if i
         MESSAGE("The opposing Wobbuffet's substitute faded!");
         NOT { ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF); }
     } THEN {
-        EXPECT(opponent->item == ITEM_LEFTOVERS);
+        EXPECT(opponent->items[1]== ITEM_LEFTOVERS);
     }
 }
 
@@ -625,7 +625,7 @@ SINGLE_BATTLE_TEST("Knock Off does not remove items through Protect (Items)")
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF);
         }
     } THEN {
-        EXPECT(opponent->item == ITEM_LEFTOVERS);
+        EXPECT(opponent->items[1]== ITEM_LEFTOVERS);
     }
 }
 
@@ -644,7 +644,7 @@ SINGLE_BATTLE_TEST("Knock Off does not remove items if target is immune (Items)"
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_KNOCKOFF);
         }
     } THEN {
-        EXPECT(opponent->item == ITEM_LEFTOVERS);
+        EXPECT(opponent->items[1]== ITEM_LEFTOVERS);
     }
 }
 
@@ -664,7 +664,7 @@ SINGLE_BATTLE_TEST("Recycle cannot recover an item removed by Knock Off (Items)"
         MESSAGE("The opposing Wobbuffet used Recycle!");
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -692,9 +692,9 @@ SINGLE_BATTLE_TEST("Knock Off does not prevent targets from receiving another it
         }
     } THEN {
         if (B_KNOCK_OFF_REMOVAL >= GEN_5)
-            EXPECT(opponent->item == ITEM_LEFTOVERS);
+            EXPECT(opponent->items[1]== ITEM_LEFTOVERS);
         else
-            EXPECT(opponent->item == ITEM_NONE);
+            EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -716,7 +716,7 @@ SINGLE_BATTLE_TEST("Knock Off triggers Unburden (Items)")
         MESSAGE("The opposing Wobbuffet used Celebrate!");
         MESSAGE("Wobbuffet used Celebrate!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -738,7 +738,7 @@ DOUBLE_BATTLE_TEST("Knock Off does not trigger the opposing ally's Symbiosis (It
             MESSAGE("Wobbuffet restored its health using its Leftovers!");
         }
     } THEN {
-        EXPECT(playerLeft->item == ITEM_NONE);
+        EXPECT(playerLeft->items[1]== ITEM_NONE);
     }
 }
 
@@ -875,7 +875,7 @@ SINGLE_BATTLE_TEST("Knock Off does not activate if user faints (Items)")
         MESSAGE("Wobbuffet was hurt by the opposing Wobbuffet's Rocky Helmet!");
         MESSAGE("Wobbuffet fainted!");
     } THEN {
-        EXPECT(opponent->item == ITEM_ROCKY_HELMET);
+        EXPECT(opponent->items[1]== ITEM_ROCKY_HELMET);
     }
 }
 
@@ -904,7 +904,7 @@ SINGLE_BATTLE_TEST("Knock Off does not activate if the item was previously consu
         MESSAGE("The opposing Wobbuffet's Air Balloon popped!");
         NOT MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Air Balloon!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 #endif

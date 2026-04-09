@@ -155,8 +155,8 @@ SINGLE_BATTLE_TEST("Bestow transfers its held item to the target (Items)")
     } WHEN {
         TURN { MOVE(player, MOVE_BESTOW); }
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
-        EXPECT(opponent->item == ITEM_SITRUS_BERRY);
+        EXPECT(player->items[1]== ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_SITRUS_BERRY);
     }
 }
 
@@ -170,8 +170,8 @@ SINGLE_BATTLE_TEST("Bestow fails if the target already has a held item (Items)")
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_SITRUS_BERRY);
-        EXPECT(opponent->item == ITEM_LUM_BERRY);
+        EXPECT(player->items[1]== ITEM_SITRUS_BERRY);
+        EXPECT(opponent->items[1]== ITEM_LUM_BERRY);
     }
 }
 
@@ -187,8 +187,8 @@ SINGLE_BATTLE_TEST("Bestow fails if the user is holding Mail (Items)")
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_ORANGE_MAIL);
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_ORANGE_MAIL);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -202,8 +202,8 @@ SINGLE_BATTLE_TEST("Bestow fails if the user's held item is a Mega Stone (Items)
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_BLAZIKENITE);
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_BLAZIKENITE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -218,8 +218,8 @@ SINGLE_BATTLE_TEST("Bestow fails if the user's held item is a Z-Crystal (Items)"
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_FIGHTINIUM_Z);
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_FIGHTINIUM_Z);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 
@@ -233,8 +233,8 @@ SINGLE_BATTLE_TEST("Bestow doesn't fail if the user has Sticky Hold (Items)")
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_BESTOW, player);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
-        EXPECT(opponent->item == ITEM_SITRUS_BERRY);
+        EXPECT(player->items[1]== ITEM_NONE);
+        EXPECT(opponent->items[1]== ITEM_SITRUS_BERRY);
     }
 }
 
@@ -253,11 +253,11 @@ SINGLE_BATTLE_TEST("Bestow fails if the target is behind a Substitute (Gen 6+) (
         }
     } THEN {
         if (B_UPDATED_MOVE_FLAGS >= GEN_6) {
-            EXPECT(player->item == ITEM_NONE);
-            EXPECT(opponent->item == ITEM_SITRUS_BERRY);
+            EXPECT(player->items[1]== ITEM_NONE);
+            EXPECT(opponent->items[1]== ITEM_SITRUS_BERRY);
         } else {
-            EXPECT(player->item == ITEM_SITRUS_BERRY);
-            EXPECT(opponent->item == ITEM_NONE);
+            EXPECT(player->items[1]== ITEM_SITRUS_BERRY);
+            EXPECT(opponent->items[1]== ITEM_NONE);
         }
     }
 }
@@ -272,8 +272,8 @@ SINGLE_BATTLE_TEST("Bestow fails if the user's held item changes its form (Items
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_GRISEOUS_CORE);
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_GRISEOUS_CORE);
+        EXPECT(opponent->items[1]== ITEM_NONE);
     }
 }
 #endif

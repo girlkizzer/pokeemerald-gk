@@ -667,9 +667,14 @@ AI_DOUBLE_BATTLE_TEST("AI can use all moves, 801-900")
         case EFFECT_TIDY_UP:
 
         // tests exist elsewhere
-        case BATTLE_WEATHER_SNOW:
         case EFFECT_DRAGON_CHEER:
-
+            break;
+        case EFFECT_WEATHER:
+            if (GetMoveWeatherType(j) == BATTLE_WEATHER_SNOW)
+                break;
+            else
+                PARAMETRIZE { move = j; }
+            break;
         // Skipped on purpose.
         case EFFECT_PROTECT:
         case EFFECT_NON_VOLATILE_STATUS:
@@ -1310,9 +1315,14 @@ AI_DOUBLE_BATTLE_TEST("AI can use all moves, 801-900 (Items)")
         case EFFECT_TIDY_UP:
 
         // tests exist elsewhere
-        case BATTLE_WEATHER_SNOW:
         case EFFECT_DRAGON_CHEER:
-
+            break;
+        case EFFECT_WEATHER:
+            if (GetMoveWeatherType(j) == BATTLE_WEATHER_SNOW)
+                break;
+            else
+                PARAMETRIZE { move = j; }
+            break;
         // Skipped on purpose.
         case EFFECT_PROTECT:
         case EFFECT_NON_VOLATILE_STATUS:
@@ -1331,12 +1341,12 @@ AI_DOUBLE_BATTLE_TEST("AI can use all moves, 801-900 (Items)")
         PLAYER(SPECIES_WOBBUFFET) { Status1(STATUS1_POISON); }
         PLAYER(SPECIES_WOBBUFFET);
         PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_SPLASH, move); Status1(STATUS1_BURN); Items(ITEM_PECHA_BERRY, ITEM_STARF_BERRY); }
-        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_POUND, move); Items(ITEM_PECHA_BERRY, ITEM_STARF_BERRY); }
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_SPLASH, move); Status1(STATUS1_BURN); Item(ITEM_STARF_BERRY); }
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_POUND, move); Items(ITEM_NONE, ITEM_STARF_BERRY); }
         OPPONENT(SPECIES_WOBBUFFET) { Status1(STATUS1_BURN); }
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
-        TURN {  EXPECT_MOVE(opponentLeft, move); }
+        TURN { EXPECT_MOVE(opponentLeft, move); }
     }
 }
 #endif

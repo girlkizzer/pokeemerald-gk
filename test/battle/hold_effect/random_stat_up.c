@@ -194,7 +194,7 @@ SINGLE_BATTLE_TEST("Starf Berry randomly raises the holder's Attack, Defense, Sp
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
     } THEN {
         int boostedStats = 0;
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
         EXPECT_LE(player->hp * 4, player->maxHP);
         for (int stat = STAT_ATK; stat < NUM_STATS; stat++)
         {
@@ -221,7 +221,7 @@ SINGLE_BATTLE_TEST("Starf Berry randomly raises the holder's Attack, Defense, Sp
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
     } THEN {
         int boostedStats = 0;
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
         EXPECT_LE(player->hp * 2, player->maxHP);
         for (int stat = STAT_ATK; stat < NUM_STATS; stat++)
         {
@@ -249,7 +249,7 @@ SINGLE_BATTLE_TEST("Starf Berry randomly raises the holder's Attack, Defense, Sp
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
     } THEN {
         int boostedStats = 0;
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
         EXPECT_LE(player->hp * 4, player->maxHP);
         for (int stat = STAT_ATK; stat < NUM_STATS; stat++)
         {

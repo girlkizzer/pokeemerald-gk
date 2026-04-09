@@ -462,17 +462,18 @@ SINGLE_BATTLE_TEST("Dazzling, Queenly Majesty and Armor Tail on opponents block 
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TEATIME) == EFFECT_TEATIME);
+        ASSUME(GetMoveTarget(MOVE_TEATIME) == TARGET_ALL_BATTLERS);
         ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
-        PLAYER(SPECIES_MURKROW) { Ability(ABILITY_INSOMNIA); Innates(ABILITY_PRANKSTER); Item(ITEM_ORAN_BERRY); HP(1); MaxHP(100); }
-        OPPONENT(species) { Ability(ability); Item(ITEM_ORAN_BERRY); HP(1); MaxHP(100); }
+        PLAYER(SPECIES_MURKROW) { Ability(ABILITY_INSOMNIA); Innates(ABILITY_PRANKSTER); Item(ITEM_ORAN_BERRY); HP(75); MaxHP(100); }
+        OPPONENT(species) { Ability(ability); Item(ITEM_ORAN_BERRY); HP(75); MaxHP(100); }
     } WHEN {
         TURN { MOVE(player, MOVE_TEATIME); }
     } SCENE {
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_TEATIME, player);
-        NOT ABILITY_POPUP(opponent, ability);
+        NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_TEATIME, player);
+        ABILITY_POPUP(opponent, ability);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_NE(player->item, ITEM_NONE);
+        EXPECT_NE(opponent->item, ITEM_NONE);
     }
 }
 
@@ -617,17 +618,18 @@ SINGLE_BATTLE_TEST("Dazzling, Queenly Majesty and Armor Tail on opponents block 
 
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_TEATIME) == EFFECT_TEATIME);
+        ASSUME(GetMoveTarget(MOVE_TEATIME) == TARGET_ALL_BATTLERS);
         ASSUME(GetItemHoldEffect(ITEM_ORAN_BERRY) == HOLD_EFFECT_RESTORE_HP);
-        PLAYER(SPECIES_MURKROW) { Ability(ABILITY_PRANKSTER); Item(ITEM_ORAN_BERRY); HP(1); MaxHP(100); }
-        OPPONENT(species) { Ability(ability); Items(ITEM_NUGGET, ITEM_ORAN_BERRY); HP(1); MaxHP(100); }
+        PLAYER(SPECIES_MURKROW) { Ability(ABILITY_PRANKSTER); Item(ITEM_ORAN_BERRY); HP(75); MaxHP(100); }
+        OPPONENT(species) { Ability(ability); Items(ITEM_NUGGET, ITEM_ORAN_BERRY); HP(75); MaxHP(100); }
     } WHEN {
         TURN { MOVE(player, MOVE_TEATIME); }
     } SCENE {
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_TEATIME, player);
-        NOT ABILITY_POPUP(opponent, ability);
+        NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_TEATIME, player);
+        ABILITY_POPUP(opponent, ability);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_NE(player->items[0], ITEM_NONE);
+        EXPECT_NE(opponent->items[1], ITEM_NONE);
     }
 }
 

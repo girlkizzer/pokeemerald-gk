@@ -1849,7 +1849,7 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon can be switched out by Eject Butt
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
         MESSAGE("Wobbuffet is switched out with the Eject Button!");
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -1867,8 +1867,8 @@ SINGLE_BATTLE_TEST("Dynamax: Dynamaxed Pokemon are not immune to Knock Off (Item
         MESSAGE("The opposing Wobbuffet used Knock Off!");
         MESSAGE("The opposing Wobbuffet knocked off Wobbuffet's Potion!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -1917,7 +1917,7 @@ SINGLE_BATTLE_TEST("Dynamax: Sitrus Berries heal based on a Pokemon's non-Dynama
         ASSUME(I_SITRUS_BERRY_HEAL >= GEN_4);
         ASSUME(gItemsInfo[ITEM_SITRUS_BERRY].holdEffect == HOLD_EFFECT_RESTORE_PCT_HP);
         PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_SITRUS_BERRY); }
+        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_SITRUS_BERRY); }
     } WHEN {
         TURN { MOVE(opponent, MOVE_FLING); MOVE(player, MOVE_SCRATCH, gimmick: dynamax); }
     } SCENE {

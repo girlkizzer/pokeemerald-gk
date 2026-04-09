@@ -2473,7 +2473,7 @@ DOUBLE_BATTLE_TEST("Sleep Clause: Sleep clause is deactivated when a sleeping mo
         ASSUME(gItemsInfo[ITEM_CHESTO_BERRY].holdEffect == HOLD_EFFECT_CURE_SLP);
         ASSUME(gItemsInfo[ITEM_LUM_BERRY].holdEffect == HOLD_EFFECT_CURE_STATUS);
         PLAYER(SPECIES_ZIGZAGOON);
-        PLAYER(SPECIES_ZIGZAGOON) { Items(ITEM_ORAN_BERRY, heldItem); }
+        PLAYER(SPECIES_ZIGZAGOON) { Items(ITEM_NONE, heldItem); }
         OPPONENT(SPECIES_ZIGZAGOON);
         OPPONENT(SPECIES_ZIGZAGOON);
     } WHEN {

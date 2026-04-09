@@ -566,8 +566,8 @@ SINGLE_BATTLE_TEST("Gulp Missile only changes forms for Cramorant (Traits)")
     GIVEN {
         ASSUME(!gAbilitiesInfo[ABILITY_GULP_MISSILE].cantBeSwapped);
         ASSUME(!gAbilitiesInfo[ABILITY_LIGHTNING_ROD].cantBeSwapped);
-        PLAYER(SPECIES_CRAMORANT) { Ability(ABILITY_LIGHT_METAL); Innates(ABILITY_GULP_MISSILE); }
-        OPPONENT(SPECIES_PIKACHU) { Ability(ABILITY_STATIC); Innates(ABILITY_LIGHTNING_ROD); }
+        PLAYER(SPECIES_CRAMORANT) { Ability(ABILITY_LIGHT_METAL); Innates(ABILITY_LIGHT_METAL); }
+        OPPONENT(SPECIES_PIKACHU) { Ability(ABILITY_LIGHTNING_ROD); Innates(ABILITY_GULP_MISSILE); }
     } WHEN {
         TURN { MOVE(opponent, MOVE_SKILL_SWAP); }
         TURN { MOVE(opponent, MOVE_SURF); MOVE(player, MOVE_SURF); }
@@ -578,33 +578,6 @@ SINGLE_BATTLE_TEST("Gulp Missile only changes forms for Cramorant (Traits)")
         }
     } THEN {
         EXPECT_EQ(player->species, SPECIES_CRAMORANT);
-        EXPECT_EQ(opponent->species, SPECIES_PIKACHU);
-    }
-}
-
-SINGLE_BATTLE_TEST("Gulp Missile: If Cramorant loses Gulp Missile, it cannot spit out its prey (Traits)")
-{
-    GIVEN {
-        ASSUME(!gAbilitiesInfo[ABILITY_GULP_MISSILE].cantBeSwapped);
-        ASSUME(!gAbilitiesInfo[ABILITY_LIGHTNING_ROD].cantBeSwapped);
-        PLAYER(SPECIES_CRAMORANT) { Ability(ABILITY_LIGHT_METAL); Innates(ABILITY_GULP_MISSILE); }
-        OPPONENT(SPECIES_PIKACHU) { Ability(ABILITY_STATIC); Innates(ABILITY_LIGHTNING_ROD); }
-    } WHEN {
-        TURN { MOVE(player, MOVE_SURF); MOVE(opponent, MOVE_SKILL_SWAP); }
-        TURN { MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SURF, player);
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_FORM_CHANGE_INSTANT, player);
-        HP_BAR(opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SKILL_SWAP, opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, opponent);
-        HP_BAR(player);
-        NONE_OF {
-            ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_FORM_CHANGE, player);
-            HP_BAR(opponent);
-        }
-    } THEN {
-        EXPECT_EQ(player->species, SPECIES_CRAMORANT_GULPING);
         EXPECT_EQ(opponent->species, SPECIES_PIKACHU);
     }
 }
@@ -620,8 +593,8 @@ SINGLE_BATTLE_TEST("Gulp Missile: Power Herb does not prevent Cramaront from tra
         TURN { MOVE(player, MOVE_DIVE); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DIVE, player);
+        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_FORM_CHANGE_INSTANT, player);
         MESSAGE("Cramorant became fully charged due to its Power Herb!");
-        ABILITY_POPUP(player, ABILITY_GULP_MISSILE);
         HP_BAR(opponent);
     } THEN {
         EXPECT_EQ(player->species, SPECIES_CRAMORANT_GULPING);

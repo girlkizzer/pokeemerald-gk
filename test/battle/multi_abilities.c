@@ -19,7 +19,6 @@ SINGLE_BATTLE_TEST("Multi - Contrary causes Competitive or Defiant to sharply lo
         ANIMATION(ANIM_TYPE_MOVE, MOVE_FLOWER_SHIELD, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
         MESSAGE("Sunflora's Defense rose!");
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_FLOWER_SHIELD, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, opponent);
         MESSAGE("The opposing Snivy's Defense fell!");
         //ABILITY_POPUP(opponent, ABILITY_CONTRARY); //No popup in vanilla
@@ -63,7 +62,6 @@ SINGLE_BATTLE_TEST("Multi - Contrary causes Competitive and Defiant to sharply l
         ANIMATION(ANIM_TYPE_MOVE, MOVE_FLOWER_SHIELD, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
         MESSAGE("Sunflora's Defense rose!");
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_FLOWER_SHIELD, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, opponent);
         MESSAGE("The opposing Snivy's Defense fell!");
         //ABILITY_POPUP(opponent, ABILITY_CONTRARY); //No popup in vanilla
@@ -95,10 +93,10 @@ SINGLE_BATTLE_TEST("Multi - Multiple stat changing abilities activating together
     } WHEN {
         TURN { }
     } SCENE {
-        ABILITY_POPUP(player, ABILITY_PRESSURE);
-        MESSAGE("Ekans is exerting its pressure!");
         ABILITY_POPUP(player, ABILITY_UNNERVE);
         MESSAGE("The opposing team is too nervous to eat Berries!");
+        ABILITY_POPUP(player, ABILITY_PRESSURE);
+        MESSAGE("Ekans is exerting its pressure!");
         ABILITY_POPUP(player, ABILITY_SUPERSWEET_SYRUP);
         MESSAGE("A supersweet aroma is wafting from the syrup covering Ekans!");
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, opponent);
@@ -464,6 +462,8 @@ SINGLE_BATTLE_TEST("Multi - Switch-In abilities display text correctly 1")
     } WHEN {
         TURN { }
     } SCENE {
+        ABILITY_POPUP(opponent, ABILITY_UNNERVE);
+        MESSAGE("Your team is too nervous to eat Berries!");
         ABILITY_POPUP(player, ABILITY_COMATOSE);
         MESSAGE("Reshiram is drowsing!");
         ABILITY_POPUP(player, ABILITY_TERAVOLT);
@@ -477,8 +477,6 @@ SINGLE_BATTLE_TEST("Multi - Switch-In abilities display text correctly 1")
         MESSAGE("Reshiram's Intimidate cuts the opposing Zekrom's Attack!");
         ABILITY_POPUP(opponent, ABILITY_PRESSURE);
         MESSAGE("The opposing Zekrom is exerting its pressure!");
-        ABILITY_POPUP(opponent, ABILITY_UNNERVE);
-        MESSAGE("Your team is too nervous to eat Berries!");
         ABILITY_POPUP(opponent, ABILITY_SLOW_START);
         MESSAGE("The opposing Zekrom is slow to get going!");
         ABILITY_POPUP(opponent, ABILITY_TURBOBLAZE);
@@ -495,6 +493,10 @@ SINGLE_BATTLE_TEST("Multi - Switch-In abilities display text correctly 2")
     } WHEN {
         TURN { }
     } SCENE {
+        ABILITY_POPUP(player, ABILITY_AS_ONE_ICE_RIDER);
+        MESSAGE("Xerneas has two Abilities!");
+        ABILITY_POPUP(player, ABILITY_UNNERVE);
+        MESSAGE("The opposing team is too nervous to eat Berries!");
         ABILITY_POPUP(player, ABILITY_FAIRY_AURA);
         MESSAGE("Xerneas is radiating a fairy aura!");
         ABILITY_POPUP(player, ABILITY_DOWNLOAD);
@@ -502,10 +504,6 @@ SINGLE_BATTLE_TEST("Multi - Switch-In abilities display text correctly 2")
         MESSAGE("Xerneas's Download raised its Attack!");
         ABILITY_POPUP(player, ABILITY_PASTEL_VEIL);
         MESSAGE("Xerneas was cured of its poisoning!");
-        ABILITY_POPUP(player, ABILITY_AS_ONE_ICE_RIDER);
-        MESSAGE("Xerneas has two Abilities!");
-        ABILITY_POPUP(player, ABILITY_UNNERVE);
-        MESSAGE("The opposing team is too nervous to eat Berries!");
         ABILITY_POPUP(opponent, ABILITY_DARK_AURA);
         MESSAGE("The opposing Yveltal is radiating a dark aura!");
         ABILITY_POPUP(opponent, ABILITY_FOREWARN);
@@ -995,11 +993,11 @@ SINGLE_BATTLE_TEST("Multi - ABILITYEFFECT_ON_SWITCHIN abilities do not conflict 
     } WHEN {
         TURN { }
     } SCENE {
+        ABILITY_POPUP(player, ABILITY_UNNERVE);
+        MESSAGE("The opposing team is too nervous to eat Berries!");
         ABILITY_POPUP(player, ABILITY_DOWNLOAD);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
         MESSAGE("Ditto's Download raised its Sp. Atk!");
-        ABILITY_POPUP(player, ABILITY_UNNERVE);
-        MESSAGE("The opposing team is too nervous to eat Berries!");
         ABILITY_POPUP(player, ABILITY_MOLD_BREAKER);
         MESSAGE("Ditto breaks the mold!");
         ABILITY_POPUP(player, ABILITY_IMPOSTER);
@@ -1032,16 +1030,16 @@ DOUBLE_BATTLE_TEST("Multi - ABILITYEFFECT_ON_SWITCHIN abilities do not conflict 
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, opponentLeft);
         // Turn 2 - Switch into Slowking
         MESSAGE("2 sent out Slowking!");
-        ABILITY_POPUP(opponentRight, ABILITY_HOSPITALITY);
-        MESSAGE("The opposing Scolipede drank down all the matcha that the opposing Slowking made!");
-        HP_BAR(opponentLeft);
-        ABILITY_POPUP(opponentRight, ABILITY_CURIOUS_MEDICINE);
-        MESSAGE("The opposing Scolipede's stat changes were removed!");
         ABILITY_POPUP(opponentRight, ABILITY_UNNERVE);
         MESSAGE("Your team is too nervous to eat Berries!");
+        ABILITY_POPUP(opponentRight, ABILITY_CURIOUS_MEDICINE);
+        MESSAGE("The opposing Scolipede's stat changes were removed!");
         ABILITY_POPUP(opponentRight, ABILITY_INTIMIDATE);
         MESSAGE("The opposing Slowking's Intimidate cuts Wobbuffet's Attack!");
         MESSAGE("The opposing Slowking's Intimidate cuts Wobbuffet's Attack!");
+        ABILITY_POPUP(opponentRight, ABILITY_HOSPITALITY);
+        MESSAGE("The opposing Scolipede drank down all the matcha that the opposing Slowking made!");
+        HP_BAR(opponentLeft);
     } THEN {
         EXPECT_EQ(opponentLeft->statStages[STAT_ATK], DEFAULT_STAT_STAGE);
         EXPECT_EQ(opponentLeft->statStages[STAT_DEF], DEFAULT_STAT_STAGE);
@@ -1299,8 +1297,8 @@ SINGLE_BATTLE_TEST("Multi - ABILITYEFFECT_ENDTURN item Harvest and Pickup can wo
         ABILITY_POPUP(player, ABILITY_HARVEST);
         MESSAGE("Exeggutor harvested its Pecha Berry!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_PECHA_BERRY);
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(player->items[0], ITEM_PECHA_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -1339,10 +1337,10 @@ WILD_BATTLE_TEST("Multi - ABILITYEFFECT_ENDTURN Ball Fetch does not conflict wit
         MESSAGE("Yamper found a Great Ball!");
     } THEN {
         if (ability == ABILITY_HARVEST)
-            EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+            EXPECT_EQ(player->items[0], ITEM_SITRUS_BERRY);
         else
-            EXPECT_EQ(player->item, ITEM_NORMAL_GEM);
-        EXPECT_EQ(player->item, ITEM_GREAT_BALL);
+            EXPECT_EQ(player->items[0], ITEM_NORMAL_GEM);
+        EXPECT_EQ(player->items[1], ITEM_GREAT_BALL);
     }
 }
 
@@ -1384,9 +1382,9 @@ WILD_BATTLE_TEST("Multi - ABILITYEFFECT_ENDTURN Harvest and Pickup take priority
 
     } THEN {
         if (ability == ABILITY_HARVEST)
-            EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+            EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
         else
-            EXPECT_EQ(player->item, ITEM_NORMAL_GEM);
+            EXPECT_EQ(player->items[1], ITEM_NORMAL_GEM);
     }
 }
 

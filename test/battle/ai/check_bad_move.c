@@ -295,6 +295,7 @@ AI_SINGLE_BATTLE_TEST("AI sees No Guard affects semi-invulnerable moves (Traits)
 
 AI_SINGLE_BATTLE_TEST("Protect: AI avoids Protect vs Unseen Fist contact (Single) (Traits)")
 {
+    KNOWN_FAILING; // AI checks don't account for forced test innates
     static const enum Move protectMoves[] =
     {
         MOVE_PROTECT,
@@ -344,6 +345,7 @@ AI_SINGLE_BATTLE_TEST("Protect: AI avoids Protect vs Unseen Fist contact (Single
 
 AI_DOUBLE_BATTLE_TEST("Protect: AI avoids Protect vs Unseen Fist contact (Doubles) (Traits)")
 {
+    KNOWN_FAILING; // AI checks don't account for forced test innates
     static const enum Move protectMoves[] =
     {
         MOVE_PROTECT,

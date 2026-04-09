@@ -577,7 +577,7 @@ SINGLE_BATTLE_TEST("Embargo makes Fling and Natural Gift fail (Items)")
 SINGLE_BATTLE_TEST("Embargo doesn't stop an item flung at an affected target from activating (Items)")
 {
     GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_LIGHT_BALL); };
+        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_LIGHT_BALL); };
         OPPONENT(SPECIES_WOBBUFFET);
     } WHEN {
         TURN { MOVE(player, MOVE_EMBARGO); }

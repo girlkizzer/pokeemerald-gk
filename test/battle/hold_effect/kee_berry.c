@@ -221,7 +221,7 @@ DOUBLE_BATTLE_TEST("Kee Berry doesn't trigger if partner was hit (Items)")
     } SCENE {
         NOT ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponentRight);
     } THEN {
-        EXPECT(opponentRight->item == ITEM_KEE_BERRY);
+        EXPECT(opponentRight->items[1]== ITEM_KEE_BERRY);
     }
 }
 

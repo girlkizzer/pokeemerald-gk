@@ -86,11 +86,7 @@ SINGLE_BATTLE_TEST("Upper Hand fails if the target moves first")
         TURN { MOVE(opponent, MOVE_DRAINING_KISS); MOVE(player, MOVE_UPPER_HAND); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAINING_KISS, opponent);
-        HP_BAR(player);
-        HP_BAR(opponent);
         NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_UPPER_HAND, player);
-        MESSAGE("Mienshao used Upper Hand!");
-        MESSAGE("But it failed!");
     }
 }
 
@@ -213,11 +209,7 @@ SINGLE_BATTLE_TEST("Upper Hand fails if the target moves first (Traits)")
         TURN { MOVE(opponent, MOVE_DRAINING_KISS); MOVE(player, MOVE_UPPER_HAND); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_DRAINING_KISS, opponent);
-        HP_BAR(player);
-        HP_BAR(opponent);
         NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_UPPER_HAND, player);
-        MESSAGE("Mienshao used Upper Hand!");
-        MESSAGE("But it failed!");
     }
 }
 

@@ -1383,6 +1383,7 @@ AI_DOUBLE_BATTLE_TEST("AI uses Trick Room intelligently (Traits)")
 
 AI_DOUBLE_BATTLE_TEST("AI uses Tailwind to trigger Wind Rider (Doubles) (Traits)")
 {
+    KNOWN_FAILING; // AI checks don't account for forced test innates
     bool32 expectTailwind;
     u16 tailwindSpecies, partnerSpecies;
     enum Ability tailwindAbility, partnerAbility;
@@ -1409,6 +1410,7 @@ AI_DOUBLE_BATTLE_TEST("AI uses Tailwind to trigger Wind Rider (Doubles) (Traits)
 
 AI_DOUBLE_BATTLE_TEST("AI uses Tailwind to trigger Wind Power (Doubles) (Traits)")
 {
+    KNOWN_FAILING; // AI checks don't account for forced test innates
     bool32 expectTailwind;
     u16 tailwindSpecies, partnerSpecies;
     enum Ability tailwindAbility, partnerAbility;

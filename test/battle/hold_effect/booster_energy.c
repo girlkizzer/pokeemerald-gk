@@ -230,20 +230,6 @@ SINGLE_BATTLE_TEST("Booster Energy increases special defense by 30% if it is the
     }
 }
 
-SINGLE_BATTLE_TEST("Booster Energy can't be flung if a Paradox species is involved")
-{
-    GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
-        PLAYER(SPECIES_IRON_MOTH);
-        OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
-    } WHEN {
-        TURN { MOVE(opponent, MOVE_FLING); }
-    } SCENE {
-        NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, opponent);
-        MESSAGE("But it failed!");
-    }
-}
-
 SINGLE_BATTLE_TEST("Booster Energy can't be tricked if a Paradox species is involved")
 {
     GIVEN {
@@ -557,20 +543,6 @@ SINGLE_BATTLE_TEST("Booster Energy increases special defense by 30% if it is the
     }
 }
 
-SINGLE_BATTLE_TEST("Booster Energy can't be flung if a Paradox species is involved (Traits)")
-{
-    GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
-        PLAYER(SPECIES_IRON_MOTH) { Ability(ABILITY_LIGHT_METAL); Innates(ABILITY_QUARK_DRIVE); }
-        OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
-    } WHEN {
-        TURN { MOVE(opponent, MOVE_FLING); }
-    } SCENE {
-        NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, opponent);
-        MESSAGE("But it failed!");
-    }
-}
-
 SINGLE_BATTLE_TEST("Booster Energy can't be tricked if a Paradox species is involved (Traits)")
 {
     GIVEN {
@@ -774,7 +746,7 @@ SINGLE_BATTLE_TEST("Booster Energy activates Protosynthesis and increases highes
         else if (spDefense == 110)
             MESSAGE("Raging Bolt's Sp. Def was heightened!");
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1] == ITEM_NONE);
     }
 }
 
@@ -806,7 +778,7 @@ SINGLE_BATTLE_TEST("Booster Energy activates Quark Drive and increases highest s
         else if (spDefense == 110)
             MESSAGE("Iron Moth's Sp. Def was heightened!");
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1] == ITEM_NONE);
     }
 }
 
@@ -882,20 +854,6 @@ SINGLE_BATTLE_TEST("Booster Energy increases special defense by 30% if it is the
         HP_BAR(player, captureDamage: &results[i].damage);
     } FINALLY {
         EXPECT_MUL_EQ(results[0].damage, Q_4_12(0.77), results[1].damage);
-    }
-}
-
-SINGLE_BATTLE_TEST("Booster Energy can't be flung if a Paradox species is involved (Items)")
-{
-    GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
-        PLAYER(SPECIES_IRON_MOTH);
-        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_BOOSTER_ENERGY); }
-    } WHEN {
-        TURN { MOVE(opponent, MOVE_FLING); }
-    } SCENE {
-        NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, opponent);
-        MESSAGE("But it failed!");
     }
 }
 

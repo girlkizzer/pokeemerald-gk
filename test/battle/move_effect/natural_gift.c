@@ -75,7 +75,7 @@ SINGLE_BATTLE_TEST("Natural Gift removes berry if move fails due to an immunity 
     } SCENE {
         NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_NATURAL_GIFT, player);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_NONE);
     }
 }
 
@@ -92,7 +92,7 @@ SINGLE_BATTLE_TEST("Natural Gift does not remove berry if user is ejected out (I
         ANIMATION(ANIM_TYPE_MOVE, MOVE_NATURAL_GIFT, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
     } THEN {
-        EXPECT(player->item == ITEM_PECHA_BERRY);
+        EXPECT(player->items[1]== ITEM_PECHA_BERRY);
     }
 }
 
@@ -107,7 +107,7 @@ SINGLE_BATTLE_TEST("Natural Gift does not remove berry if user is unable to use 
         ANIMATION(ANIM_TYPE_MOVE, MOVE_THUNDER_WAVE, opponent);
         NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_NATURAL_GIFT, player);
     } THEN {
-        EXPECT(player->item == ITEM_PECHA_BERRY);
+        EXPECT(player->items[1]== ITEM_PECHA_BERRY);
     }
 }
 
@@ -122,7 +122,7 @@ SINGLE_BATTLE_TEST("Natural Gift removes the berry if user missed (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SAND_ATTACK, opponent);
         NOT ANIMATION(ANIM_TYPE_MOVE, MOVE_NATURAL_GIFT, player);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_NONE);
     }
 }
 

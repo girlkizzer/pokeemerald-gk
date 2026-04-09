@@ -63,7 +63,7 @@ SINGLE_BATTLE_TEST("Restore PP berry activates immediately on switch in (Items)"
         ANIMATION(ANIM_TYPE_MOVE, MOVE_POUND, opponent);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_CELEBRATE, player);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_NONE);
     }
 }
 
@@ -71,7 +71,7 @@ SINGLE_BATTLE_TEST("Forced Leppa Berry consumption restores a move at 0 PP befor
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
+        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
         OPPONENT(SPECIES_WYNAUT) { MovesWithPP({MOVE_SCRATCH, 6}, {MOVE_CELEBRATE, 0}, {MOVE_POUND, 35}); }
     } WHEN {
         TURN { MOVE(player, MOVE_FLING); MOVE(opponent, MOVE_POUND); }
@@ -85,7 +85,7 @@ SINGLE_BATTLE_TEST("Forced Leppa Berry consumption restores the first move found
 {
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_FLING) == EFFECT_FLING);
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
+        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_LEPPA_BERRY); Moves(MOVE_FLING); }
         OPPONENT(SPECIES_WYNAUT) { MovesWithPP({MOVE_SCRATCH, 6}, {MOVE_CELEBRATE, 6}, {MOVE_POUND, 35}); }
     } WHEN {
         TURN { MOVE(player, MOVE_FLING); MOVE(opponent, MOVE_POUND); }

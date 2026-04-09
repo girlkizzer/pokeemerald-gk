@@ -640,7 +640,7 @@ SINGLE_BATTLE_TEST("Ability Shield doesn't protect the user's ability from being
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRICK, player);
         NOT ABILITY_POPUP(player, ABILITY_SPEED_BOOST);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_ABILITY_SHIELD);
+        EXPECT_EQ(player->items[1], ITEM_ABILITY_SHIELD);
     }
 }
 

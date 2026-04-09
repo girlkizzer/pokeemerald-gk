@@ -250,11 +250,10 @@ SINGLE_BATTLE_TEST("Harvest can only restore the newest berry consumed that was 
         PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_EXEGGUTOR) { Ability(ABILITY_HARVEST); HP(100); MaxHP(500); Item(ITEM_APICOT_BERRY); }
     } WHEN {
-        TURN { MOVE(opponent, MOVE_TRICK); MOVE(player, MOVE_SCRATCH); }
+        TURN { MOVE(opponent, MOVE_TRICK); }
     } SCENE {
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRICK, opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
@@ -262,6 +261,7 @@ SINGLE_BATTLE_TEST("Harvest can only restore the newest berry consumed that was 
         EXPECT_GT(opponent->hp, opponent->maxHP / 2); // eats 2 Sitrus
     }
 }
+
 
 #if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Harvest has a 50% chance to restore a Berry at the end of the turn (Traits)")
@@ -505,11 +505,10 @@ SINGLE_BATTLE_TEST("Harvest can only restore the newest berry consumed that was 
         PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_WHITE_SMOKE); Innates(ABILITY_DROUGHT); Item(ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_EXEGGUTOR) { Ability(ABILITY_CHLOROPHYLL); Innates(ABILITY_HARVEST); HP(100); MaxHP(500); Item(ITEM_APICOT_BERRY); }
     } WHEN {
-        TURN { MOVE(opponent, MOVE_TRICK); MOVE(player, MOVE_SCRATCH); }
+        TURN { MOVE(opponent, MOVE_TRICK); }
     } SCENE {
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRICK, opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
@@ -532,7 +531,7 @@ SINGLE_BATTLE_TEST("Harvest has a 50% chance to restore a Berry at the end of th
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponent->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -549,7 +548,7 @@ SINGLE_BATTLE_TEST("Harvest always restores a Berry in Sunlight (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, opponent);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponent->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -566,7 +565,7 @@ SINGLE_BATTLE_TEST("Harvest doesn't always restore a Berry if Cloud Nine/Air Loc
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -585,7 +584,7 @@ SINGLE_BATTLE_TEST("Harvest restores a Berry even after being switched out and b
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, player);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponent->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -602,7 +601,7 @@ SINGLE_BATTLE_TEST("Harvest restores a Berry consumed by Natural Gift (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_NATURAL_GIFT, opponent);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponent->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -622,7 +621,7 @@ SINGLE_BATTLE_TEST("Harvest doesn't restore a Berry when destroyed by Incinerate
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -640,7 +639,7 @@ SINGLE_BATTLE_TEST("Harvest doesn't restore a Berry when knocked off by Knock Of
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -658,7 +657,7 @@ SINGLE_BATTLE_TEST("Harvest doesn't restore a Berry when eaten by Bug Bite/Pluck
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUNNY_DAY, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -676,8 +675,8 @@ SINGLE_BATTLE_TEST("Harvest doesn't restore a Berry that's collected via Pickup 
         MESSAGE("Zigzagoon found one Sitrus Berry!");
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -696,8 +695,8 @@ DOUBLE_BATTLE_TEST("Harvest order is affected by speed (Items)")
         ABILITY_POPUP(opponentLeft, ABILITY_HARVEST);
         ABILITY_POPUP(playerLeft, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponentLeft->item, ITEM_SITRUS_BERRY);
-        EXPECT_EQ(playerLeft->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(opponentLeft->items[1], ITEM_SITRUS_BERRY);
+        EXPECT_EQ(playerLeft->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -714,7 +713,7 @@ SINGLE_BATTLE_TEST("Harvest doesn't restore a Berry when transfered to another P
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRICK, opponent);
         NOT ABILITY_POPUP(opponent, ABILITY_HARVEST);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -744,11 +743,10 @@ SINGLE_BATTLE_TEST("Harvest can only restore the newest berry consumed that was 
         PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); Items(ITEM_GREAT_BALL, ITEM_SITRUS_BERRY); }
         OPPONENT(SPECIES_EXEGGUTOR) { Ability(ABILITY_HARVEST); HP(100); MaxHP(500); Items(ITEM_GREAT_BALL, ITEM_APICOT_BERRY); }
     } WHEN {
-        TURN { MOVE(opponent, MOVE_TRICK); MOVE(player, MOVE_SCRATCH); }
+        TURN { MOVE(opponent, MOVE_TRICK); }
     } SCENE {
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_TRICK, opponent);
-        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);
         ABILITY_POPUP(opponent, ABILITY_HARVEST);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, opponent);

@@ -223,8 +223,8 @@ SINGLE_BATTLE_TEST("Thief and Covet steal target's held item (Items)")
         HP_BAR(opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, opponent);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_HYPER_POTION);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_HYPER_POTION);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -244,8 +244,8 @@ SINGLE_BATTLE_TEST("Thief and Covet steal player's held item if opponent is a tr
         HP_BAR(player);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, player);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_HYPER_POTION);
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_HYPER_POTION);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -265,8 +265,8 @@ WILD_BATTLE_TEST("Thief and Covet don't steal player's held item if opponent is 
         HP_BAR(player);
         NOT ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, player);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_HYPER_POTION);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_HYPER_POTION);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -285,8 +285,8 @@ SINGLE_BATTLE_TEST("Thief and Covet don't steal target's held item if user is ho
         HP_BAR(opponent);
         NOT ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, opponent);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_POTION);
-        EXPECT_EQ(opponent->item, ITEM_HYPER_POTION);
+        EXPECT_EQ(player->items[1], ITEM_POTION);
+        EXPECT_EQ(opponent->items[1], ITEM_HYPER_POTION);
     }
 }
 
@@ -307,8 +307,8 @@ WILD_BATTLE_TEST("Thief and Covet steal target's held item and it's added to Bag
         HP_BAR(opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, opponent);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -327,8 +327,8 @@ SINGLE_BATTLE_TEST("Thief and Covet can't steal target's held item if user faint
         HP_BAR(opponent);
         NOT ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, opponent);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
-        EXPECT_EQ(opponent->item, ITEM_ROCKY_HELMET);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_ROCKY_HELMET);
     }
 }
 

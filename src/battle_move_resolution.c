@@ -943,8 +943,9 @@ static enum CancelerResult CancelerPPDeduction(struct BattleContext *ctx)
     {
         for (u32 i = 0; i < gBattlersCount; i++)
         {
-            if (!IsBattlerAlly(i, ctx->battlerAtk) && IsBattlerAlive(i))
-                ppToDeduct += (BattlerHasTrait(i, ABILITY_PRESSURE));
+            if (!IsBattlerAlly(i, ctx->battlerAtk) && IsBattlerAlive(i)
+             && BattlerHasTrait(i, ABILITY_PRESSURE))
+                ppToDeduct += 1;
         }
     }
     else if (moveTarget != TARGET_OPPONENTS_FIELD)

@@ -84,7 +84,7 @@ SINGLE_BATTLE_TEST("Cud Chew will activate Kee Berry effect again on the next tu
         OPPONENT(SPECIES_TAUROS_PALDEA_COMBAT) { Ability(ABILITY_INTIMIDATE); Innates(ABILITY_CUD_CHEW); Item(ITEM_KEE_BERRY); }
     } WHEN {
         TURN { MOVE(player, MOVE_SCRATCH); }
-        TURN { MOVE(player, MOVE_CELEBRATE);}
+        TURN { MOVE(player, MOVE_CELEBRATE); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         HP_BAR(opponent);
@@ -159,7 +159,8 @@ SINGLE_BATTLE_TEST("Cud Chew will activate Kee Berry effect again on the next tu
         OPPONENT(SPECIES_TAUROS_PALDEA_COMBAT) { Ability(ABILITY_CUD_CHEW); Items(ITEM_PECHA_BERRY, ITEM_KEE_BERRY); }
     } WHEN {
         TURN { MOVE(player, MOVE_SCRATCH); }
-        TURN { MOVE(player, MOVE_CELEBRATE);}
+        TURN { MOVE(player, MOVE_CELEBRATE); }
+        TURN { MOVE(player, MOVE_CELEBRATE); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, player);
         HP_BAR(opponent);

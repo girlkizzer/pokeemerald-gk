@@ -164,7 +164,7 @@ SINGLE_BATTLE_TEST("Corrosive Gas destroys the target's item or fails if the tar
             MESSAGE("It won't have any effect on the opposing Wobbuffet!");
         }
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -182,7 +182,7 @@ SINGLE_BATTLE_TEST("Corrosive Gas doesn't destroy the item of a Pokemon with the
         ABILITY_POPUP(opponent, ABILITY_STICKY_HOLD);
         MESSAGE("The opposing Muk's Sticky Hold made Corrosive Gas ineffective!");
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_POISON_BARB);
+        EXPECT_EQ(opponent->items[1], ITEM_POISON_BARB);
     }
 }
 
@@ -201,7 +201,7 @@ SINGLE_BATTLE_TEST("Items lost to Corrosive Gas cannot be restored by Recycle (I
         MESSAGE("The opposing Wobbuffet used Recycle!");
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -247,10 +247,10 @@ DOUBLE_BATTLE_TEST("Corrosive Gas destroys foes and ally's items if they have on
         }
 
     } THEN {
-        EXPECT_EQ(playerRight->item, ITEM_SITRUS_BERRY); // Attacker doesn't lose its item.
-        EXPECT_EQ(playerLeft->item, ITEM_NONE);
-        EXPECT_EQ(opponentLeft->item, ITEM_NONE);
-        EXPECT_EQ(opponentRight->item, ITEM_NONE);
+        EXPECT_EQ(playerRight->items[1], ITEM_SITRUS_BERRY); // Attacker doesn't lose its item.
+        EXPECT_EQ(playerLeft->items[1], ITEM_NONE);
+        EXPECT_EQ(opponentLeft->items[1], ITEM_NONE);
+        EXPECT_EQ(opponentRight->items[1], ITEM_NONE);
     }
 }
 #endif

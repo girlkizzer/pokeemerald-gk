@@ -155,7 +155,7 @@ SINGLE_BATTLE_TEST("Bug Bite ignores Unnerve")
 SINGLE_BATTLE_TEST("Bug Bite ignores Unnerve (Traits)")
 {
     GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { HP(1); }
+        PLAYER(SPECIES_WOBBUFFET) { HP(100); }
         OPPONENT(SPECIES_TYRANITAR) { Ability(ABILITY_SAND_STREAM); Innates(ABILITY_UNNERVE); Item(ITEM_ORAN_BERRY); }
     } WHEN {
         TURN { MOVE(player, MOVE_BUG_BITE); }
@@ -274,7 +274,7 @@ SINGLE_BATTLE_TEST("Bug Bite eats the target's berry and immediately gains its e
         else if (statId != 0) {
             EXPECT_EQ(player->statStages[statId], DEFAULT_STAT_STAGE + 1);
         }
-        EXPECT_EQ(opponent->item, ITEM_NONE); // Opponent's Berry was eaten.
+        EXPECT_EQ(opponent->items[1], ITEM_NONE); // Opponent's Berry was eaten.
     }
 }
 
@@ -294,7 +294,7 @@ SINGLE_BATTLE_TEST("Tanga Berry activates before Bug Bite (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_BUG_BITE, player);
         HP_BAR(opponent);
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -309,7 +309,7 @@ SINGLE_BATTLE_TEST("Bug Bite ignores Unnerve (Items)")
         ANIMATION(ANIM_TYPE_MOVE, MOVE_BUG_BITE, player);
         HP_BAR(player);
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 #endif

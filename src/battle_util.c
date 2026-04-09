@@ -4002,7 +4002,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
 			{
                 for (i = 0; i < MAX_MON_ITEMS; i++)
                 {
-                    if (gBattleMons[battler].volatiles.cudChew)
+                    if (gBattleMons[battler].volatiles.cudChew && GetItemPocket(GetBattlerPartyState(battler)->usedHeldItems[i]) == POCKET_BERRIES)
                     {
                         gSpecialStatuses[battler].endTurnTraitDone[traitCheck - 1] = TRUE;
                         gBattleScripting.battler = battler;
@@ -4740,8 +4740,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
 
                 for (enum BattlerId battlerDef = 0; battlerDef < gBattlersCount; battlerDef++)
                 {
-                    if (gBattleMons[battlerDef].item != ITEM_NONE
-                     && battlerDef != battler
+                    if (battlerDef != battler
                      && !BattlerHasHeldItem(battlerDef, ITEM_NONE, FALSE) // Skip battler early if no items to check (Multi)
                      && IsBattlerTurnDamaged(battlerDef)
                      && !GetBattlerPartyState(battlerDef)->isKnockedOff
@@ -11342,10 +11341,19 @@ bool32 IsUsableWhileAsleepEffect(enum BattleMoveEffects effect)
 void SetWrapTurns(enum BattlerId battler)
 {
     u32 normalWrapTurns = B_WRAP_TURNS - 2; // 5 turns
-    if (BattlerHasHeldItemEffect(gBattlerAttacker, HOLD_EFFECT_GRIP_CLAW, TRUE))
-        gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? B_WRAP_TURNS : normalWrapTurns;
-    else
-        gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? RandomUniform(RNG_WRAP, 4, normalWrapTurns) : RandomUniform(RNG_WRAP, 2, normalWrapTurns);
+
+    for (u32 i = 0; i < MAX_MON_ITEMS; i++)
+    {
+        if (GetSlotHeldItemEffect(gBattlerAttacker, i, TRUE) == HOLD_EFFECT_GRIP_CLAW)
+        {
+            if (gBattleMons[battler].volatiles.wrapTurns == 0)
+                gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? B_WRAP_TURNS : normalWrapTurns;
+            else if (GetConfig(B_ALLOW_HELD_DUPES))
+                gBattleMons[battler].volatiles.wrapTurns += 2;
+        }
+    }
+    if (gBattleMons[battler].volatiles.wrapTurns == 0)
+        gBattleMons[battler].volatiles.wrapTurns = GetConfig(B_BINDING_TURNS) >= GEN_5 ? RandomUniform(RNG_WRAP, 4, normalWrapTurns) : RandomUniform(RNG_WRAP, 2, normalWrapTurns);   
 }
 
 // Return True if the order was changed, and false if the order was not changed(for example because the target would move after the attacker anyway).
@@ -11438,9 +11446,12 @@ void TryUpdateEvolutionTracker(enum EvolutionConditions evolutionCondition, u32 
                     SetMonData(monAtk, MON_DATA_EVOLUTION_TRACKER, &val);
                     break;
                 case IF_DEFEAT_X_WITH_ITEMS:
-                    if (GetMonData(monDef, MON_DATA_SPECIES) == evolutions[i].params[j].arg1
-                     && GetMonData(monDef, MON_DATA_HELD_ITEM) == evolutions[i].params[j].arg2)
-                        SetMonData(monAtk, MON_DATA_EVOLUTION_TRACKER, &val);
+                    for (u32 k = 0; k < MAX_MON_ITEMS; k++)
+                    {
+                        if (GetMonData(monDef, MON_DATA_SPECIES) == evolutions[i].params[j].arg1
+                        && GetMonData(monDef, MON_DATA_HELD_ITEM + k) == evolutions[i].params[j].arg2)
+                            SetMonData(monAtk, MON_DATA_EVOLUTION_TRACKER, &val);
+                    }
                     break;
                 default:
                     assertf(FALSE, "evolution condition %d is not handled within TryUpdateEvolutionTracker", evolutionCondition) {}

@@ -423,7 +423,7 @@ SINGLE_BATTLE_TEST("Powder doesn't consume Berry from Fire type Natural Gift but
             HP_BAR(opponent);
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_CHERI_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_CHERI_BERRY);
     }
 }
 #endif

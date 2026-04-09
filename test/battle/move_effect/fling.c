@@ -803,7 +803,7 @@ SINGLE_BATTLE_TEST("Fling fails if the item changes the Pokémon's form (Items)"
     } SCENE {
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT(player->item == ITEM_GRISEOUS_CORE);
+        EXPECT(player->items[1]== ITEM_GRISEOUS_CORE);
     }
 }
 
@@ -819,7 +819,7 @@ SINGLE_BATTLE_TEST("Fling works if the item changes a Pokémon's form but not th
         ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, player);
         HP_BAR(opponent);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_NONE);
     }
 }
 
@@ -867,7 +867,7 @@ SINGLE_BATTLE_TEST("Fling - Item is lost even when there is no target (Items)")
         MESSAGE("Wobbuffet used Fling!");
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -889,7 +889,7 @@ SINGLE_BATTLE_TEST("Fling - Item is lost when target protects itself (Items)")
         MESSAGE("Wobbuffet used Fling!");
         MESSAGE("But it failed!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -957,7 +957,7 @@ SINGLE_BATTLE_TEST("Fling doesn't consume the item if the user is asleep/frozen/
         }
 
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -1274,14 +1274,14 @@ SINGLE_BATTLE_TEST("Fling doesn't fail when holding a Booster Energy and the tar
     GIVEN {
         ASSUME(GetItemHoldEffect(ITEM_BOOSTER_ENERGY) == HOLD_EFFECT_BOOSTER_ENERGY);
         ASSUME(gSpeciesInfo[SPECIES_RAGING_BOLT].isParadox == TRUE);
-        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_PECHA_BERRY, ITEM_BOOSTER_ENERGY); }
+        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_BOOSTER_ENERGY); }
         OPPONENT(SPECIES_RAGING_BOLT) { Ability(ABILITY_PROTOSYNTHESIS); }
     } WHEN {
         TURN { MOVE(player, MOVE_FLING); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_FLING, player);
     } THEN {
-        EXPECT(player->item == ITEM_NONE);
+        EXPECT(player->items[1]== ITEM_NONE);
     }
 }
 #endif

@@ -630,7 +630,7 @@ SINGLE_BATTLE_TEST("Pickup grants an item used by another Pokémon (Items)")
         ABILITY_POPUP(player, ABILITY_PICKUP);
         MESSAGE("Zigzagoon found one Sitrus Berry!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -647,7 +647,7 @@ WILD_BATTLE_TEST("Pickup grants an item used by itself in wild battles (Gen9+) (
         ABILITY_POPUP(player, ABILITY_PICKUP);
         MESSAGE("Zigzagoon found one Sitrus Berry!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -665,7 +665,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant the user their item outside wild battle
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -684,7 +684,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant another Pokémon's popped Air Balloon (
             MESSAGE("Zigzagoon found one Air Balloon!");
         }
     } THEN {
-        EXPECT_EQ(opponent->item, ITEM_NONE);
+        EXPECT_EQ(opponent->items[1], ITEM_NONE);
     }
 }
 
@@ -705,7 +705,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an item not used that turn (Items)")
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -724,7 +724,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an item after its holder faints (Items)
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -749,7 +749,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an used item if holder is replaced (Ite
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -768,7 +768,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an item if it destroyed the item with I
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -787,7 +787,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an item if it knocked off that item (It
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -806,7 +806,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an item if the user eats it with Bug Bi
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -826,7 +826,7 @@ SINGLE_BATTLE_TEST("Pickup doesn't grant an used item if its user already restor
             MESSAGE("Zigzagoon found one Sitrus Berry!");
         }
     } THEN {
-        EXPECT_EQ(player->item, ITEM_NONE);
+        EXPECT_EQ(player->items[1], ITEM_NONE);
     }
 }
 
@@ -844,7 +844,7 @@ SINGLE_BATTLE_TEST("Pickup restores an item that has been Flinged (Items)")
         ABILITY_POPUP(player, ABILITY_PICKUP);
         MESSAGE("Zigzagoon found one Sitrus Berry!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -861,7 +861,7 @@ SINGLE_BATTLE_TEST("Pickup restores an item that was used by Natural Gift (Items
         ABILITY_POPUP(player, ABILITY_PICKUP);
         MESSAGE("Zigzagoon found one Sitrus Berry!");
     } THEN {
-        EXPECT_EQ(player->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(player->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -879,8 +879,8 @@ DOUBLE_BATTLE_TEST("Pickup triggers based on Speed order (Items)")
         ABILITY_POPUP(opponentRight, ABILITY_PICKUP);
         NOT ABILITY_POPUP(playerLeft, ABILITY_PICKUP);
     } THEN {
-        EXPECT_EQ(opponentRight->item, ITEM_SITRUS_BERRY);
-        EXPECT_EQ(playerLeft->item, ITEM_NONE);
+        EXPECT_EQ(opponentRight->items[1], ITEM_SITRUS_BERRY);
+        EXPECT_EQ(playerLeft->items[1], ITEM_NONE);
     }
 }
 
@@ -899,7 +899,7 @@ DOUBLE_BATTLE_TEST("Pickup grants a random item used by another Pokémon (Items)
         ANIMATION(ANIM_TYPE_MOVE, MOVE_BULLDOZE, playerLeft);
         ABILITY_POPUP(playerLeft, ABILITY_PICKUP);
     } THEN {
-        EXPECT_EQ(playerLeft->item, ITEM_SITRUS_BERRY);
+        EXPECT_EQ(playerLeft->items[1], ITEM_SITRUS_BERRY);
     }
 }
 
@@ -917,7 +917,7 @@ DOUBLE_BATTLE_TEST("Pickup doesn't trigger more than once per turn (Items)")
         ABILITY_POPUP(playerLeft, ABILITY_PICKUP);
         NOT ABILITY_POPUP(playerLeft, ABILITY_PICKUP);
     } THEN {
-        EXPECT_EQ(playerLeft->item, ITEM_NONE);
+        EXPECT_EQ(playerLeft->items[1], ITEM_NONE);
         EXPECT_GT(playerLeft->hp, 1);
         EXPECT_LT(playerLeft->hp, playerLeft->maxHP/2);
     }
