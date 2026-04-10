@@ -2137,4 +2137,6 @@ const u16 gBattleIcons_Pal2[] = INCBIN_U16("graphics/types/battle_icons2.gbapal"
 const u16 gGhostPalette[] = INCBIN_U16("graphics/pokemon/ghost/front.gbapal");
 const u32 gGhostFrontPic[] = INCBIN_U32("graphics/pokemon/ghost/front.4bpp.smol");
 //New Summary Pages
-const u32 gSummaryPage_Traits_Tilemap[]      = INCBIN_U32("graphics/summary_screen/page_traits.bin.smolTM");
+#if MAX_MON_TRAITS > 1
+    const u32 gSummaryPage_Traits_Tilemap[]      = INCBIN_U32("graphics/summary_screen/page_traits.bin.smolTM");
+#endif

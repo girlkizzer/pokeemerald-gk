@@ -173,7 +173,9 @@ static EWRAM_DATA struct PokemonSummaryScreenData
         u32 OTID; // 0x48
         enum Type teraType;
         u8 mintNature;
-        u8 innates[MAX_MON_INNATES];
+        #if MAX_MON_TRAITS > 1
+            u8 innates[MAX_MON_INNATES];
+        #endif
     } summary;
     u16 bgTilemapBuffers[PSS_PAGE_COUNT][2][0x400];
     u8 mode;
@@ -268,7 +270,6 @@ static void PrintMonOTName(void);
 static void PrintMonOTID(void);
 static void PrintMonAbilityName(void);
 static void PrintMonAbilityDescription(void);
-static void PrintMonTraits(u8);
 static void BufferMonTrainerMemo(void);
 static void PrintMonTrainerMemo(void);
 static void BufferNatureString(void);
@@ -346,8 +347,11 @@ u32 GetAdjustedIvData(struct Pokemon *mon, u32 stat);
 static void TryUpdateRelearnType(enum IncrDecrUpdateValues delta);
 static void ShowRelearnPrompt(void);
 static struct BoxPokemon *GetCurrentBoxmon(void);
-static void PrintTraits(void);
-static void Task_PrintTraits(u8);
+#if MAX_MON_TRAITS > 1
+    static void PrintMonTraits(u8);
+    static void PrintTraits(void);
+    static void Task_PrintTraits(u8);
+#endif
 
 
 static const struct BgTemplate sBgTemplates[] =
@@ -1642,10 +1646,12 @@ static bool8 ExtractMonDataToSummaryStruct(struct Pokemon *mon)
         sum->friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
         break;
     case 4:
-        for (i = 0; i < MAX_MON_INNATES; i++)
-        {
-            sum->innates[i] = GetMonData(mon, MON_DATA_INNATE1 + i);
-        }
+        #if MAX_MON_TRAITS > 1
+            for (i = 0; i < MAX_MON_INNATES; i++)
+            {
+                sum->innates[i] = GetMonData(mon, MON_DATA_INNATE1 + i);
+            }
+        #endif
         break;
     default:
         sum->ribbonCount = GetMonData(mon, MON_DATA_RIBBON_COUNT);
@@ -1820,8 +1826,12 @@ static void Task_HandleInput(u8 taskId)
         }
         else if (JOY_NEW(A_BUTTON))
         {
-            if (sMonSummaryScreen->currPageIndex != PSS_PAGE_SKILLS
-             && sMonSummaryScreen->currPageIndex != PSS_PAGE_TRAITS)
+            #if MAX_MON_TRAITS > 1
+                if (sMonSummaryScreen->currPageIndex != PSS_PAGE_SKILLS
+                && sMonSummaryScreen->currPageIndex != PSS_PAGE_TRAITS)
+            #else
+                if (sMonSummaryScreen->currPageIndex != PSS_PAGE_SKILLS)
+            #endif
             {
                 if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
                 {
@@ -3464,7 +3474,9 @@ static void PrintPageNamesAndStats(void)
     int statsXPos;
 
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_INFO_TITLE, gText_PkmnInfo, 2, 1, 0, 1);
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE, gText_PkmnTraits, 2, 1, 0, 1);
+    #if MAX_MON_TRAITS > 1
+        PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE, gText_PkmnTraits, 2, 1, 0, 1);
+    #endif
     PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE, gText_PkmnSkills, 2, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_BATTLE_MOVES_TITLE, gText_BattleMoves, 2, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_CONTEST_MOVES_TITLE, gText_ContestMoves, 2, 1, 0, 1);
@@ -3506,7 +3518,9 @@ static void PutPageWindowTilemaps(u8 page)
     u8 i;
 
     ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_INFO_TITLE);
-    ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE);
+    #if MAX_MON_TRAITS > 1
+        ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE);
+    #endif
     ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE);
     ClearWindowTilemap(PSS_LABEL_WINDOW_BATTLE_MOVES_TITLE);
     ClearWindowTilemap(PSS_LABEL_WINDOW_CONTEST_MOVES_TITLE);
@@ -3520,9 +3534,11 @@ static void PutPageWindowTilemaps(u8 page)
             PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_INFO_RENTAL);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_INFO_TYPE);
         break;
-    case PSS_PAGE_TRAITS:
-        PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE);
-        break;
+    #if MAX_MON_TRAITS > 1
+        case PSS_PAGE_TRAITS:
+            PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_TRAITS_TITLE);
+            break;
+    #endif
     case PSS_PAGE_SKILLS:
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT);
@@ -3580,8 +3596,10 @@ static void ClearPageWindowTilemaps(u8 page)
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_INFO_TYPE);
         ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_RELEARN);
         break;
-    case PSS_PAGE_TRAITS:
-        break;
+    #if MAX_MON_TRAITS > 1
+        case PSS_PAGE_TRAITS:
+            break;
+    #endif
     case PSS_PAGE_SKILLS:
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT);
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT);

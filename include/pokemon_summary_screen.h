@@ -37,7 +37,9 @@ enum PokemonSummaryScreenMode
 enum PokemonSummaryScreenPage
 {
     PSS_PAGE_INFO,
-    PSS_PAGE_TRAITS,
+    #if MAX_MON_TRAITS > 1   
+        PSS_PAGE_TRAITS,
+    #endif
     PSS_PAGE_SKILLS,
     PSS_PAGE_BATTLE_MOVES,
     PSS_PAGE_CONTEST_MOVES,

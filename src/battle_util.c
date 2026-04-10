@@ -7866,11 +7866,11 @@ static inline uq4_12_t GetScreensModifier(struct BattleContext *ctx)
     bool32 reflect = (sideStatus & SIDE_STATUS_REFLECT) && IsBattleMovePhysical(ctx->move);
     bool32 auroraVeil = sideStatus & SIDE_STATUS_AURORA_VEIL;
 
-    if (ctx->isCrit || BattlerHasTrait(ctx->battlerAtk, ABILITY_INFILTRATOR) || ctx->isSelfInflicted)
+    if (ctx->isCrit || ctx->isSelfInflicted)
     {
         return UQ_4_12(1.0);
     }
-    if (BattlerHasTrait(ctx->battlerAtk, ABILITY_INFILTRATOR && !IsBattlerAlly(ctx->battlerAtk, ctx->battlerDef)))
+    if (BattlerHasTrait(ctx->battlerAtk, ABILITY_INFILTRATOR) && !IsBattlerAlly(ctx->battlerAtk, ctx->battlerDef))
     {
         if (ctx->updateFlags)
             RecordAbilityBattle(ctx->battlerAtk, ABILITY_INFILTRATOR);
@@ -11622,7 +11622,7 @@ void PushTraitStack(enum BattlerId battlerId, enum Ability ability)
     u32 newBattlerID = battlerId;
     u32 newAbility = ability;
 
-    for (u32 i = 0; i < (MAX_BATTLERS_COUNT * MAX_MON_TRAITS); i++)
+    for (u32 i = 0; i < (MAX_BATTLERS_COUNT * (4 + MAX_MON_INNATES)); i++) //Needs to be high enough to hold every ability pop up in a turn.
     {
         if (gTraitStack[i][1] == ABILITY_NONE)
         {
@@ -11638,7 +11638,7 @@ u32 PullTraitStackBattler()
 {
     u32 newBattlerID = MAX_BATTLERS_COUNT;
 
-    for (int i = 0; i < (MAX_BATTLERS_COUNT * MAX_MON_TRAITS); i++)
+    for (int i = 0; i < (MAX_BATTLERS_COUNT * (4 + MAX_MON_INNATES)); i++) //Needs to be high enough to hold every ability pop up in a turn.
     {
         if (gTraitStack[i][1] == ABILITY_NONE)
         {
@@ -11655,7 +11655,7 @@ enum Ability PullTraitStackAbility()
 {
     enum Ability ability = ABILITY_NONE;
 
-    for (u32 i = 0; i < (MAX_BATTLERS_COUNT * MAX_MON_TRAITS); i++)
+    for (u32 i = 0; i < (MAX_BATTLERS_COUNT * (4 + MAX_MON_INNATES)); i++) //Needs to be high enough to hold every ability pop up in a turn.
     {
         if (gTraitStack[i][1] == ABILITY_NONE)
         {
@@ -11672,7 +11672,7 @@ enum Ability PullTraitStackAbility()
 // Clears the latest ability popup slot.  Searches from the bottom to the top since the stack should generally be small.
 void PopTraitStack()
 {
-    for (u32 i =0; i < (MAX_BATTLERS_COUNT * MAX_MON_TRAITS); i++)
+    for (u32 i =0; i < (MAX_BATTLERS_COUNT * (4 + MAX_MON_INNATES)); i++) //Needs to be high enough to hold every ability pop up in a turn.
     {
         if (gTraitStack[i][1] == ABILITY_NONE)
         {

@@ -28,6 +28,7 @@ SINGLE_BATTLE_TEST("Swarm boosts Bug-type moves in a pinch", s16 damage)
     }
 }
 
+#if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Swarm boosts Bug-type moves in a pinch", s16 damage)
 {
     u16 hp;
@@ -54,3 +55,4 @@ SINGLE_BATTLE_TEST("Swarm boosts Bug-type moves in a pinch", s16 damage)
         EXPECT_EQ(results[1].damage, 72);
     }
 }
+#endif

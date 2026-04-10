@@ -788,7 +788,7 @@ SINGLE_BATTLE_TEST("(Z-MOVE) Z-Moves are not affected by -ate abilities")
     GIVEN {
         ASSUME(GetMoveType(MOVE_SCRATCH) == TYPE_NORMAL);
         ASSUME(GetSpeciesType(SPECIES_SWELLOW, 1) == TYPE_FLYING);
-        PLAYER(SPECIES_AURORUS) { Ability(ABILITY_SNOW_WARNING); Innates(ABILITY_REFRIGERATE); Item(ITEM_NORMALIUM_Z); }
+        PLAYER(SPECIES_AURORUS) { Ability(ABILITY_REFRIGERATE); Item(ITEM_NORMALIUM_Z); }
         OPPONENT(SPECIES_SWELLOW);
     } WHEN {
         TURN { MOVE(player, MOVE_SCRATCH, gimmick: GIMMICK_Z_MOVE); }

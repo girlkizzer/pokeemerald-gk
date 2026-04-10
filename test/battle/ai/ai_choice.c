@@ -284,7 +284,7 @@ AI_DOUBLE_BATTLE_TEST("Choiced Pokémon won't switch out if they can still affec
     }
 }
 
-#if MAX_MON_ITEMS > 1
+#if MAX_MON_TRAITS > 1
 AI_DOUBLE_BATTLE_TEST("Choiced Pokémon won't switch out if they can still affect one opposing Pokémon in doubles (Traits)")
 {
     u32 defendingSpecies = SPECIES_NONE;

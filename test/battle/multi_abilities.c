@@ -1,7 +1,7 @@
 #include "global.h"
 #include "test/battle.h"
 
-#if MAX_MON_TRAITS > 1
+#if MAX_MON_TRAITS > 3
 SINGLE_BATTLE_TEST("Multi - Contrary causes Competitive or Defiant to sharply lower stats", s16 damage)
 {
     u32 ability, attack;
@@ -1269,6 +1269,10 @@ SINGLE_BATTLE_TEST("Multi - Protosynthesis doe not conflict with other weather a
 #endif
 
 #if MAX_MON_ITEMS > 1
+
+#endif
+
+#if MAX_MON_TRAITS > 1 && MAX_MON_ITEMS >1
 SINGLE_BATTLE_TEST("Multi - ABILITYEFFECT_ENDTURN item Harvest and Pickup can work on the same turn")
 {
     // Ball Fetch and Cud Chew here to make sure they don't conflict

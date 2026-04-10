@@ -988,7 +988,7 @@ extern enum Ability gLastUsedAbility;
 extern enum Ability gDisplayAbility;
 extern enum Ability gDisplayAbility2;
 extern enum BattlerId gDisplayBattler;
-extern enum Ability gTraitStack[MAX_BATTLERS_COUNT * MAX_MON_TRAITS][2];
+extern enum Ability gTraitStack[MAX_BATTLERS_COUNT * (4 + MAX_MON_INNATES)][2]; //Needs to be high enough to hold every ability pop up in a turn.
 extern enum BattlerId gBattlerAttacker;
 extern enum BattlerId gBattlerTarget;
 extern enum BattlerId gBattlerFainted;

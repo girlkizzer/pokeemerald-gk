@@ -2219,7 +2219,7 @@ void Ability_(u32 sourceLine, enum Ability ability)
     }
 }
 
-void Innates_(u32 sourceLine, enum Ability innates[MAX_MON_INNATES])
+void Innates_(u32 sourceLine, enum Ability innates[MAX_MON_INNATES_INTERNAL])
 {
     s32 i;
     INVALID_IF(!DATA.currentMon, "Innates outside of PLAYER/OPPONENT");

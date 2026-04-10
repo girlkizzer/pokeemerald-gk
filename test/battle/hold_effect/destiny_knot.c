@@ -79,21 +79,6 @@ SINGLE_BATTLE_TEST("Destiny Knot procs but fails if the target is already infatu
     }
 }
 
-SINGLE_BATTLE_TEST("Destiny Knot infatuates back when holder is attacking")
-{
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Gender(MON_MALE); Item(ITEM_DESTINY_KNOT);}
-        OPPONENT(SPECIES_CLEFAIRY)  { Gender(MON_FEMALE); Ability(ABILITY_FRIEND_GUARD); Innates(ABILITY_CUTE_CHARM);}
-    } WHEN {
-        TURN {  MOVE(player, MOVE_TACKLE); }
-    } SCENE {
-        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
-        MESSAGE("The opposing Clefairy fell in love because of the Destiny Knot!");
-    } THEN {
-        EXPECT(opponent->volatiles.infatuation);
-    }
-}
-
 #if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Destiny Knot procs but fails if the target is oblivious (Traits)")
 {
@@ -125,6 +110,20 @@ SINGLE_BATTLE_TEST("Destiny Knot procs but fails if the target is already infatu
     }
 }
 
+SINGLE_BATTLE_TEST("Destiny Knot infatuates back when holder is attacking (Traits)")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET) { Gender(MON_MALE); Item(ITEM_DESTINY_KNOT);}
+        OPPONENT(SPECIES_CLEFAIRY)  { Gender(MON_FEMALE); Ability(ABILITY_FRIEND_GUARD); Innates(ABILITY_CUTE_CHARM);}
+    } WHEN {
+        TURN {  MOVE(player, MOVE_TACKLE); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_HELD_ITEM_EFFECT, player);
+        MESSAGE("The opposing Clefairy fell in love because of the Destiny Knot!");
+    } THEN {
+        EXPECT(opponent->volatiles.infatuation);
+    }
+}
 #endif
 
 #if MAX_MON_ITEMS > 1

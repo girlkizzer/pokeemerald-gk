@@ -3391,6 +3391,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     #else
         .abilities = { ABILITY_EFFECT_SPORE, ABILITY_NONE, ABILITY_TECHNICIAN },
     #endif
+        .innates = { ABILITY_DROUGHT, ABILITY_PRESSURE, ABILITY_AFTERMATH },
         .bodyColor = BODY_COLOR_GREEN,
         .speciesName = _("Breloom"),
         .cryId = CRY_BRELOOM,
