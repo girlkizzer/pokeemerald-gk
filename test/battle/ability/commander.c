@@ -1237,7 +1237,7 @@ DOUBLE_BATTLE_TEST("Commander prevents Red Card from working while Commander is 
     }
 }
 
-DOUBLE_BATTLE_TEST("Red Card is still consumed but cannot force out Dondozo after swallowed Tatsugiri faints (Multi)")
+DOUBLE_BATTLE_TEST("Red Card is still consumed but cannot force out Dondozo after swallowed Tatsugiri faints (Items)")
 {
     GIVEN {
         ASSUME(gItemsInfo[ITEM_RED_CARD].holdEffect == HOLD_EFFECT_RED_CARD);

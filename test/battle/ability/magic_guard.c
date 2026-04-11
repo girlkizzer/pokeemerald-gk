@@ -106,7 +106,7 @@ SINGLE_BATTLE_TEST("Magic Guard does not ignore speed stat changes caused by par
     }
 }
 
-SINGLE_BATTLE_TEST("Magic Guard prevents Rough Skin damage")
+SINGLE_BATTLE_TEST("Magic Guard prevents Rough Skin damage (Traits)")
 {
     GIVEN {
         ASSUME(MoveMakesContact(MOVE_POUND));

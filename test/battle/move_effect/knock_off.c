@@ -978,7 +978,7 @@ SINGLE_BATTLE_TEST("Knock Off does not activate if the item was previously consu
     }
 }
 
-SINGLE_BATTLE_TEST("Knock Off does knock off Ogerpon masks from Pokemon that aren't Ogerpon (Multi)")
+SINGLE_BATTLE_TEST("Knock Off does knock off Ogerpon masks from Pokemon that aren't Ogerpon (Items)")
 {
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET);
@@ -988,11 +988,11 @@ SINGLE_BATTLE_TEST("Knock Off does knock off Ogerpon masks from Pokemon that are
     } SCENE {
         MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Hearthflame Mask!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1] == ITEM_NONE);
     }
 }
 
-SINGLE_BATTLE_TEST("Knock Off doesn't knock off Ogerpon masks from Ogerpon (Multi)")
+SINGLE_BATTLE_TEST("Knock Off doesn't knock off Ogerpon masks from Ogerpon (Items)")
 {
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET);
@@ -1002,7 +1002,7 @@ SINGLE_BATTLE_TEST("Knock Off doesn't knock off Ogerpon masks from Ogerpon (Mult
     } SCENE {
         NOT MESSAGE("Wobbuffet knocked off the opposing Ogerpon's Hearthflame Mask!");
     } THEN {
-        EXPECT(opponent->item == ITEM_HEARTHFLAME_MASK);
+        EXPECT(opponent->items[1] == ITEM_HEARTHFLAME_MASK);
     }
 }
 
@@ -1016,7 +1016,7 @@ SINGLE_BATTLE_TEST("Knock Off does knock off a Booster Energy from a non Paradox
     } SCENE {
         MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Booster Energy!");
     } THEN {
-        EXPECT(opponent->item == ITEM_NONE);
+        EXPECT(opponent->items[1] == ITEM_NONE);
     }
 }
 
@@ -1030,7 +1030,7 @@ SINGLE_BATTLE_TEST("Knock Off doesn't knock off a Paradox mon's Booster Energy (
     } SCENE {
         NOT MESSAGE("Wobbuffet knocked off the opposing Great Tusk's Booster Energy!");
     } THEN {
-        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
+        EXPECT(opponent->items[1] == ITEM_BOOSTER_ENERGY);
     }
 }
 
@@ -1044,7 +1044,7 @@ SINGLE_BATTLE_TEST("Knock Off used by a Paradox mon doesn't knock off a non-Para
     } SCENE {
         NOT MESSAGE("Great Tust knocked off the opposing Wobbuffet's Booster Energy!");
     } THEN {
-        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
+        EXPECT(opponent->items[1] == ITEM_BOOSTER_ENERGY);
     }
 }
 #endif

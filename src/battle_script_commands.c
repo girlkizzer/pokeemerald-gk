@@ -14368,16 +14368,18 @@ void BS_SwitchinAbilities(void)
     NATIVE_ARGS(u8 battler);
     enum BattlerId battler = GetBattlerForBattleScript(cmd->battler);
     gBattlescriptCurrInstr = cmd->nextInstr;
-    if (AbilityBattleEffects(ABILITYEFFECT_TERA_SHIFT, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_NEUTRALIZINGGAS, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_UNNERVE, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_ON_SWITCHIN, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_IMMUNITY, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_COMMANDER, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_ON_WEATHER, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_ON_TERRAIN, battler, MOVE_NONE, TRUE)
-     || AbilityBattleEffects(ABILITYEFFECT_OPPORTUNIST, battler, MOVE_NONE, TRUE))
-        return;
+
+    AbilityBattleEffects(ABILITYEFFECT_TERA_SHIFT, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_NEUTRALIZINGGAS, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_UNNERVE, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_ON_SWITCHIN, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_IMMUNITY, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_COMMANDER, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_ON_WEATHER, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_ON_TERRAIN, battler, MOVE_NONE, TRUE);
+    AbilityBattleEffects(ABILITYEFFECT_OPPORTUNIST, battler, MOVE_NONE, TRUE);
+
+    return;
 }
 
 void BS_InstantHpDrop(void)
@@ -14445,7 +14447,7 @@ void BS_TryActivateReceiver(void)
      && !gAbilitiesInfo[gBattleMons[faintedBattler].ability].cantBeCopied)
     {
         gBattlerAbility = receiverBattler;
-        PushTraitStack(gBattlerAbility, partnerAbility); // Should not be Innates (Multi)
+        PushTraitStack(gBattlerAbility, receiverAbility); // Should not be Innates (Multi)
         gBattleStruct->tracedAbility[receiverBattler] = gBattleMons[faintedBattler].ability; // re-using the variable for trace
         gBattleScripting.battler = faintedBattler;
         BattleScriptPush(cmd->nextInstr);

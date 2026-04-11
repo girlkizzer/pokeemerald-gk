@@ -4160,7 +4160,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         }
         else if (SearchTraits(battlerTraits, ABILITY_LINGERING_AROMA)
          && IsBattlerAlive(gBattlerAttacker)
-         && IsBattlerTurnDamaged(gBattlerTarget)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move)
          && gBattleMons[gBattlerAttacker].volatiles.overwrittenAbility != GetBattlerAbility(gBattlerTarget)
          && !BattlerHasTrait(gBattlerAttacker, ABILITY_MUMMY)
@@ -4224,7 +4224,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
          && IsBattlerAlive(gBattlerAttacker)
          && (CompareStat(gBattlerAttacker, STAT_SPEED, MIN_STAT_STAGE, CMP_GREATER_THAN) || BattlerHasTrait(gBattlerAttacker, ABILITY_MIRROR_ARMOR))
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
          {
             gLastUsedAbility = ABILITY_GOOEY;
@@ -4237,7 +4237,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
          && IsBattlerAlive(gBattlerAttacker)
          && (CompareStat(gBattlerAttacker, STAT_SPEED, MIN_STAT_STAGE, CMP_GREATER_THAN) || BattlerHasTrait(gBattlerAttacker, ABILITY_MIRROR_ARMOR))
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
             gLastUsedAbility = ABILITY_TANGLING_HAIR;
@@ -4286,25 +4286,41 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         if (SearchTraits(battlerTraits, ABILITY_IRON_BARBS)
          && IsBattlerAlive(gBattlerAttacker)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(gBattlerTarget)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
-            returnDamage += (GetNonDynamaxMaxHP(gBattlerAttacker) / (B_ROUGH_SKIN_DMG >= GEN_4 ? 8 : 16));
-            gLastUsedAbility = ABILITY_IRON_BARBS;
-            PushTraitStack(battler, ABILITY_IRON_BARBS);
-            BattleScriptCall(BattleScript_IronBarbsActivates);
+            if (!IsAbilityAndRecord(gBattlerAttacker, ABILITY_MAGIC_GUARD))
+            {
+                returnDamage += (GetNonDynamaxMaxHP(gBattlerAttacker) / (B_ROUGH_SKIN_DMG >= GEN_4 ? 8 : 16));
+                gLastUsedAbility = ABILITY_IRON_BARBS;
+                PushTraitStack(battler, ABILITY_IRON_BARBS);
+                BattleScriptCall(BattleScript_IronBarbsActivates);
+            }
+            else
+            {
+                PushTraitStack(battler, ABILITY_IRON_BARBS);
+                BattleScriptCall(BattleScript_AbilityPopUp);
+            }
             effect++;
         }
         if (SearchTraits(battlerTraits, ABILITY_ROUGH_SKIN)
          && IsBattlerAlive(gBattlerAttacker)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(gBattlerTarget)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
-            returnDamage += (GetNonDynamaxMaxHP(gBattlerAttacker) / (B_ROUGH_SKIN_DMG >= GEN_4 ? 8 : 16));
-            gLastUsedAbility = ABILITY_ROUGH_SKIN;
-            PushTraitStack(battler, ABILITY_ROUGH_SKIN);
-            BattleScriptCall(BattleScript_RoughSkinActivates);
+            if (!IsAbilityAndRecord(gBattlerAttacker, ABILITY_MAGIC_GUARD))
+            {
+                returnDamage += (GetNonDynamaxMaxHP(gBattlerAttacker) / (B_ROUGH_SKIN_DMG >= GEN_4 ? 8 : 16));
+                gLastUsedAbility = ABILITY_ROUGH_SKIN;
+                PushTraitStack(battler, ABILITY_ROUGH_SKIN);
+                BattleScriptCall(BattleScript_RoughSkinActivates);
+            }
+            else
+            {
+                PushTraitStack(battler, ABILITY_ROUGH_SKIN);
+                BattleScriptCall(BattleScript_AbilityPopUp);
+            }
             effect++;
         }
         if (returnDamage > 0)
@@ -4386,7 +4402,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         if (trySleep
             && IsBattlerAlive(gBattlerAttacker)
             && !gBattleStruct->unableToUseMove
-            && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+            && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
             && CanBeSlept(gBattlerTarget, gBattlerAttacker, NOT_BLOCKED_BY_SLEEP_CLAUSE)
             && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
@@ -4403,7 +4419,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         else if (tryParalysis
         && IsBattlerAlive(gBattlerAttacker)
         && !gBattleStruct->unableToUseMove
-        && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+        && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
         && CanBeParalyzed(gBattlerTarget, gBattlerAttacker)
         && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
@@ -4418,7 +4434,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         else if (tryBurn
          && IsBattlerAlive(gBattlerAttacker)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && CanBeBurned(gBattlerTarget, gBattlerAttacker)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
@@ -4433,7 +4449,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         else if (tryPoison
             && IsBattlerAlive(gBattlerAttacker)
             && !gBattleStruct->unableToUseMove
-            && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+            && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
             && CanBePoisoned(gBattlerTarget, gBattlerAttacker)
             && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move))
         {
@@ -4449,7 +4465,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         if (SearchTraits(battlerTraits, ABILITY_CUTE_CHARM)
          && IsBattlerAlive(gBattlerAttacker)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && IsBattlerAlive(gBattlerTarget)
          && (GetConfig(B_ABILITY_TRIGGER_CHANCE) >= GEN_4 ? RandomPercentage(RNG_CUTE_CHARM, 30) : RandomChance(RNG_CUTE_CHARM, 1, 3))
          && !(gBattleMons[gBattlerAttacker].volatiles.infatuation)
@@ -4471,7 +4487,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
             effect++;
         }
         if (SearchTraits(battlerTraits, ABILITY_COTTON_DOWN)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES))
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES))
         {
             gEffectBattler = gBattlerTarget;
             // Will ability popup activate if there is only one target?
@@ -4480,7 +4496,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
             effect++;
         }
         if (SearchTraits(battlerTraits, ABILITY_STEAM_ENGINE)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && IsBattlerAlive(battler)
          && CompareStat(battler, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN)
          && (moveType == TYPE_FIRE || moveType == TYPE_WATER))
@@ -4492,7 +4508,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         }
         if (SearchTraits(battlerTraits, ABILITY_SAND_SPIT)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !(gBattleWeather & B_WEATHER_SANDSTORM && HasWeatherEffect()))
         {
             if (gBattleWeather & B_WEATHER_PRIMAL_ANY && HasWeatherEffect())
@@ -4511,7 +4527,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         }
         if (SearchTraits(battlerTraits, ABILITY_PERISH_BODY)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && IsBattlerAlive(battler)
          && !CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, move)
          && !gBattleMons[gBattlerAttacker].volatiles.perishSong)
@@ -4529,7 +4545,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         }
         if (SearchTraits(battlerTraits, ABILITY_SEED_SOWER)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && IsBattlerAlive(gBattlerTarget)
          && TryChangeBattleTerrain(gBattlerTarget, STATUS_FIELD_GRASSY_TERRAIN))
         {
@@ -4538,7 +4554,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
             effect++;
         }
         if (SearchTraits(battlerTraits, ABILITY_THERMAL_EXCHANGE)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && IsBattlerAlive(gBattlerTarget)
          && CompareStat(gBattlerTarget, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN)
          && moveType == TYPE_FIRE)
@@ -4552,8 +4568,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         if (SearchTraits(battlerTraits, ABILITY_WIND_POWER)
          && IsWindMove(gCurrentMove)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
-         && IsBattlerAlive(gBattlerTarget))
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES))
         {
             PushTraitStack(battler, ABILITY_WIND_POWER);
             BattleScriptCall(BattleScript_WindPowerActivates);
@@ -4561,8 +4576,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
         }
         else if (SearchTraits(battlerTraits, ABILITY_ELECTROMORPHOSIS)
          && !gBattleStruct->unableToUseMove
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
-         && IsBattlerAlive(gBattlerTarget))
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES))
         {
             PushTraitStack(battler, ABILITY_ELECTROMORPHOSIS);
             BattleScriptCall(BattleScript_ElectromorphosisActivates);
@@ -4573,7 +4587,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
          && !gBattleStruct->isSkyBattle
          && !gBattleStruct->unableToUseMove
          && IsBattleMovePhysical(gCurrentMove)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && (gSideTimers[GetBattlerSide(gBattlerAttacker)].toxicSpikesAmount != 2))
         {
             SaveBattlerTarget(gBattlerTarget);
@@ -4617,7 +4631,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
          && !gBattleStruct->unableToUseMove
          && CanBePoisoned(gBattlerAttacker, gBattlerTarget)
          && IsMoveMakingContact(gBattlerAttacker, gBattlerTarget, move)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES) // Need to actually hit the target
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES) // Need to actually hit the target
          && RandomPercentage(RNG_POISON_TOUCH, 30))
         {
             gEffectBattler = gBattlerTarget;
@@ -4632,7 +4646,7 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
          && IsBattlerAlive(gBattlerTarget)
          && !gBattleStruct->unableToUseMove
          && RandomChance(RNG_STENCH, 1, 10)
-         && IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES)
+         && IsBattlerTurnDamaged(gBattlerTarget, EXCLUDING_SUBSTITUTES)
          && !MoveHasAdditionalEffect(gCurrentMove, MOVE_EFFECT_FLINCH))
         {
             SetMoveEffect(gBattlerAttacker, gBattlerTarget, MOVE_EFFECT_FLINCH, gBattlescriptCurrInstr, EFFECT_PRIMARY);

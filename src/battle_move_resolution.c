@@ -2080,11 +2080,10 @@ static enum MoveEndResult MoveEndProtectLikeEffect(void)
 {
     enum MoveEndResult result = MOVEEND_RESULT_CONTINUE;
     u32 temp = 0;
-    enum Ability abilityAtk = GetBattlerAbility(gBattlerAttacker);
-    enum HoldEffect holdEffectAtk = GetBattlerHoldEffect(gBattlerAttacker);
     enum ProtectMethod method = gProtectStructs[gBattlerTarget].protected;
 
     if (gProtectStructs[gBattlerAttacker].chargingTurn
+     || !IsBattlerAlive(gBattlerAttacker)
      || CanBattlerAvoidContactEffects(gBattlerAttacker, gBattlerTarget, gCurrentMove))
     {
         gBattleScripting.moveendState++;
@@ -2092,8 +2091,8 @@ static enum MoveEndResult MoveEndProtectLikeEffect(void)
     }
 
     if (method != PROTECT_MAX_GUARD
-     && abilityAtk == ABILITY_UNSEEN_FIST
-     && IsMoveMakingContact(gBattlerAttacker, gBattlerTarget, abilityAtk, holdEffectAtk, gCurrentMove))
+     && BattlerHasTrait(gBattlerAttacker, ABILITY_UNSEEN_FIST)
+     && IsMoveMakingContact(gBattlerAttacker, gBattlerTarget, gCurrentMove))
     {
         gBattleScripting.moveendState++;
         return result;

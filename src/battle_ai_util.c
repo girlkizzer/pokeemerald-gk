@@ -2151,7 +2151,7 @@ bool32 ShouldTryOHKO(enum BattlerId battlerAtk, enum BattlerId battlerDef, enum 
     if (!DoesBattlerIgnoreAbilityChecks(battlerAtk, move) && AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_STURDY))
         return FALSE;
 
-    bool32 sureHit = (gBattleMons[battlerAtk].volatiles.battlerWithSureHit == battlerDef + 1) || AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_NO_GUARD) || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_NO_GUARD;)
+    bool32 sureHit = (gBattleMons[battlerAtk].volatiles.battlerWithSureHit == battlerDef + 1) || AI_BATTLER_HAS_TRAIT(battlerAtk, ABILITY_NO_GUARD) || AI_BATTLER_HAS_TRAIT(battlerDef, ABILITY_NO_GUARD);
     if (sureHit && gBattleMons[battlerAtk].level >= gBattleMons[battlerDef].level)
     {
         return TRUE;
