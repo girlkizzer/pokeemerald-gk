@@ -148,6 +148,21 @@ SINGLE_BATTLE_TEST("Steel Beam is not blocked by Damp")
     }
 }
 
+SINGLE_BATTLE_TEST("Steel Beam inflicts recoil if it hits a Substitute")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET) { HP(400); MaxHP(400); }
+        OPPONENT(SPECIES_WOBBUFFET);
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_SUBSTITUTE); MOVE(player, MOVE_STEEL_BEAM); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, opponent);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_STEEL_BEAM, player);
+        SUB_HIT(opponent);
+        HP_BAR(player, damage: 200);
+    }
+}
+
 #if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Steel Beam hp loss is prevented by Magic Guard (Traits)")
 {

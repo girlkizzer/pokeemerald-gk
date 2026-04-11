@@ -26,7 +26,6 @@ AI_SINGLE_BATTLE_TEST("AI will not try to lower opposing stats if target is prot
     }
 }
 
-
 AI_DOUBLE_BATTLE_TEST("AI will not try to lower opposing stats if target is protected by Flower Veil")
 {
     enum Move move;
@@ -232,6 +231,32 @@ AI_DOUBLE_BATTLE_TEST("Protect: AI avoids Protect vs moves that ignore protectio
     }
 }
 
+AI_SINGLE_BATTLE_TEST("AI penalizes Yawn when target can self-status with Flame/Toxic Orb")
+{
+    u32 heldItem = ITEM_NONE;
+    bool32 shouldYawn = FALSE;
+
+    PARAMETRIZE { heldItem = ITEM_NONE;      shouldYawn = TRUE; }
+    PARAMETRIZE { heldItem = ITEM_FLAME_ORB; shouldYawn = FALSE; }
+    PARAMETRIZE { heldItem = ITEM_TOXIC_ORB; shouldYawn = FALSE; }
+
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_YAWN) == EFFECT_YAWN);
+        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_OMNISCIENT);
+        PLAYER(SPECIES_WOBBUFFET) { Item(heldItem); }
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_YAWN, MOVE_SCRATCH); }
+    } WHEN {
+        TURN {
+            if (shouldYawn)
+                SCORE_GT(opponent, MOVE_YAWN, MOVE_SCRATCH);
+            else
+                SCORE_LT(opponent, MOVE_YAWN, MOVE_SCRATCH);
+        }
+    }
+}
+
 #if MAX_MON_TRAITS > 1
 AI_SINGLE_BATTLE_TEST("AI will not try to lower opposing stats if target is protected by it's ability (Traits)")
 {
@@ -396,4 +421,34 @@ AI_DOUBLE_BATTLE_TEST("Protect: AI avoids Protect vs Unseen Fist contact (Double
         }
     }
 }
+#endif
+
+#if MAX_MON_ITEMS > 1
+
+AI_SINGLE_BATTLE_TEST("AI penalizes Yawn when target can self-status with Flame/Toxic Orb (Items)")
+{
+    u32 heldItem = ITEM_NONE;
+    bool32 shouldYawn = FALSE;
+
+    PARAMETRIZE { heldItem = ITEM_NONE;      shouldYawn = TRUE; }
+    PARAMETRIZE { heldItem = ITEM_FLAME_ORB; shouldYawn = FALSE; }
+    PARAMETRIZE { heldItem = ITEM_TOXIC_ORB; shouldYawn = FALSE; }
+
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_YAWN) == EFFECT_YAWN);
+        ASSUME(gItemsInfo[ITEM_FLAME_ORB].holdEffect == HOLD_EFFECT_FLAME_ORB);
+        ASSUME(gItemsInfo[ITEM_TOXIC_ORB].holdEffect == HOLD_EFFECT_TOXIC_ORB);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_OMNISCIENT);
+        PLAYER(SPECIES_WOBBUFFET) { Items(ITEM_NONE, heldItem); }
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(MOVE_YAWN, MOVE_SCRATCH); }
+    } WHEN {
+        TURN {
+            if (shouldYawn)
+                SCORE_GT(opponent, MOVE_YAWN, MOVE_SCRATCH);
+            else
+                SCORE_LT(opponent, MOVE_YAWN, MOVE_SCRATCH);
+        }
+    }
+}
+
 #endif

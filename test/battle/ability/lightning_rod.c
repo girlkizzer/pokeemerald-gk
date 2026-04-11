@@ -131,6 +131,24 @@ DOUBLE_BATTLE_TEST("Lightning Rod absorbs moves that targets all battlers but do
     }
 }
 
+DOUBLE_BATTLE_TEST("Lightning Rod doesn't activate if user has fainted")
+{
+    GIVEN {
+        ASSUME(GetMoveType(MOVE_SPARK) == TYPE_ELECTRIC);
+        PLAYER(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_RAICHU) { HP(1); Ability(ABILITY_LIGHTNING_ROD); }
+    } WHEN {
+        TURN { MOVE(playerLeft, MOVE_POUND, target: opponentRight); MOVE(playerRight, MOVE_SPARK, target: opponentLeft); }
+    } SCENE {
+        NONE_OF {
+            MESSAGE("The opposing Raichu's Lightning Rod took the attack");
+            ABILITY_POPUP(opponentRight, ABILITY_LIGHTNING_ROD);
+        }
+    }
+}
+
 #if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Lightning Rod absorbs Electric-type moves and increases the Sp. Attack (Gen5+) (Traits)")
 {
@@ -244,6 +262,24 @@ DOUBLE_BATTLE_TEST("Lightning Rod absorbs moves that targets all battlers but do
         ABILITY_POPUP(opponentRight, ABILITY_LIGHTNING_ROD);
         HP_BAR(opponentLeft);
         HP_BAR(playerRight);
+    }
+}
+
+DOUBLE_BATTLE_TEST("Lightning Rod doesn't activate if user has fainted (Traits)")
+{
+    GIVEN {
+        ASSUME(GetMoveType(MOVE_SPARK) == TYPE_ELECTRIC);
+        PLAYER(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_RAICHU) { HP(1); Ability(ABILITY_STATIC); Innates(ABILITY_LIGHTNING_ROD); }
+    } WHEN {
+        TURN { MOVE(playerLeft, MOVE_POUND, target: opponentRight); MOVE(playerRight, MOVE_SPARK, target: opponentLeft); }
+    } SCENE {
+        NONE_OF {
+            MESSAGE("The opposing Raichu's Lightning Rod took the attack");
+            ABILITY_POPUP(opponentRight, ABILITY_LIGHTNING_ROD);
+        }
     }
 }
 #endif

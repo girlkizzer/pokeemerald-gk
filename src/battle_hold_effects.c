@@ -195,7 +195,7 @@ static enum ItemEffect TryKingsRock(enum BattlerId battlerAtk, enum BattlerId ba
     u32  i, item = 0, holdEffectParam = 0;
 
     if (!IsBattlerAlive(battlerDef)
-     || !IsBattlerTurnDamaged(battlerDef)
+     || !IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      || MoveIgnoresKingsRock(gCurrentMove)
      || MoveHasAdditionalEffect(gCurrentMove, MOVE_EFFECT_FLINCH))
         return effect;
@@ -227,7 +227,7 @@ static enum ItemEffect TryAirBalloon(enum BattlerId battler, ActivationTiming ti
 
     if (timing == IsOnTargetHitActivation)
     {
-        if (IsBattlerTurnDamaged(battler))
+        if (IsBattlerTurnDamaged(battler, EXCLUDING_SUBSTITUTES))
         {
             BattleScriptCall(BattleScript_AirBalloonMsgPop);
             effect = ITEM_EFFECT_OTHER;
@@ -249,7 +249,7 @@ static enum ItemEffect TryRockyHelmet(enum BattlerId battlerDef, enum BattlerId 
     u32 i, damage = 0;
     u16 item;
 
-    if (IsBattlerTurnDamaged(battlerDef)
+    if (IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && IsBattlerAlive(battlerAtk)
      && !CanBattlerAvoidContactEffects(battlerAtk, battlerDef, gCurrentMove)
      && !IsAbilityAndRecord(battlerAtk, ABILITY_MAGIC_GUARD))
@@ -280,7 +280,7 @@ static enum ItemEffect TryWeaknessPolicy(enum BattlerId battlerDef)
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerDef)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && gBattleStruct->moveResultFlags[battlerDef] & MOVE_RESULT_SUPER_EFFECTIVE)
     {
         BattleScriptCall(BattleScript_WeaknessPolicy);
@@ -295,7 +295,7 @@ static enum ItemEffect TrySnowball(enum BattlerId battlerDef)
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerDef)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && GetBattleMoveType(gCurrentMove) == TYPE_ICE)
     {
         BattleScriptCall(BattleScript_TargetItemStatRaise_Snowball);
@@ -311,7 +311,7 @@ static enum ItemEffect TryLuminousMoss(enum BattlerId battlerDef)
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerDef)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && GetBattleMoveType(gCurrentMove) == TYPE_WATER)
     {
         BattleScriptCall(BattleScript_TargetItemStatRaise_Luminous_Moss);
@@ -327,7 +327,7 @@ static enum ItemEffect TryCellBattery(enum BattlerId battlerDef)
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerDef)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && GetBattleMoveType(gCurrentMove) == TYPE_ELECTRIC)
     {
         BattleScriptCall(BattleScript_TargetItemStatRaise_Cell_Battery);
@@ -343,7 +343,7 @@ static enum ItemEffect TryAbsorbBulb(enum BattlerId battlerDef)
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerDef)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && GetBattleMoveType(gCurrentMove) == TYPE_WATER)
     {
         effect = ITEM_STATS_CHANGE;
@@ -359,7 +359,7 @@ static enum ItemEffect TryJabocaBerry(enum BattlerId battlerDef, enum BattlerId 
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerAtk)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && !DoesSubstituteBlockMove(battlerAtk, battlerDef, gCurrentMove)
      && IsBattleMovePhysical(gCurrentMove)
      && !IsAbilityAndRecord(battlerAtk, ABILITY_MAGIC_GUARD))
@@ -381,7 +381,7 @@ static enum ItemEffect TryRowapBerry(enum BattlerId battlerDef, enum BattlerId b
     enum ItemEffect effect = ITEM_NO_EFFECT;
 
     if (IsBattlerAlive(battlerAtk)
-     && IsBattlerTurnDamaged(battlerDef)
+     && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && !DoesSubstituteBlockMove(battlerAtk, battlerDef, gCurrentMove)
      && IsBattleMoveSpecial(gCurrentMove)
      && !IsAbilityAndRecord(battlerAtk, ABILITY_MAGIC_GUARD))
@@ -404,7 +404,7 @@ static enum ItemEffect TrySetEnigmaBerry(enum BattlerId battlerDef, enum Battler
 
     if (IsBattlerAlive(battlerDef)
      && !DoesSubstituteBlockMove(battlerAtk, battlerDef, gCurrentMove)
-     && ((IsBattlerTurnDamaged(battlerDef) && gBattleStruct->moveResultFlags[battlerDef] & MOVE_RESULT_SUPER_EFFECTIVE) || gBattleScripting.overrideBerryRequirements)
+     && ((IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES) && gBattleStruct->moveResultFlags[battlerDef] & MOVE_RESULT_SUPER_EFFECTIVE) || gBattleScripting.overrideBerryRequirements)
      && !(gBattleScripting.overrideBerryRequirements && gBattleMons[battlerDef].hp == gBattleMons[battlerDef].maxHP)
      && !(B_HEAL_BLOCKING >= GEN_5 && gBattleMons[battlerDef].volatiles.healBlock))
     {
@@ -503,7 +503,8 @@ static enum ItemEffect TryThroatSpray(enum BattlerId battlerAtk)
     if (IsSoundMove(gCurrentMove)
      && gMultiHitCounter == 0
      && IsBattlerAlive(battlerAtk)
-     && IsAnyTargetTurnDamaged(battlerAtk)
+     && !gBattleStruct->unableToUseMove
+     && (IsAnyTargetTurnDamaged(battlerAtk) || (GetBattleMoveCategory(gCurrentMove) == DAMAGE_CATEGORY_STATUS && IsAnyTargetAffected()))
      && CompareStat(battlerAtk, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN)
      && !NoAliveMonsForEitherParty())   // Don't activate if battle will end
     {
@@ -525,7 +526,7 @@ static enum ItemEffect DamagedStatBoostBerryEffect(enum BattlerId battlerDef, en
     if (gBattleScripting.overrideBerryRequirements
      || (!DoesSubstituteBlockMove(battlerAtk, battlerDef, gCurrentMove)
          && GetBattleMoveCategory(gCurrentMove) == category
-         && IsBattlerTurnDamaged(battlerDef)))
+         && IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)))
     {
         if (BattlerHasTrait(battlerDef, ABILITY_RIPEN))
             SET_STATCHANGER(statId, 2, FALSE);
@@ -614,7 +615,7 @@ static enum ItemEffect TryStickyBarbOnTargetHit(enum BattlerId battlerDef, enum 
     enum ItemEffect effect = ITEM_NO_EFFECT;
     u8 barbSlot = GetBattlerHeldItemSlotWithEffect(battlerDef, HOLD_EFFECT_STICKY_BARB, TRUE);
 
-    if (IsBattlerTurnDamaged(battlerDef)
+    if (IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && !CanBattlerAvoidContactEffects(battlerAtk, battlerDef, gCurrentMove)
      && !DoesSubstituteBlockMove(battlerAtk, battlerDef, gCurrentMove)
      && IsBattlerAlive(battlerAtk)

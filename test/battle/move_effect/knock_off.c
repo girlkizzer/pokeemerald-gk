@@ -438,6 +438,76 @@ SINGLE_BATTLE_TEST("Knock Off does not activate if the item was previously consu
     }
 }
 
+SINGLE_BATTLE_TEST("Knock Off does knock off Ogerpon masks from Pokemon that aren't Ogerpon")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_HEARTHFLAME_MASK); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Hearthflame Mask!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_NONE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off doesn't knock off Ogerpon masks from Ogerpon")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_OGERPON) { Item(ITEM_HEARTHFLAME_MASK); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Wobbuffet knocked off the opposing Ogerpon's Hearthflame Mask!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_HEARTHFLAME_MASK);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off does knock off a Booster Energy from a non Paradox Pokemon")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_NONE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off doesn't knock off a Paradox mon's Booster Energy")
+{
+    GIVEN {
+        PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); }
+        OPPONENT(SPECIES_GREAT_TUSK) { Item(ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Wobbuffet knocked off the opposing Great Tusk's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off used by a Paradox mon doesn't knock off a non-Paradox mon's Booster Energy")
+{
+    GIVEN {
+        PLAYER(SPECIES_GREAT_TUSK);
+        OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Great Tust knocked off the opposing Wobbuffet's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
+    }
+}
+
 // Knock Off triggers Unburden regardless of whether the item is fully removed (Gen 5+) or not.
 
 #if MAX_MON_TRAITS > 1
@@ -905,6 +975,76 @@ SINGLE_BATTLE_TEST("Knock Off does not activate if the item was previously consu
         NOT MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Air Balloon!");
     } THEN {
         EXPECT(opponent->items[1]== ITEM_NONE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off does knock off Ogerpon masks from Pokemon that aren't Ogerpon (Multi)")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_HEARTHFLAME_MASK); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Hearthflame Mask!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_NONE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off doesn't knock off Ogerpon masks from Ogerpon (Multi)")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_OGERPON) { Items(ITEM_NONE, ITEM_HEARTHFLAME_MASK); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Wobbuffet knocked off the opposing Ogerpon's Hearthflame Mask!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_HEARTHFLAME_MASK);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off does knock off a Booster Energy from a non Paradox Pokemon (Items)")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        MESSAGE("Wobbuffet knocked off the opposing Wobbuffet's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_NONE);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off doesn't knock off a Paradox mon's Booster Energy (Items)")
+{
+    GIVEN {
+        PLAYER(SPECIES_TORKOAL) { Ability(ABILITY_DROUGHT); }
+        OPPONENT(SPECIES_GREAT_TUSK) { Items(ITEM_NONE, ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Wobbuffet knocked off the opposing Great Tusk's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
+    }
+}
+
+SINGLE_BATTLE_TEST("Knock Off used by a Paradox mon doesn't knock off a non-Paradox mon's Booster Energy (Items)")
+{
+    GIVEN {
+        PLAYER(SPECIES_GREAT_TUSK);
+        OPPONENT(SPECIES_WOBBUFFET) { Items(ITEM_NONE, ITEM_BOOSTER_ENERGY); }
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_CELEBRATE); MOVE(player, MOVE_KNOCK_OFF); }
+    } SCENE {
+        NOT MESSAGE("Great Tust knocked off the opposing Wobbuffet's Booster Energy!");
+    } THEN {
+        EXPECT(opponent->item == ITEM_BOOSTER_ENERGY);
     }
 }
 #endif

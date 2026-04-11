@@ -157,6 +157,21 @@ SINGLE_BATTLE_TEST("Chloroblast is not affected by Reckless", s16 damage)
     }
 }
 
+SINGLE_BATTLE_TEST("Chloroblast has recoil if the target is behind a Substitute")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { HP(400); MaxHP(400); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_CHLOROBLAST); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, player);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_CHLOROBLAST, opponent);
+        SUB_HIT(player);
+        HP_BAR(opponent, damage: 200);
+    }
+}
+
 #if MAX_MON_TRAITS > 1
 SINGLE_BATTLE_TEST("Chloroblast hp loss is prevented by Magic Guard (Traits)")
 {
