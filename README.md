@@ -2,13 +2,16 @@
 
 This Trait and Items branch combines the features found in Trait System an Multi Items to allow multiple abilities and held items to be used by your Pokemon.
 
+# New Feature (1.15.1)
+Single Abilities or Items now supported so that this one branch can also be used as only Traits or only Multi Items by just disabling the unwanted feature in the constants list.  The Summary Screen will also accomodate the selection automatically, showing the second Held Items slot only when more than one item is enabled, and the Traits screen only showing up if Innates are enabled.
+
 # New Feature (1.14.3)
 Duplicate passive item support added so holding more than one of a passive item can stack their effects.  For example, two Charcoals will further boost fire attacks.  Since this function might be overpowered, there is also an option to toggle it using the B_ALLOW_HELD_DUPES flag.  This flag is disabled by default so this feature needss to be manually enabled.
 
-# Trait System (Release 1.14.3)
+# Trait System (Release 1.15.1)
 
 This is the full release of the Multi-Ability function I'm calling the Trait System!
-Currently updated to Pokeemerald Expansion 1.14.3
+Currently updated to Pokeemerald Expansion 1.15.1
 
 The Trait System allows you to assign more than one ability to each pokemon for more complex and more interesting setups.
 
@@ -33,12 +36,16 @@ Note that the Data sheet includes a collumn for automatically generating the .in
 
 - The AI system largely works the same just with Innates added on top and fixed.  This means the AI can still treat Abilities as unknown until they learn what the Ability is directly, but Innates will always be treated as known.
 
+- Developer Notes:
+	- The number of Innates in use can be set through the MAX_MON_INNATES value in global.c.  Currently the defaults are minimum 0 (vanilla) and maximum 3.  The max of 3 is only really limited by the summary screen only displaying three at a time.  If you set more than three innates you'll just need to account for your own way of displaying them along with updating the MAX_MON_INNATES_INTERNAL value which specifies the max possible slots in the code.
+	- Note that this setting just control how the functions that look up Innates work, so you could for example set 3 innates to a pokemon but set the MAX_MON_INNATES to 1 and in game it will functionally only look at the first Innate. This allows you to for example include an option that toggles how many innates are active without having to recompile the whole game.
+
 Basic code bedrock design comes from old Emerald Redux code with permission.
 
 Huge thanks to the RH Hideout discord community for their help, advice, and testing, especially Alex, Surskitty, Kleem, Meister_anon, and MGriffin who helped make this possible.
 
 
-# Multi-Items (Release 1.14.3)
+# Multi-Items (Release 1.15.1)
 
 This is the full release of a Multi-Item system which allows pokemon to hold more than one item at a time. By default this feature branch provides a second held item slot but it can be modified for more or less fairly easily. Currently updated to Pokeemerald Expansion 1.14.3.
 
@@ -63,6 +70,7 @@ This is the full release of a Multi-Item system which allows pokemon to hold mor
 	- Swapping or moving items through the party or storage interfaces only work on the first slot item to avoid complicating the system.
 
 - Developer Notes:
+	- Number of item slots set through MAX_MON_ITEMS value in global.c.  The current defaults are minimum 1 (vanilla) and 2 maximum.  The max is due to the pokemon storage data needing entries for each held item so to use more you'll need to allocate additional MON_DATA_HELD_ITEM slots in the pokemon storage data along with adjusting how the items show up in the summary screen along with updating the MAX_MON_ITEMS_INTERNAL value.  MAX_MON_ITEMS primarally controls how the item lookup functions work, so if you set that to 1 while a pokemon is holding two items, the game will function as if they only have one even if their pokemon data still has that second item set.  This allows a bit of flexibility if you intend to change the number of item slots during gameplay or want cross saving. 
 	- To use more than 2 items, you'll need to update the MAX_MON_ITEMS value in global.c along with creating additional MON_DATA_HELD_ITEM variables, allocating space for another helditem varibale in the PokemonSubstructs, and updating the summary screen to account for the new slots. Curently does not support setting to 1 and disabling the feature, if you only want the Trait System then the standalone version would be best.
 	- The rest of the logic however will adjust for the slot numbers, so all the extra work is just in allocating the slot itself.
 	- NOTE that since the held items are stored just before the moves, if you notice a pokemon's first move dissapear or change then that is likely due to the item logic mistakenly targeting a slot beyond what should be allowed.
