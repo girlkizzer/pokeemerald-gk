@@ -737,7 +737,7 @@ SINGLE_BATTLE_TEST("Multi - Metronome can stack if dupes enabled", s16 damage1, 
 SINGLE_BATTLE_TEST("Multi - Binding Band can stack if dupes enabled (Gen 6)", s16 damage)
 {
     bool16 dupe = FALSE;
-    u16 item = ITEM_NONE;
+    enum Item item = ITEM_NONE;
 
     PARAMETRIZE {item = ITEM_NONE; dupe = FALSE; }
     PARAMETRIZE {item = ITEM_BINDING_BAND; dupe = FALSE; }
@@ -764,7 +764,7 @@ SINGLE_BATTLE_TEST("Multi - Binding Band can stack if dupes enabled (Gen 6)", s1
 SINGLE_BATTLE_TEST("Multi - Binding Band can stack if dupes enabled (Gen 5)", s16 damage)
 {
     bool16 dupe = FALSE;
-    u16 item = ITEM_NONE, gen = 0;
+    enum Item item = ITEM_NONE, gen = 0;
 
     PARAMETRIZE {item = ITEM_NONE; dupe = FALSE; }
     PARAMETRIZE {item = ITEM_BINDING_BAND; dupe = FALSE; }
@@ -791,7 +791,7 @@ SINGLE_BATTLE_TEST("Multi - Binding Band can stack if dupes enabled (Gen 5)", s1
 SINGLE_BATTLE_TEST("Multi - Speed affecting items can stack if dupes enabled")
 {
     bool16 dupe = FALSE;
-    u16 item = ITEM_NONE,  item2 = ITEM_NONE, speed1 = 0, speed2 = 0; 
+    enum Item item = ITEM_NONE,  item2 = ITEM_NONE, speed1 = 0, speed2 = 0; 
 
     PARAMETRIZE {item = ITEM_NONE; item2 = ITEM_NONE; dupe = FALSE; speed1 = 99; speed2 = 100; }
     PARAMETRIZE {item = ITEM_NONE; item2 = ITEM_MACHO_BRACE; dupe = FALSE; speed1 = 99; speed2 = 200; }

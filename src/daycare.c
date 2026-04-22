@@ -608,8 +608,8 @@ static void UNUSED TriggerPendingDaycareMaleEgg(void)
 
 static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
 {
-    u16 item1, motherItem = ITEM_NONE;
-    u16 item2, fatherItem = ITEM_NONE;
+    enum Item item1, motherItem = ITEM_NONE;
+    enum Item item2, fatherItem = ITEM_NONE;
     u16 slot[MAX_MON_ITEMS];
     u8 i, start;
     u8 selectedIvs[5];

@@ -2,13 +2,17 @@
 
 This Trait and Items branch combines the features found in Trait System an Multi Items to allow multiple abilities and held items to be used by your Pokemon.
 
+# Bug Fix (1.15.1.1)
+- Fixed pokemon transparency not being set correctly when first opening the PC's Item Move system.
+- Fixed Switching items in the party menu not retreiving the held item correctly.
+
 # New Feature (1.15.1)
 Single Abilities or Items now supported so that this one branch can also be used as only Traits or only Multi Items by just disabling the unwanted feature in the constants list.  The Summary Screen will also accomodate the selection automatically, showing the second Held Items slot only when more than one item is enabled, and the Traits screen only showing up if Innates are enabled.
 
 # New Feature (1.14.3)
 Duplicate passive item support added so holding more than one of a passive item can stack their effects.  For example, two Charcoals will further boost fire attacks.  Since this function might be overpowered, there is also an option to toggle it using the B_ALLOW_HELD_DUPES flag.  This flag is disabled by default so this feature needss to be manually enabled.
 
-# Trait System (Release 1.15.1)
+# Trait System (Release 1.15.1.1)
 
 This is the full release of the Multi-Ability function I'm calling the Trait System!
 Currently updated to Pokeemerald Expansion 1.15.1
@@ -45,7 +49,7 @@ Basic code bedrock design comes from old Emerald Redux code with permission.
 Huge thanks to the RH Hideout discord community for their help, advice, and testing, especially Alex, Surskitty, Kleem, Meister_anon, and MGriffin who helped make this possible.
 
 
-# Multi-Items (Release 1.15.1)
+# Multi-Items (Release 1.15.1.1)
 
 This is the full release of a Multi-Item system which allows pokemon to hold more than one item at a time. By default this feature branch provides a second held item slot but it can be modified for more or less fairly easily. Currently updated to Pokeemerald Expansion 1.14.3.
 

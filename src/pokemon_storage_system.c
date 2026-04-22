@@ -4490,7 +4490,7 @@ static bool32 ShouldBoxmonSpriteBeTransparent(u32 boxId, u32 boxPosition)
 
     for (u32 i = 0; i < MAX_MON_ITEMS; i++)
     {
-        if (GetBoxMonDataAt(sStorage->incomingBoxId, boxPosition, MON_DATA_HELD_ITEM + i) != ITEM_NONE)
+        if (GetBoxMonDataAt(boxId, boxPosition, MON_DATA_HELD_ITEM + i) != ITEM_NONE)
         {
             hasItem = TRUE;
             break;

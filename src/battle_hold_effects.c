@@ -247,7 +247,7 @@ static enum ItemEffect TryRockyHelmet(enum BattlerId battlerDef, enum BattlerId 
 {
     enum ItemEffect effect = ITEM_NO_EFFECT;
     u32 i, damage = 0;
-    u16 item;
+    enum Item item;
 
     if (IsBattlerTurnDamaged(battlerDef, EXCLUDING_SUBSTITUTES)
      && IsBattlerAlive(battlerAtk)

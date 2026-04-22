@@ -3528,8 +3528,8 @@ static void Task_SwitchItemsYesNo(u8 taskId)
 
 static void Task_HandleSwitchItemsYesNoInput(u8 taskId)
 {
-    u8 slot;
-    u16 item = ITEM_NONE;
+    u32 slot;
+    enum Item item = ITEM_NONE;
 
     switch (Menu_ProcessInputNoWrapClearOnChoose())
     {
@@ -3736,7 +3736,7 @@ static void Task_TossHeldItemYesNo(u8 taskId)
 static void Task_HandleTossHeldItemYesNoInput(u8 taskId)
 {
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
-    u16 item = ITEM_NONE;
+    enum Item item = ITEM_NONE;
 
     for (int i = MAX_MON_ITEMS - 1; i >= 0; i--)
     {
@@ -3921,7 +3921,7 @@ static void Task_HandleLoseMailMessageYesNoInput(u8 taskId)
 static void CursorCb_Cancel2(u8 taskId)
 {
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
-    u16 item = ITEM_NONE;
+    enum Item item = ITEM_NONE;
 
     for (int i = MAX_MON_ITEMS - 1; i >= 0; i--)
     {
@@ -4559,7 +4559,7 @@ static void CreatePartyMonHeldItemSpriteParameterized(u16 species, enum Item ite
 
 static void UpdatePartyMonHeldItemSprite(struct Pokemon *mon, struct PartyMenuBox *menuBox)
 {
-    u16 item = ITEM_NONE;
+    enum Item item = ITEM_NONE;
     
     item = GetMonData(mon, MON_DATA_HELD_ITEM);
 

@@ -524,7 +524,7 @@ static void SaveApprenticeParty(u8 numQuestions)
     {
         u8 questionId = PLAYER_APPRENTICE.questions[i].questionId;
         u8 monId = PLAYER_APPRENTICE.questions[i].monId;
-        u16 item = ITEM_NONE;
+        enum Item item = ITEM_NONE;
         if (questionId == QUESTION_ID_WHAT_ITEM)
         {
             if (PLAYER_APPRENTICE.questions[i].suggestedChange)
