@@ -7262,7 +7262,6 @@ static void CB2_ReturnToPartyOrBagMenuFromWritingMail(void)
     // Canceled writing mail
     if (gSpecialVar_Result == FALSE)
     {
-
         for (u8 i = 0; i < MAX_MON_ITEMS; i++)
         {
             if (ItemIsMail(GetMonData(mon, MON_DATA_HELD_ITEM + i)))
@@ -7308,13 +7307,20 @@ static void Task_SwitchItemsFromBagYesNo(u8 taskId)
 
 static void Task_HandleSwitchItemsFromBagYesNoInput(u8 taskId)
 {
+    u32 slot;
     enum Item item;
+    enum Item item2 = ITEM_NONE;
 
     switch (Menu_ProcessInputNoWrapClearOnChoose())
     {
     case 0: // Yes, switch items
         item = gPartyMenu.bagItem;
         RemoveBagItem(item, 1);
+        if (B_HELD_ITEM_CATEGORIZATION)
+                slot = gItemsInfo[item].heldSlot;
+            else
+                slot = 0;
+
         if (AddBagItem(sPartyMenuItemId, 1) == FALSE)
         {
             ReturnGiveItemToBagOrPC(item);
@@ -7324,11 +7330,13 @@ static void Task_HandleSwitchItemsFromBagYesNoInput(u8 taskId)
         }
         else if (ItemIsMail(item))
         {
+            SetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM + slot, &item2); //remove old item first (Multi)
             sPartyMenuInternal->exitCallback = CB2_WriteMailToGiveMonFromBag;
             Task_ClosePartyMenu(taskId);
         }
         else
         {
+            SetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_HELD_ITEM + slot, &item2); //remove old item first (Multi)
             GiveItemToMon(&gPlayerParty[gPartyMenu.slotId], item);
             DisplaySwitchedHeldItemMessage(item, sPartyMenuItemId, TRUE);
             gTasks[taskId].func = Task_UpdateHeldItemSpriteAndClosePartyMenu;
