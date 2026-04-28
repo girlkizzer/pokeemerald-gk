@@ -1320,11 +1320,7 @@ void BattleSetup_StartTrainerBattle(void)
         if (FollowerNPCIsBattlePartner())
         {
             gBattleTypeFlags = (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TRAINER);
-<<<<<<< HEAD
             TRAINER_BATTLE_PARAM.opponentB = 0xFFFF;
-=======
-            gTrainerBattleOpponent_B = 0xFFFF;
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
         }
         else
         {
@@ -1442,10 +1438,7 @@ static void CB2_EndTrainerBattle(void)
 {
     HandleBattleVariantEndParty();
 
-<<<<<<< HEAD
     gIsDebugBattle = FALSE;
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     if (FollowerNPCIsBattlePartner())
     {
         RestorePartyAfterFollowerNPCBattle();
@@ -1455,7 +1448,6 @@ static void CB2_EndTrainerBattle(void)
             HealPlayerParty();
     }
 
-<<<<<<< HEAD
     if (GetTrainerBattleMode() == TRAINER_BATTLE_EARLY_RIVAL)
     {
         if (IsPlayerDefeated(gBattleOutcome) == TRUE)
@@ -1480,9 +1472,6 @@ static void CB2_EndTrainerBattle(void)
         SetBattledTrainerFlag();
     }
     else if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_SECRET_BASE)
-=======
-    if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     {
         DowngradeBadPoison();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);

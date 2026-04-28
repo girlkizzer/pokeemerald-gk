@@ -211,12 +211,8 @@ static u8 DoJumpSpriteMovement(struct Sprite *);
 static u8 DoJumpSpecialSpriteMovement(struct Sprite *);
 static void CreateLevitateMovementTask(struct ObjectEvent *);
 static void DestroyLevitateMovementTask(u8);
-<<<<<<< HEAD
 static u32 LoadDynamicFollowerPalette(u32 species, bool32 shiny, bool32 female);
 const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u32 species, bool32 shiny, bool32 female);
-=======
-static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool32 shiny);
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 static bool8 NpcTakeStep(struct Sprite *);
 static bool8 AreElevationsCompatible(u8, u8);
 static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
@@ -1406,11 +1402,7 @@ u8 GetFirstInactiveObjectEventId(void)
 
 u8 GetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId)
 {
-<<<<<<< HEAD
     if (localId < OBJ_EVENT_ID_DYNAMIC_BASE)
-=======
-    if (localId < OBJ_EVENT_ID_FOLLOWER)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     {
         if (PlayerHasFollowerNPC() && localId == OBJ_EVENT_ID_NPC_FOLLOWER)
             return GetFollowerNPCObjectId();
@@ -1899,32 +1891,6 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
     return objectEventId;
 }
 
-<<<<<<< HEAD
-=======
-// Pack pokemon form info into a graphicsId, from a template's script
-static u16 PackGraphicsId(const struct ObjectEventTemplate *template)
-{
-    u16 graphicsId = template->graphicsId;
-    u32 form = 0;
-    // set form based on template's script,
-    // if first command is bufferspeciesname
-    if (graphicsId >= OBJ_EVENT_GFX_MON_BASE)
-    {
-        if (template->script && template->script[0] == 0x7d)
-        {
-            form = T1_READ_16(&template->script[2]);
-            form = (form >> 10) & 0x1F;
-        }
-        else if (template->trainerRange_berryTreeId)
-        {
-            form = template->trainerRange_berryTreeId & 0x1F;
-        }
-        graphicsId |= form << OBJ_EVENT_GFX_SPECIES_BITS;
-    }
-    return graphicsId;
-}
-
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
     u8 objectEventId;
@@ -2177,11 +2143,7 @@ struct ObjectEvent *GetFollowerObject(void)
 }
 
 // Return graphicsInfo for a pokemon species & form
-<<<<<<< HEAD
 const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u32 species, bool32 shiny, bool32 female)
-=======
-const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u16 species, u8 form)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 {
     const struct ObjectEventGraphicsInfo *graphicsInfo = NULL;
 #if OW_POKEMON_OBJECT_EVENTS
@@ -2381,11 +2343,7 @@ static bool8 GetMonInfo(struct Pokemon *mon, u32 *species, bool32 *shiny, bool32
 }
 
 // Retrieve graphic information about the following pokemon, if any
-<<<<<<< HEAD
 bool8 GetFollowerInfo(u32 *species, bool32 *shiny, bool32 *female)
-=======
-bool8 GetFollowerInfo(u16 *species, u8 *form, u8 *shiny)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 {
     return GetMonInfo(GetFirstLiveMon(), species, shiny, female);
 }
@@ -2402,7 +2360,6 @@ void UpdateFollowingPokemon(void)
     // 1. GetFollowerInfo returns FALSE
     // 2. Map is indoors and gfx is larger than 32x32
     // 3. flag is set
-<<<<<<< HEAD
     // 4. a follower NPC is present
     if (OW_POKEMON_OBJECT_EVENTS == FALSE
      || OW_FOLLOWERS_ENABLED == FALSE
@@ -2410,14 +2367,6 @@ void UpdateFollowingPokemon(void)
      || !GetFollowerInfo(&species, &shiny, &female)
      || SpeciesToGraphicsInfo(species, shiny, female) == NULL
      || (gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, shiny, female)->oam->size > ST_OAM_SIZE_2)
-=======
-    // 4. a Follow Me follower is present
-    if (OW_POKEMON_OBJECT_EVENTS == FALSE
-     || OW_FOLLOWERS_ENABLED == FALSE
-     || !GetFollowerInfo(&species, &form, &shiny)
-     || SpeciesToGraphicsInfo(species, form) == NULL
-     || (gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, form)->oam->size > ST_OAM_SIZE_2)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
      || FlagGet(FLAG_TEMP_HIDE_FOLLOWER)
      || PlayerHasFollowerNPC()
      )
@@ -6877,7 +6826,6 @@ bool8 ObjectEventSetHeldMovement(struct ObjectEvent *objectEvent, u8 movementAct
     objectEvent->heldMovementFinished = FALSE;
     gSprites[objectEvent->spriteId].sActionFuncId = 0;
     NPCFollow(objectEvent, movementActionId, FALSE);
-<<<<<<< HEAD
 
     // When player is moved via script, set copyable movement
     // for any followers via a lookup table
@@ -6888,8 +6836,6 @@ bool8 ObjectEventSetHeldMovement(struct ObjectEvent *objectEvent, u8 movementAct
         objectEvent->playerCopyableMovement = sActionIdToCopyableMovement[objectEvent->movementActionId];
     }
 
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     return FALSE;
 }
 
@@ -11515,7 +11461,6 @@ void GetDaycareGraphics(struct ScriptContext *ctx)
     gSpecialVar_Result = i;
 }
 
-<<<<<<< HEAD
 // running slow
 static void StartSlowRunningAnim(struct ObjectEvent *objectEvent, struct Sprite *sprite, enum Direction direction)
 {
@@ -11699,9 +11644,6 @@ static u16 GetUnownSpecies(struct Pokemon *mon)
 }
 
 static void InitMovementSurfStill(struct ObjectEvent *objectEvent, struct Sprite *sprite, enum Direction direction, u8 speed)
-=======
-static void InitMovementSurfStill(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 direction, u8 speed)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 {
     u8 (*functions[ARRAY_COUNT(sDirectionAnimFuncsBySpeed)])(u8);
 
@@ -11746,14 +11688,10 @@ bool8 MovementAction_SurfStillUp_Step1(struct ObjectEvent *objectEvent, struct S
 
 bool8 MovementAction_SurfStillLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-<<<<<<< HEAD
     if (objectEvent->directionOverwrite)
         InitMovementSurfStill(objectEvent, sprite, objectEvent->directionOverwrite, MOVE_SPEED_FAST_1);
     else
         InitMovementSurfStill(objectEvent, sprite, DIR_WEST, MOVE_SPEED_FAST_1);
-=======
-    InitMovementSurfStill(objectEvent, sprite, DIR_WEST, MOVE_SPEED_FAST_1);
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     sprite->animPaused = TRUE;
     return MovementAction_SurfStillLeft_Step1(objectEvent, sprite);
 }
@@ -11770,14 +11708,10 @@ bool8 MovementAction_SurfStillLeft_Step1(struct ObjectEvent *objectEvent, struct
 
 bool8 MovementAction_SurfStillRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-<<<<<<< HEAD
     if (objectEvent->directionOverwrite)
         InitMovementSurfStill(objectEvent, sprite, objectEvent->directionOverwrite, MOVE_SPEED_FAST_1);
     else
         InitMovementSurfStill(objectEvent, sprite, DIR_EAST, MOVE_SPEED_FAST_1);
-=======
-    InitMovementSurfStill(objectEvent, sprite, DIR_EAST, MOVE_SPEED_FAST_1);
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     sprite->animPaused = TRUE;
     return MovementAction_SurfStillRight_Step1(objectEvent, sprite);
 }
@@ -11791,7 +11725,6 @@ bool8 MovementAction_SurfStillRight_Step1(struct ObjectEvent *objectEvent, struc
     }
     return FALSE;
 }
-<<<<<<< HEAD
 
 u8 GetObjectEventApricornTreeId(u8 objectEventId)
 {
@@ -11868,5 +11801,3 @@ bool8 MovementAction_SpinRight_Step1(struct ObjectEvent *objectEvent, struct Spr
     }
     return FALSE;
 }
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43

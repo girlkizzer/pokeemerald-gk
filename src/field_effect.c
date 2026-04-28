@@ -2604,11 +2604,7 @@ static void EscapeRopeWarpInEffect_Init(struct Task *task)
 
 static void EscapeRopeWarpInEffect_Spin(struct Task *task)
 {
-<<<<<<< HEAD
     enum Direction spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
-=======
-    u8 spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
     struct ObjectEvent *follower = &gObjectEvents[GetFollowerNPCObjectId()];
 
@@ -2856,11 +2852,7 @@ static void TeleportWarpInFieldEffect_SpinGround(struct Task *task)
     struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
     struct ObjectEvent *follower = &gObjectEvents[GetFollowerNPCObjectId()];
 
-<<<<<<< HEAD
     enum Direction spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
-=======
-    u8 spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     if ((--task->data[1]) == 0 && task->data[3] == 0)
     {
         ObjectEventTurn(player, spinDirections[player->facingDirection]);

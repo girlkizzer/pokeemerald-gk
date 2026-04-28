@@ -42,11 +42,8 @@ void DoOrbEffect(void);
 void FadeOutOrbEffect(void);
 void WriteFlashScanlineEffectBuffer(u8 flashLevel);
 bool8 IsPlayerStandingStill(void);
-<<<<<<< HEAD
 void DoStairWarp(u16 metatileBehavior, u16 delay);
 bool32 IsDirectionalStairWarpMetatileBehavior(u16 metatileBehavior, enum Direction playerDirection);
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 void SetPlayerVisibility(bool8 visible);
 void Task_WarpAndLoadMap(u8 taskId);
 void Task_DoDoorWarp(u8 taskId);

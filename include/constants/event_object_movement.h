@@ -249,7 +249,6 @@
 #define MOVEMENT_ACTION_EMOTE_DOUBLE_EXCL_MARK          0x9F
 #define MOVEMENT_ACTION_EXIT_POKEBALL                   0xA0
 #define MOVEMENT_ACTION_ENTER_POKEBALL                  0xA1
-<<<<<<< HEAD
 #define MOVEMENT_ACTION_RUN_DOWN_SLOW                   0xA2    // slow running for rocky stairs
 #define MOVEMENT_ACTION_RUN_UP_SLOW                     0xA3
 #define MOVEMENT_ACTION_RUN_LEFT_SLOW                   0xA4
@@ -258,13 +257,10 @@
 #define MOVEMENT_ACTION_WALK_SLOW_STAIRS_UP             0xA7
 #define MOVEMENT_ACTION_WALK_SLOW_STAIRS_LEFT           0xA8
 #define MOVEMENT_ACTION_WALK_SLOW_STAIRS_RIGHT          0xA9
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #define MOVEMENT_ACTION_SURF_STILL_DOWN                 0xAA
 #define MOVEMENT_ACTION_SURF_STILL_UP                   0xAB
 #define MOVEMENT_ACTION_SURF_STILL_LEFT                 0xAC
 #define MOVEMENT_ACTION_SURF_STILL_RIGHT                0xAD
-<<<<<<< HEAD
 //fast diagonal movement
 #define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_UP_LEFT      0xAE
 #define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_UP_RIGHT     0xAF
@@ -274,8 +270,6 @@
 #define MOVEMENT_ACTION_SPIN_UP                         0xB3
 #define MOVEMENT_ACTION_SPIN_LEFT                       0xB4
 #define MOVEMENT_ACTION_SPIN_RIGHT                      0xB5
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 #define MOVEMENT_ACTION_STEP_END 0xFE
 #define MOVEMENT_ACTION_NONE     0xFF

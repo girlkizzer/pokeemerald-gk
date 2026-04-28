@@ -28,10 +28,7 @@
 #include "field_weather.h"
 #include "fieldmap.h"
 #include "follower_npc.h"
-<<<<<<< HEAD
 #include "gpu_regs.h"
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "item.h"
 #include "lilycove_lady.h"
 #include "main.h"
@@ -1312,13 +1309,7 @@ bool8 ScrCmd_applymovement(struct ScriptContext *ctx)
     sMovingNpcId = localId;
     if (localId != OBJ_EVENT_ID_FOLLOWER
      && !FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT)
-<<<<<<< HEAD
      && (movementScript < Common_Movement_FollowerSafeStart || movementScript > Common_Movement_FollowerSafeEnd))
-=======
-        && (movementScript < Common_Movement_FollowerSafeStart || movementScript > Common_Movement_FollowerSafeEnd)
-        && (objEvent = GetFollowerObject())
-        && !objEvent->invisible)
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     {
         ScriptHideFollower();
     }
@@ -1531,14 +1522,9 @@ bool8 ScrCmd_resetobjectsubpriority(struct ScriptContext *ctx)
 
 bool8 ScrCmd_faceplayer(struct ScriptContext *ctx)
 {
-<<<<<<< HEAD
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
     if (PlayerHasFollowerNPC()
      && gObjectEvents[GetFollowerNPCObjectId()].invisible == FALSE
-=======
-    if (PlayerHasFollowerNPC() 
-     && gObjectEvents[GetFollowerNPCObjectId()].invisible == FALSE 
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
      && gSelectedObjectEvent == GetFollowerNPCObjectId())
     {
         struct ObjectEvent *npcFollower = &gObjectEvents[GetFollowerNPCObjectId()];
@@ -1557,11 +1543,8 @@ bool8 ScrCmd_faceplayer(struct ScriptContext *ctx)
         case DIR_WEST:
             ScriptMovement_StartObjectMovementScript(OBJ_EVENT_ID_NPC_FOLLOWER, npcFollower->mapGroup, npcFollower->mapNum, Common_Movement_FaceLeft);
             break;
-<<<<<<< HEAD
         default:
             break;
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
         }
         return FALSE;
     }

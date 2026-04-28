@@ -221,26 +221,17 @@ struct Time
     /*0x04*/ s8 seconds;
 };
 
-<<<<<<< HEAD
 struct NPCFollowerPadding
 {
     u8 padding1;
     u8 padding2;
     u8 padding3;
-=======
-struct NPCFollowerMapData
-{
-    u8 id;
-    u8 number;
-    u8 group;
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 };
 
 struct NPCFollower
 {
     u8 inProgress:1;
     u8 warpEnd:1;
-<<<<<<< HEAD
     u8 createSurfBlob:2;
     u8 comeOutDoorStairs:2;
     u8 forcedMovement:2;
@@ -248,14 +239,6 @@ struct NPCFollower
     u8 currentSprite;
     u8 delayedState;
     struct NPCFollowerPadding padding;
-=======
-    u8 createSurfBlob:3;
-    u8 comeOutDoorStairs:3;
-    u8 objId;
-    u8 currentSprite;
-    u8 delayedState;
-    struct NPCFollowerMapData map;
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     struct Coords16 log;
     const u8 *script;
     u16 flag;
@@ -263,12 +246,9 @@ struct NPCFollower
     u16 flags;
     u8 battlePartner; // If you have more than 255 total battle partners defined, change this to a u16
 };
-<<<<<<< HEAD
 
 #include "constants/items.h"
 #define ITEM_FLAGS_COUNT ((ITEMS_COUNT / 8) + ((ITEMS_COUNT % 8) ? 1 : 0))
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 struct SaveBlock3
 {
@@ -278,7 +258,6 @@ struct SaveBlock3
 #if FNPC_ENABLE_NPC_FOLLOWERS
     struct NPCFollower NPCfollower;
 #endif
-<<<<<<< HEAD
 #if OW_SHOW_ITEM_DESCRIPTIONS == OW_ITEM_DESCRIPTIONS_FIRST_TIME
     u8 itemFlags[ITEM_FLAGS_COUNT];
 #endif
@@ -290,9 +269,6 @@ struct SaveBlock3
     u8 apricornTrees[NUM_APRICORN_TREE_BYTES];
 #endif
 }; /* max size 1624 bytes */
-=======
-};
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;
 

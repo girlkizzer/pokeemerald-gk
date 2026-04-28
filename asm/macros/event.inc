@@ -2390,7 +2390,6 @@
 	@ When OW_USE_FAKE_RTC and OW_FLAG_PAUSE_TIME is assigned, this macro will resume the flow of time if paused, and stop the flow of time otherwise.
 	.macro togglefakertc
 	callnative Script_ToggleFakeRtc, requests_effects=1
-<<<<<<< HEAD
 	.endm
 
 	@ When OW_USE_FAKE_RTC is true, adds a specified amount of time.
@@ -2855,8 +2854,6 @@
 	braillemessage \text
 	getbraillestringwidth \text
 	call EventScript_BrailleCursorWaitButton
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 	.endm
 
 	@ ============================ @

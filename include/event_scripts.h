@@ -680,7 +680,6 @@ extern const u8 Common_Movement_FaceDown[];
 extern const u8 Common_Movement_FaceRight[];
 extern const u8 Common_Movement_FaceLeft[];
 
-<<<<<<< HEAD
 extern const u8 EventScript_CancelMessageBox[];
 extern const u8 Common_EventScript_ShowPokemonCenterSign[];
 extern const u8 Common_EventScript_ShowPokemartSign[];
@@ -787,7 +786,5 @@ extern const u8 EventScript_Questionnaire[];
 extern const u8 CableClub_EventScript_ShowBattleRecords_Frlg[];
 extern const u8 EventScript_Indigo_UltimateGoal[];
 extern const u8 EventScript_Indigo_HighestAuthority[];
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 #endif // GUARD_EVENT_SCRIPTS_H

@@ -131,10 +131,7 @@ bool8 TryGetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId, u
 u8 GetObjectEventIdByXY(s16 x, s16 y);
 void SetObjectEventDirection(struct ObjectEvent *objectEvent, enum Direction direction);
 u8 GetFirstInactiveObjectEventId(void);
-<<<<<<< HEAD
 u8 GetObjectEventIdByLocalId(u8);
-=======
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 void RemoveObjectEvent(struct ObjectEvent *objectEvent);
 void RemoveObjectEventByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
 void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot);
@@ -265,16 +262,10 @@ void SetBerryTreeJustPicked(u8 mapId, u8 mapNumber, u8 mapGroup);
 bool8 IsBerryTreeSparkling(u8 localId, u8 mapNum, u8 mapGroup);
 const struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
 u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY);
-<<<<<<< HEAD
 bool8 GetFollowerInfo(u32 *species, bool32 *shiny, bool32 *female);
 const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u32 species, bool32 shiny, bool32 female);
 u16 GetObjectEventFlagIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
 void CopyObjectGraphicsInfoToSpriteTemplate(u16 graphicsId, void (*callback)(struct Sprite *), struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
-=======
-bool8 GetFollowerInfo(u16 *species, u8 *form, u8 *shiny);
-const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u16 species, u8 form);
-u16 GetObjectEventFlagIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 void MovementType_None(struct Sprite *sprite);
 void MovementType_LookAround(struct Sprite *sprite);
@@ -529,10 +520,6 @@ bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *, struct Sprite *);
 bool8 MovementAction_EmoteDoubleExclamationMark_Step0(struct ObjectEvent *, struct Sprite *);
 bool8 PlayerIsUnderWaterfall(struct ObjectEvent *objectEvent);
 
-<<<<<<< HEAD
 u8 GetObjectEventApricornTreeId(u8 objectEventId);
-=======
-void ReturnFollowingMonToBall(void);
->>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 #endif //GUARD_EVENT_OBJECT_MOVEMENT_H
