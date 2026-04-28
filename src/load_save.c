@@ -1,7 +1,10 @@
 #include "global.h"
 #include "malloc.h"
 #include "berry_powder.h"
+<<<<<<< HEAD
 #include "fake_rtc.h"
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "follower_npc.h"
 #include "item.h"
 #include "load_save.h"

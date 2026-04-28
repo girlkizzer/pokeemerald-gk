@@ -4,7 +4,10 @@
 #include "battle_pyramid.h"
 #include "event_data.h"
 #include "fieldmap.h"
+<<<<<<< HEAD
 #include "fishing.h"
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "follower_npc.h"
 #include "random.h"
 #include "field_player_avatar.h"

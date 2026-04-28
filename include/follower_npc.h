@@ -12,7 +12,10 @@ struct FollowerNPCSpriteGraphics
     u16 acroBikeId;
     u16 surfId;
     u16 underwaterId;
+<<<<<<< HEAD
     bool8 hasRunningFrames;
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 };
 
 enum FollowerNPCDataTypes
@@ -21,10 +24,19 @@ enum FollowerNPCDataTypes
     FNPC_DATA_WARP_END,
     FNPC_DATA_SURF_BLOB,
     FNPC_DATA_COME_OUT_DOOR,
+<<<<<<< HEAD
     FNPC_DATA_FORCED_MOVEMENT,
     FNPC_DATA_OBJ_ID,
     FNPC_DATA_CURRENT_SPRITE,
     FNPC_DATA_DELAYED_STATE,
+=======
+    FNPC_DATA_OBJ_ID,
+    FNPC_DATA_CURRENT_SPRITE,
+    FNPC_DATA_DELAYED_STATE,
+    FNPC_DATA_MAP_ID,
+    FNPC_DATA_MAP_NUM,
+    FNPC_DATA_MAP_GROUP,
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     FNPC_DATA_EVENT_FLAG,
     FNPC_DATA_GFX_ID,
     FNPC_DATA_FOLLOWER_FLAGS,
@@ -43,8 +55,12 @@ enum FollowerNPCSpriteTypes
 enum FollowerNPCDoorStairsStates
 {
     FNPC_DOOR_NONE,
+<<<<<<< HEAD
     FNPC_DOOR_NEEDS_TO_EXIT,
     FNPC_DOOR_NO_POS_SET
+=======
+    FNPC_DOOR_NEEDS_TO_EXIT
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 };
 
 enum FollowerNPCWarpEndStates
@@ -61,8 +77,12 @@ enum FollowerNPCSurfBlobStates
     FNPC_SURF_BLOB_DESTROY
 };
 
+<<<<<<< HEAD
 enum FollowerNPCOutOfDoorTaskStates
 {
+=======
+enum FollowerNPCOutOfDoorTaskStates{
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     OPEN_DOOR,
     NPC_WALK_OUT,
     CLOSE_DOOR,
@@ -70,8 +90,12 @@ enum FollowerNPCOutOfDoorTaskStates
     REALLOW_MOVEMENT
 };
 
+<<<<<<< HEAD
 enum FollowerNPCHandleEscalatorFinishTaskStates
 {
+=======
+enum FollowerNPCHandleEscalatorFinishTaskStates{
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     MOVE_TO_PLAYER_POS,
     WAIT_FOR_PLAYER_MOVE,
     SHOW_FOLLOWER_DOWN,
@@ -81,6 +105,7 @@ enum FollowerNPCHandleEscalatorFinishTaskStates
     MOVEMENT_FINISH
 };
 
+<<<<<<< HEAD
 enum FollowerNPCForcedMovementStates
 {
     FNPC_FORCED_NONE,
@@ -93,21 +118,31 @@ enum FollowerNPCForcedMovementStates
 #define FNPC_NONE   0
 #define FNPC_ALWAYS 2
 
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 void SetFollowerNPCData(enum FollowerNPCDataTypes type, u32 value);
 const u8 *GetFollowerNPCScriptPointer(void);
 u32 GetFollowerNPCData(enum FollowerNPCDataTypes type);
 void ClearFollowerNPCData(void);
 
+<<<<<<< HEAD
 void CreateFollowerNPC(u32 gfx, u32 followerFlags, const u8 *scriptPtr);
 void DestroyFollowerNPC(void);
 u32 DetermineFollowerNPCState(struct ObjectEvent *follower, u32 state, enum Direction direction);
+=======
+u32 DetermineFollowerNPCState(struct ObjectEvent *follower, u32 state, u32 direction);
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 void SetFollowerNPCSprite(u32 spriteIndex);
 
 bool32 PlayerHasFollowerNPC(void);
 void NPCFollow(struct ObjectEvent *npc, u32 state, bool32 ignoreScriptActive);
 void CreateFollowerNPCAvatar(void);
 void FollowerNPC_HandleSprite(void);
+<<<<<<< HEAD
 enum Direction DetermineFollowerNPCDirection(struct ObjectEvent *player, struct ObjectEvent *follower);
+=======
+u32 DetermineFollowerNPCDirection(struct ObjectEvent *player, struct ObjectEvent *follower);
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 u32 GetFollowerNPCObjectId(void);
 bool32 CheckFollowerNPCFlag(u32 flag);
 bool32 FollowerNPC_IsCollisionExempt(struct ObjectEvent *obstacle, struct ObjectEvent *collider);

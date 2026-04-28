@@ -73,7 +73,10 @@
 #include "frontier_util.h"
 #include "constants/abilities.h"
 #include "constants/event_object_movement.h"
+<<<<<<< HEAD
 #include "constants/event_objects.h"
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "constants/layouts.h"
 #include "constants/region_map_sections.h"
 #include "constants/rgb.h"
@@ -2337,7 +2340,10 @@ static bool32 ReturnToFieldLocal(u8 *state)
         InitViewGraphics();
         TryLoadTrainerHillEReaderPalette();
         FollowerNPC_BindToSurfBlobOnReloadScreen();
+<<<<<<< HEAD
         ResumeORASDowseFieldEffect();
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
         (*state)++;
         break;
     case 2:
@@ -2571,6 +2577,7 @@ static void InitObjectEventsLocal(void)
     FollowerNPC_HandleSprite();
     UpdateFollowingPokemon();
     TryRunOnWarpIntoMapScript();
+    FollowerNPC_HandleSprite();
 }
 
 static void InitObjectEventsReturnToField(void)

@@ -68,9 +68,15 @@ static u8 ObjectEventCB2_NoMovement2(void);
 static bool8 TryUpdatePlayerSpinDirection(void);
 static bool8 TryInterruptObjectEventSpecialAnim(struct ObjectEvent *, enum Direction);
 static void npc_clear_strange_bits(struct ObjectEvent *);
+<<<<<<< HEAD
 static void MovePlayerAvatarUsingKeypadInput(enum Direction, u16, u16);
 static void PlayerAllowForcedMovementIfMovingSameDirection(void);
 static u8 GetForcedMovementByMetatileBehavior(void);
+=======
+static void MovePlayerAvatarUsingKeypadInput(u8, u16, u16);
+static void PlayerAllowForcedMovementIfMovingSameDirection();
+static u8 GetForcedMovementByMetatileBehavior();
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 static bool8 ForcedMovement_None(void);
 static bool8 ForcedMovement_Slip(void);
@@ -454,6 +460,7 @@ static void PlayerAllowForcedMovementIfMovingSameDirection(void)
         gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_CONTROLLABLE;
 }
 
+<<<<<<< HEAD
 static bool8 TryUpdatePlayerSpinDirection(void)
 {
     if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_FORCED_MOVE) && MetatileBehavior_IsSpinTile(gPlayerAvatar.lastSpinTile))
@@ -477,6 +484,8 @@ static bool8 TryUpdatePlayerSpinDirection(void)
     return FALSE;
 }
 
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 bool8 TryDoMetatileBehaviorForcedMovement(void)
 {
     return sForcedMovementFuncs[GetForcedMovementByMetatileBehavior()]();
@@ -566,6 +575,10 @@ static bool8 DoForcedMovement(enum Direction direction, void (*moveFunc)(enum Di
 
         playerAvatar->runningState = MOVING;
         moveFunc(direction);
+        if (PlayerHasFollowerNPC() 
+         && gObjectEvents[GetFollowerNPCObjectId()].invisible == FALSE 
+         && FindTaskIdByFunc(Task_MoveNPCFollowerAfterForcedMovement) == TASK_NONE)
+            CreateTask(Task_MoveNPCFollowerAfterForcedMovement, 3);
         return TRUE;
     }
 }
@@ -918,12 +931,17 @@ static void PlayerNotOnBikeMoving(enum Direction direction, u16 heldKeys)
         return;
     }
 
+<<<<<<< HEAD
     if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER)
      && (heldKeys & B_BUTTON)
      && FlagGet(FLAG_SYS_B_DASH)
      && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0
      && !FollowerNPCComingThroughDoor()
      && (I_ORAS_DOWSING_FLAG == 0 || (I_ORAS_DOWSING_FLAG != 0 && !FlagGet(I_ORAS_DOWSING_FLAG))))
+=======
+    if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER) && (heldKeys & B_BUTTON) && FlagGet(FLAG_SYS_B_DASH)
+     && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0 && !FollowerNPCComingThroughDoor())
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     {
         if (ObjectMovingOnRockStairs(&gObjectEvents[gPlayerAvatar.objectEventId], direction))
             PlayerRunSlow(direction);
@@ -1013,9 +1031,15 @@ static enum Collision CheckForObjectEventStaticCollision(struct ObjectEvent *obj
 static bool8 CanStopSurfing(s16 x, s16 y, enum Direction direction)
 {
     if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_SURFING)
+<<<<<<< HEAD
      && MapGridGetElevationAt(x, y) == ELEVATION_DEFAULT
      && (GetObjectEventIdByPosition(x, y, ELEVATION_DEFAULT) == OBJECT_EVENTS_COUNT
      || GetObjectEventIdByPosition(x, y, ELEVATION_DEFAULT) == GetFollowerNPCObjectId()
+=======
+     && MapGridGetElevationAt(x, y) == 3
+     && (GetObjectEventIdByPosition(x, y, 3) == OBJECT_EVENTS_COUNT
+     || GetObjectEventIdByPosition(x, y, 3) == GetFollowerNPCObjectId()
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
      ))
     {
         CreateStopSurfingTask(direction);
@@ -1310,7 +1334,11 @@ static void PlayerRun(enum Direction direction)
 void PlayerOnBikeCollide(enum Direction direction)
 {
     PlayCollisionSoundIfNotFacingWarp(direction);
+<<<<<<< HEAD
     PlayerSetAnimId(GetWalkInPlaceNormalMovementAction(direction), COPY_MOVE_WALK_COLLIDE);
+=======
+    PlayerSetAnimId(GetWalkInPlaceNormalMovementAction(direction), COPY_MOVE_WALK);
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     // Edge case: If the player stops at the top of a mud slide, but the NPC follower is still on a mud slide tile,
     // move the follower into the player and hide them.
     if (PlayerHasFollowerNPC())
@@ -1318,8 +1346,13 @@ void PlayerOnBikeCollide(enum Direction direction)
         struct ObjectEvent *npcFollower = &gObjectEvents[GetFollowerNPCObjectId()];
         struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
 
+<<<<<<< HEAD
         if (npcFollower->invisible == FALSE
          && player->currentMetatileBehavior != MB_MUDDY_SLOPE
+=======
+        if (npcFollower->invisible == FALSE 
+         && player->currentMetatileBehavior != MB_MUDDY_SLOPE 
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
          && npcFollower->currentMetatileBehavior == MB_MUDDY_SLOPE)
         {
             gPlayerAvatar.preventStep = TRUE;

@@ -21,9 +21,13 @@
 #include "field_player_avatar.h"
 #include "field_specials.h"
 #include "field_weather.h"
+<<<<<<< HEAD
 #include "fishing.h"
 #include "follower_npc.h"
 #include "frontier_util.h"
+=======
+#include "follower_npc.h"
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "graphics.h"
 #include "item.h"
 #include "link.h"

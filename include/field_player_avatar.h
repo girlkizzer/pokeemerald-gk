@@ -1,7 +1,11 @@
 #ifndef GUARD_FIELD_PLAYER_AVATAR_H
 #define GUARD_FIELD_PLAYER_AVATAR_H
 
+<<<<<<< HEAD
 void PlayerStep(enum Direction direction, u16 newKeys, u16 heldKeys);
+=======
+void PlayerStep(u8 direction, u16 newKeys, u16 heldKeys);
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 bool8 TryDoMetatileBehaviorForcedMovement();
 void ClearPlayerAvatarInfo(void);
 void SetPlayerAvatarExtraStateTransition(u16 graphicsId, u8 transitionFlag);

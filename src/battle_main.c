@@ -25,7 +25,10 @@
 #include "dma3.h"
 #include "event_data.h"
 #include "evolution_scene.h"
+<<<<<<< HEAD
 #include "frontier_util.h"
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "field_weather.h"
 #include "follower_npc.h"
 #include "graphics.h"
@@ -484,10 +487,13 @@ void CB2_InitBattle(void)
     AllocateMonSpritesGfx();
     RecordedBattle_ClearFrontierPassFlag();
 
+<<<<<<< HEAD
 #if T_SHOULD_RUN_MOVE_ANIM
     gLoadFail = FALSE;
 #endif // T_SHOULD_RUN_MOVE_ANIM
 
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     if (gBattleTypeFlags & BATTLE_TYPE_MULTI && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
         if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)

@@ -48,7 +48,10 @@
 #include "union_room_chat.h"
 #include "constants/map_groups.h"
 #include "constants/items.h"
+<<<<<<< HEAD
 #include "difficulty.h"
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 #include "follower_npc.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
@@ -228,9 +231,12 @@ void NewGameInitData(void)
     ResetTrainerHillResults();
     ResetTrainerTowerResults();
     ResetContestLinkResults();
+<<<<<<< HEAD
     SetCurrentDifficultyLevel(DIFFICULTY_NORMAL);
     ResetItemFlags();
     ResetDexNav();
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
     ClearFollowerNPCData();
 }
 

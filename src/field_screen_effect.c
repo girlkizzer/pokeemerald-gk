@@ -752,7 +752,10 @@ void Task_DoDoorWarp(u8 taskId)
             ObjectEventSetHeldMovement(followerObject, MOVEMENT_ACTION_ENTER_POKEBALL);
         }
         task->tDoorTask = FieldAnimateDoorOpen(*x, *y - 1);
+<<<<<<< HEAD
         EndORASDowsing();
+=======
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
         task->tState = DOORWARP_START_WALK_UP;
         break;
     case DOORWARP_START_WALK_UP:

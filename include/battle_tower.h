@@ -36,7 +36,12 @@ void GetBattleTowerTrainerLanguage(u8 *dst, u16 trainerId);
 u8 SetTentPtrsGetLevel(void);
 bool32 ValidateBattleTowerRecord(u8 recordId); // unused
 void TrySetLinkBattleTowerEnemyPartyLevel(void);
+<<<<<<< HEAD
 void FillTentTrainerParty(u8 monsCount);
 
+=======
+void CreateFacilityMon(const struct TrainerMon *fmon, u16 level, u8 fixedIV, u32 otID, u32 flags, struct Pokemon *dst);
+void FillPartnerParty(u16 trainerId);
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 #endif //GUARD_BATTLE_TOWER_H

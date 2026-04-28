@@ -493,8 +493,15 @@
 #define OBJ_KIND_CLONE  255 // Exclusive to FRLG
 
 // Special object event local ids
+<<<<<<< HEAD
 // Used for link player OWs in CreateLinkPlayerSprite
 #define OBJ_EVENT_ID_DYNAMIC_BASE 0xF0
+=======
+#define OBJ_EVENT_ID_PLAYER 0xFF
+#define OBJ_EVENT_ID_CAMERA 0x7F
+#define OBJ_EVENT_ID_FOLLOWER 0xFE
+#define OBJ_EVENT_ID_NPC_FOLLOWER 0xFD
+>>>>>>> 8aad1c5c6dbcfa927a014708348fad476425ab43
 
 // Each object event template gets an ID that can be used to refer to it in scripts and elsewhere.
 // This is referred to as the "local id" (and it's really just 1 + its index in the templates array).
