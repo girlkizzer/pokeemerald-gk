@@ -267,6 +267,7 @@ LittlerootTown_ProfessorBirchsLab_Movement_PlayerEnterLabForJohtoStarter:
 	step_end
 
 LittlerootTown_ProfessorBirchsLab_EventScript_Aide::
+	setflag FLAG_SYS_QUEST_MENU_GET
 	lock
 	faceplayer
 	goto_if_ge VAR_BIRCH_LAB_STATE, 3, LittlerootTown_ProfessorBirchsLab_EventScript_AideReceivedStarter
