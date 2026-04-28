@@ -25,6 +25,7 @@ Route103_EventScript_Rival::
 	end
 
 Route103_EventScript_RivalMay::
+	goto SetFollower
 	msgbox Route103_Text_MayRoute103Pokemon, MSGBOX_DEFAULT
 	closemessage
 	playbgm MUS_ENCOUNTER_MAY, TRUE
@@ -42,6 +43,7 @@ Route103_EventScript_RivalMay::
 	end
 
 Route103_EventScript_RivalBrendan::
+	goto SetFollower
 	msgbox Route103_Text_BrendanRoute103Pokemon, MSGBOX_DEFAULT
 	closemessage
 	playbgm MUS_ENCOUNTER_BRENDAN, TRUE
@@ -351,3 +353,16 @@ Route103_Text_RouteSign:
 	.string "ROUTE 103\n"
 	.string "{DOWN_ARROW} OLDALE TOWN$"
 
+SetFollower::
+    lock
+    faceplayer
+    loadword 0 NewScript
+    setfollowernpc 2 0x100   @ cause NPC (local ID = 2) to follow you with a custom following script
+    release
+    end
+
+NewScript:
+    msgbox FollowYou MSGBOX_SIGN
+    end
+FollowYou:
+    .string "I'll keep following you!$"
