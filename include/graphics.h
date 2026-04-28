@@ -3437,4 +3437,7 @@ extern const u16 gBattleIcons_Pal2[];
 extern const u32 gGhostFrontPic[];
 extern const u16 gGhostPalette[];
 
+//New Summary Pages
+extern const u32 gSummaryPage_Traits_Tilemap[];
+
 #endif //GUARD_GRAPHICS_H

@@ -2402,4 +2402,7 @@ extern const u8 gText_Boy[];
 extern const u8 gText_Girl[];
 
 
+//New Summary Pages
+extern const u8 gText_PkmnTraits[];
+
 #endif // GUARD_STRINGS_H
