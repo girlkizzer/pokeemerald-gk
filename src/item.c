@@ -517,6 +517,15 @@ void SwapRegisteredBike(void)
         gSaveBlock1Ptr->registeredItemSelect = ITEM_MACH_BIKE;
         break;
     }
+    switch (gSaveBlock1Ptr->registeredLongItem)
+    {
+    case ITEM_MACH_BIKE:
+        gSaveBlock1Ptr->registeredLongItem = ITEM_ACRO_BIKE;
+        break;
+    case ITEM_ACRO_BIKE:
+        gSaveBlock1Ptr->registeredLongItem = ITEM_MACH_BIKE;
+        break;
+    }
     if (pos_ACRO != 0xFF)
         gSaveBlock1Ptr->registeredItems[pos_ACRO].itemId = ITEM_MACH_BIKE;
     else if (pos_MACH != 0xFF)

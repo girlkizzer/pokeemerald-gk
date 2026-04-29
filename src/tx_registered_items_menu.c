@@ -260,7 +260,7 @@ static void TxRegItemsMenu_DoItemAction(u8 taskId)
 
     gSaveBlock1Ptr->registeredItemLastSelected = pos;
     TxRegItemsMenu_CloseMenu(taskId);
-    UseRegisteredKeyItemOnField(pos+2);
+    UseRegisteredKeyItemOnField(pos+2, FALSE);
 }
 
 static void TxRegItemsMenu_CloseMenu(u8 taskId)
