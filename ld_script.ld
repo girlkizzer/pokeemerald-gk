@@ -340,6 +340,7 @@ SECTIONS {
         src/gym_leader_rematch.o(.text);
         src/battle_transition_frontier.o(.text);
         src/international_string_util.o(.text);
+        src/tx_registered_items_menu.o(.text);
         src/quests.o(.text);
     } > ROM =0
 
@@ -703,6 +704,7 @@ SECTIONS {
         data/mystery_gift.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+        src/tx_registered_items_menu.o(.rodata);
         src/quests.o(.rodata);
     } > ROM =0
 
