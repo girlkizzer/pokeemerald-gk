@@ -2968,7 +2968,8 @@ static void RemoveObjectEventIfOutsideView(struct ObjectEvent *objectEvent)
     if (objectEvent->initialCoords.x >= left && objectEvent->initialCoords.x <= right
      && objectEvent->initialCoords.y >= top && objectEvent->initialCoords.y <= bottom)
         return;
-    RemoveObjectEvent(objectEvent);
+    if (!(FlagGet(FLAG_DONT_REMOVE_OFFSCREEN_OBJECT) && objectEvent->graphicsId == OBJ_EVENT_GFX_PUSHABLE_BOULDER))
+        RemoveObjectEvent(objectEvent);
 }
 
 void SpawnObjectEventsOnReturnToField(s16 x, s16 y)
@@ -9652,11 +9653,14 @@ static void UpdateObjectEventOffscreen(struct ObjectEvent *objectEvent, struct S
     if (objectEvent->graphicsId == OBJ_EVENT_GFX_SS_ANNE)
         minX = -32;
 
-    if (x >= DISPLAY_WIDTH + 16 || x2 < minX)
+    if ((s16)x >= DISPLAY_WIDTH + 16 || (s16)x2 < -16)
         objectEvent->offScreen = TRUE;
 
-    if (y >= DISPLAY_HEIGHT + 16 || y2 < -16)
+    if ((s16)y >= DISPLAY_HEIGHT + 16 || (s16)y2 < -16)
         objectEvent->offScreen = TRUE;
+
+    if (FlagGet(FLAG_FORCE_LOAD_OFFSCREEN_OBJEV))
+        objectEvent->offScreen = FALSE;
 }
 
 static void UpdateObjectEventSpriteVisibility(struct ObjectEvent *objectEvent, struct Sprite *sprite)
