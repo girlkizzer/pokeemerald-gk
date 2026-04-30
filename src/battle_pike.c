@@ -810,7 +810,10 @@ static void HealMon(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_STATUS, data);
 }
 
-static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+// Start hexorb Branch
+//static DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+// End hexorb Branch
 {
     bool8 ret = FALSE;
     enum Ability battlerTraits[MAX_MON_TRAITS];

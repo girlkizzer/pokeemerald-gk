@@ -85,6 +85,7 @@
 #define PARTY_MSG_NO_POKEMON                29
 #define PARTY_MSG_CHOOSE_MON_FOR_BOX        30
 #define PARTY_MSG_MOVE_ITEM_WHERE           31
+#define PARTY_MSG_WHICH_STATUS              32 // hexorb Branch
 
 #define PARTY_MSG_NONE                      127
 
@@ -109,6 +110,7 @@
 #define SELECTWINDOW_MOVES       3
 #define SELECTWINDOW_CATALOG     4
 #define SELECTWINDOW_ZYGARDECUBE 5
+#define SELECTWINDOW_HEXORB      6 // hexorb Branch
 
 enum PcMonSelectionType
 {

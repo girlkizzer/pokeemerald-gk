@@ -16813,6 +16813,24 @@ const struct ItemInfo gItemsInfo[] =
         .iconPic = gItemIcon_QuestionMark,
         .iconPalette = gItemIconPalette_QuestionMark,
     },
+
+    [ITEM_HEXORB] =
+    {
+        .name = ITEM_NAME("Hexorb"),
+        .price = 0,
+        .description = COMPOUND_STRING(
+            "A purple orb\n"
+            "said to contain a\n"
+            "cursed power."),
+        .importance = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Hexorb,
+        .effect = gItemEffect_Hexorb,
+        .iconPic = gItemIcon_Hexorb,
+        .iconPalette = gItemIconPalette_Hexorb,
+    }
+// End hexorb Branch
 };
 
 #undef ITEM_NAME

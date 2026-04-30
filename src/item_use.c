@@ -91,6 +91,8 @@ static void ItemUseOnFieldCB_RockSmash(u8 taskId);
 static void ItemUseOnFieldCB_Waterfall(u8 taskId);
 static void ItemUseOnFieldCB_Dive(u8 taskId);
 static void ItemUseOnFieldCB_DiveUnderwater(u8 taskId);
+void ItemUseOutOfBattle_Hexorb(u8 taskId);
+void Task_OpenRegisteredHexorb(u8 taskId);
 
 static const u8 sText_CantDismountBike[] = _("You can't dismount your BIKE here.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_ItemFinderNearby[] = _("Huh?\nThe ITEMFINDER's responding!\pThere's an item buried around here!{PAUSE_UNTIL_PRESS}");
@@ -1698,6 +1700,33 @@ void ItemUseOutOfBattle_Fly(u8 taskId)
 void CB2_OpenFlyItemFromBag(void)
 {
     CB2_OpenFlyMap();
+}
+
+// Start hexorb Branch
+void ItemUseOutOfBattle_Hexorb(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_UseHexorb;
+
+    if (gTasks[taskId].tUsingRegisteredKeyItem != TRUE)
+    {
+        SetUpItemUseCallback(taskId);
+    }
+    else
+    {
+        gFieldCallback = FieldCB_ReturnToFieldNoScript;
+        FadeScreen(FADE_TO_BLACK, 0);
+        gTasks[taskId].func = Task_OpenRegisteredHexorb;
+    }
+}
+
+void Task_OpenRegisteredHexorb(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        InitPartyMenuForHexorbFromField(taskId);
+        DestroyTask(taskId);
+    }
 }
 
 void Task_OpenRegisteredFly(u8 taskId)

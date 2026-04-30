@@ -3438,6 +3438,10 @@ extern const u16 gBattleIcons_Pal2[];
 extern const u32 gGhostFrontPic[];
 extern const u16 gGhostPalette[];
 
+// Start hexorb branch
+extern const u32 gItemIcon_Hexorb[];
+extern const u16 gItemIconPalette_Hexorb[];
+
 //New Summary Pages
 extern const u32 gSummaryPage_Traits_Tilemap[];
 
