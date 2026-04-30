@@ -53,7 +53,7 @@ static const struct FishBehaviorData sFishBehavior[] =
     },
     {
         .species = SPECIES_HORSEA,
-        .speed = { .min = 4, .max = 10 },
+        .speed = { .min = 9, .max = 12 },
         .distance = { .min = 40, .max = 80 },
         .delay = { .min = 30, .max = 70 },
         .idleMovement = 7
@@ -67,14 +67,14 @@ static const struct FishBehaviorData sFishBehavior[] =
     },
     {
         .species = SPECIES_SEAKING,
-        .speed = { .min = 6, .max = 12 },
-        .distance = { .min = 50, .max = 90 },
-        .delay = { .min = 100, .max = 140 },
+        .speed = { .min = 8, .max = 14 },
+        .distance = { .min = 10, .max = 90 },
+        .delay = { .min = 30, .max = 140 },
         .idleMovement = 6
     },
     {
         .species = SPECIES_STARYU,
-        .speed = { .min = 7, .max = 13 },
+        .speed = { .min = 9, .max = 16 },
         .distance = { .min = 15, .max = 45 },
         .delay = { .min = 20, .max = 80 },
         .idleMovement = 5
@@ -88,30 +88,30 @@ static const struct FishBehaviorData sFishBehavior[] =
     },
     {
         .species = SPECIES_GYARADOS,
-        .speed = { .min = 8, .max = 16 },
-        .distance = { .min = 30, .max = 70 },
+        .speed = { .min = 8, .max = 24 },
+        .distance = { .min = 10, .max = 90 },
         .delay = { .min = 15, .max = 35 },
         .idleMovement = 12
     },
     {
         .species = SPECIES_CORSOLA,
-        .speed = { .min = 4, .max = 8 },
-        .distance = { .min = 10, .max = 70 },
+        .speed = { .min = 1, .max = 1 },
+        .distance = { .min = 10, .max = 10 },
         .delay = { .min = 55, .max = 95 },
         .idleMovement = 1
     },
     {
         .species = SPECIES_CARVANHA,
-        .speed = { .min = 7, .max = 13 },
+        .speed = { .min = 7, .max = 18 },
         .distance = { .min = 15, .max = 25 },
         .delay = { .min = 30, .max = 70 },
         .idleMovement = 15
     },
     {
         .species = SPECIES_SHARPEDO,
-        .speed = { .min = 10, .max = 30 },
-        .distance = { .min = 55, .max = 95 },
-        .delay = { .min = 70, .max = 90 },
+        .speed = { .min = 24, .max = 30 },
+        .distance = { .min = 25, .max = 95 },
+        .delay = { .min = 20, .max = 90 },
         .idleMovement = 20
     },
     {

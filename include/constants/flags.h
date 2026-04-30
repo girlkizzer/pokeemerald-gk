@@ -676,7 +676,7 @@
 #define NO_COLLISION  0x26D
 #define POKE_RIDER  0x26E
 #define FLAG_SKY_BATTLE  0x26F
-#define VAR_SKY_BATTLE  0x270
+#define FLAG_UNUSED_0x270  0x270 // Unused Flag
 #define FLAG_UNUSED_0x271  0x271 // Unused Flag
 #define FLAG_UNUSED_0x272  0x272 // Unused Flag
 #define FLAG_UNUSED_0x273  0x273 // Unused Flag
