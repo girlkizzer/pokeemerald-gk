@@ -1008,6 +1008,31 @@ static void GiveMoveIfItem(struct Pokemon *mon, struct DayCare *daycare)
 
 STATIC_ASSERT(P_SCATTERBUG_LINE_FORM_BREED == SPECIES_SCATTERBUG_ICY_SNOW || (P_SCATTERBUG_LINE_FORM_BREED >= SPECIES_SCATTERBUG_POLAR && P_SCATTERBUG_LINE_FORM_BREED <= SPECIES_SCATTERBUG_POKEBALL), ScatterbugLineFormBreedMustBeAValidScatterbugForm);
 
+static const u16 sScatterbugFormSpeciesIdTable[] = {
+    SPECIES_SCATTERBUG_ICY_SNOW,
+    SPECIES_SCATTERBUG_POLAR,
+    SPECIES_SCATTERBUG_TUNDRA,
+    SPECIES_SCATTERBUG_CONTINENTAL,
+    SPECIES_SCATTERBUG_GARDEN,
+    SPECIES_SCATTERBUG_ELEGANT,
+    SPECIES_SCATTERBUG_MEADOW,
+    SPECIES_SCATTERBUG_MODERN,
+    SPECIES_SCATTERBUG_MARINE,
+    SPECIES_SCATTERBUG_ARCHIPELAGO,
+    SPECIES_SCATTERBUG_HIGH_PLAINS,
+    SPECIES_SCATTERBUG_SANDSTORM,
+    SPECIES_SCATTERBUG_RIVER,
+    SPECIES_SCATTERBUG_MONSOON,
+    SPECIES_SCATTERBUG_SAVANNA,
+    SPECIES_SCATTERBUG_SUN,
+    SPECIES_SCATTERBUG_OCEAN,
+    SPECIES_SCATTERBUG_JUNGLE,
+    SPECIES_SCATTERBUG_FANCY,
+    SPECIES_SCATTERBUG_POKEBALL,
+};
+
+#define ARR_SIZE(sScatterbugFormSpeciesIdTable) ( sizeof((sScatterbugFormSpeciesIdTable)) / sizeof((sScatterbugFormSpeciesIdTable[0])) )
+
 static u16 DetermineEggSpeciesAndParentSlots(struct DayCare *daycare, u8 *parentSlots)
 {
     u32 i;
@@ -1063,7 +1088,7 @@ static u16 DetermineEggSpeciesAndParentSlots(struct DayCare *daycare, u8 *parent
     else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_ROTOM)
         eggSpecies = SPECIES_ROTOM;
     else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_SCATTERBUG)
-        eggSpecies = P_SCATTERBUG_LINE_FORM_BREED;
+        eggSpecies = sScatterbugFormSpeciesIdTable[Random() % ARR_SIZE(sScatterbugFormSpeciesIdTable)];
     else if (GET_BASE_SPECIES_ID(eggSpecies) == SPECIES_FURFROU)
         eggSpecies = SPECIES_FURFROU;
     else if (eggSpecies == SPECIES_SINISTEA_ANTIQUE)
