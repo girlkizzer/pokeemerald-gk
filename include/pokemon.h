@@ -698,10 +698,16 @@ struct OriginalTrainerId
 
 extern u8 gPartiesCount[MAX_BATTLE_TRAINERS];
 extern struct Pokemon gParties[MAX_BATTLE_TRAINERS][PARTY_SIZE];
-#define gPlayerParty gParties[B_TRAINER_0]
-#define gEnemyParty gParties[B_TRAINER_1]
-#define gPlayerPartyCount gPartiesCount[B_TRAINER_0]
-#define gEnemyPartyCount gPartiesCount[B_TRAINER_1]
+
+DEPRECATED("Use gParties[B_TRAINER_0] for player and gParties[B_TRAINER_2] for partner instead")
+extern struct Pokemon (*const gPlayerParty)[6];
+DEPRECATED("Use gPartiesCount[B_TRAINER_0] for player and gPartiesCount[B_TRAINER_2] for partner instead")
+extern u8 (*const gPlayerPartyCount);
+DEPRECATED("Will be removed in 1.17.0: use gParties[B_TRAINER_1] for opponentA and gParties[B_TRAINER_3] for opponentB instead")
+extern struct Pokemon (*const gEnemyParty)[6];
+DEPRECATED("Will be removed in 1.17.0: use gPartiesCount[B_TRAINER_1] for opponentA and gPartiesCount[B_TRAINER_3] for opponentB instead")
+extern u8 (*const gEnemyPartyCount);
+
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 extern u16 gFollowerSteps;
 extern bool32 consumeItem;
