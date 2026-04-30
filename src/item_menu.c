@@ -358,7 +358,7 @@ static const u8 sContextMenuItems_RegisterKeyItem[] = {
 };
 
 static const u8 sContextMenuItems_BallsPocket[] = {
-    ACTION_GIVE,        ACTION_DUMMY,
+    ACTION_USE,         ACTION_GIVE,
     ACTION_TOSS,        ACTION_CANCEL
 };
 
@@ -2345,6 +2345,13 @@ bool8 UseRegisteredKeyItemOnField(u8 button, bool8 isRegisterHold)
 }
 
 #undef tUsingRegisteredKeyItem
+
+void ItemUseOutOfBattle_PokeBall(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_PokeBall;
+    gBagMenu->newScreenCallback = CB2_ShowPartyMenuForItemUse;
+    Task_FadeAndCloseBagMenu(taskId);
+}
 
 static void Task_ItemContext_Sell(u8 taskId)
 {
