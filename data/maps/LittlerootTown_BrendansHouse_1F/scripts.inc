@@ -326,6 +326,11 @@ PlayersHouse_1F_Text_GoIntroduceYourselfNextDoor:
 	.string "He lives right next door, so you should\n"
 	.string "go over and introduce yourself.$"
 
+PlayersHouse_1F_Text_UnlockedQuest:
+	.string "You've unlocked a quest!"
+	.string "You can access quests at any time"
+	.string "through the pause menu!"
+
 PlayersHouse_1F_Text_SeeYouHoney:
 	.string "MOM: See you, honey!$"
 

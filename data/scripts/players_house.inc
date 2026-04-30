@@ -162,7 +162,11 @@ PlayersHouse_1F_EventScript_PetalburgGymReportMale::
 	waitmovement 0
 	msgbox PlayersHouse_1F_Text_ItsOverWeMissedHim, MSGBOX_DEFAULT
 	msgbox PlayersHouse_1F_Text_GoIntroduceYourselfNextDoor, MSGBOX_DEFAULT
+	setflag FLAG_SYS_QUEST_MENU_GET
+	msgbox PlayersHouse_1F_Text_UnlockedQuest, MSGBOX_AUTOCLOSE
 	closemessage
+	startquest QUEST_1
+	openquestmenu
 	setvar VAR_TEMP_1, 1
 	applymovement VAR_0x8005, PlayersHouse_1F_Movement_MomReturnToSeatMale
 	waitmovement 0
@@ -187,7 +191,11 @@ PlayersHouse_1F_EventScript_PetalburgGymReportFemale::
 	waitmovement 0
 	msgbox PlayersHouse_1F_Text_ItsOverWeMissedHim, MSGBOX_DEFAULT
 	msgbox PlayersHouse_1F_Text_GoIntroduceYourselfNextDoor, MSGBOX_DEFAULT
+	setflag FLAG_SYS_QUEST_MENU_GET
+	msgbox PlayersHouse_1F_Text_UnlockedQuest, MSGBOX_AUTOCLOSE
 	closemessage
+	startquest QUEST_1
+	openquestmenu
 	setvar VAR_TEMP_1, 1
 	applymovement VAR_0x8005, PlayersHouse_1F_Movement_MomReturnToSeatFemale
 	waitmovement 0
