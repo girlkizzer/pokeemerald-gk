@@ -341,12 +341,10 @@ SECTIONS {
         src/gym_leader_rematch.o(.text);
         src/battle_transition_frontier.o(.text);
         src/international_string_util.o(.text);
-<<<<<<< HEAD
         src/tx_registered_items_menu.o(.text);
         src/quests.o(.text);
-=======
         src/ui_main_menu.o(.text);
->>>>>>> 3691421b97ff8402afcd84b149b1f9c0bc2b21ec
+        src/ui_startmenu_full.o(.text);
     } > ROM =0
 
     script_data :
@@ -713,6 +711,7 @@ SECTIONS {
         src/tx_registered_items_menu.o(.rodata);
         src/quests.o(.rodata);
         src/ui_main_menu.o(.rodata);
+        src/ui_startmenu_full.o(.rodata);
     } > ROM =0
 
     song_data :
