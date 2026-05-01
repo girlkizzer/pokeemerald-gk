@@ -65,6 +65,7 @@ SECTIONS {
         src/text.o(.text);
         src/sprite.o(.text);
         src/string_util.o(.text);
+		src/ui_stat_editor.o(.text);
         src/link.o(.text);
         src/AgbRfu_LinkManager.o(.text);
         src/link_rfu_3.o(.text);
@@ -704,6 +705,7 @@ SECTIONS {
         data/mystery_gift.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+		src/ui_stat_editor.o(.rodata);
         src/tx_registered_items_menu.o(.rodata);
         src/quests.o(.rodata);
     } > ROM =0
