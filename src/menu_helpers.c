@@ -93,6 +93,7 @@ static const struct CompressedSpriteSheet sSpriteSheet_SwapLine_RegisteredItemsM
 {
     gSwapLineGfx_RegisteredItemsMenu, 0x100, TAG_SWAP_LINE
 };
+
 static const struct SpriteTemplate sSpriteTemplate_SwapLine_RegisteredItemsMenu =
 {
     .tileTag = TAG_SWAP_LINE,

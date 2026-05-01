@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "battle_anim.h"
 #include "battle_message.h"
 #include "bg.h"
 #include "data.h"
@@ -67,15 +68,15 @@ static void StopBgAnimation(void);
 static void Task_AnimateBg(u8 taskId);
 static void RestoreBgAfterAnim(void);
 
-static const u16 sUnusedPal1[] = INCBIN_U16("graphics/evolution_scene/unused_1.gbapal");
-static const u32 sBgAnim_Gfx[] = INCBIN_U32("graphics/evolution_scene/bg.4bpp.smol");
+static const u16 sUnusedPal1[] = INCGFX_U16("graphics/evolution_scene/unused_1.pal", ".gbapal");
+static const u32 sBgAnim_Gfx[] = INCGFX_U32("graphics/evolution_scene/bg.png", ".4bpp.smol");
 static const u32 sBgAnim_Inner_Tilemap[] = INCBIN_U32("graphics/evolution_scene/bg_inner.bin.smolTM");
 static const u32 sBgAnim_Outer_Tilemap[] = INCBIN_U32("graphics/evolution_scene/bg_outer.bin.smolTM");
-static const u16 sBgAnim_Intro_Pal[] = INCBIN_U16("graphics/evolution_scene/bg_anim_intro.gbapal");
-static const u16 sUnusedPal2[] = INCBIN_U16("graphics/evolution_scene/unused_2.gbapal");
-static const u16 sUnusedPal3[]  = INCBIN_U16("graphics/evolution_scene/unused_3.gbapal");
-static const u16 sUnusedPal4[] = INCBIN_U16("graphics/evolution_scene/unused_4.gbapal");
-static const u16 sBgAnim_Pal[] = INCBIN_U16("graphics/evolution_scene/bg_anim.gbapal");
+static const u16 sBgAnim_Intro_Pal[] = INCGFX_U16("graphics/evolution_scene/bg_anim_intro.pal", ".gbapal");
+static const u16 sUnusedPal2[] = INCGFX_U16("graphics/evolution_scene/unused_2.pal", ".gbapal");
+static const u16 sUnusedPal3[]  = INCGFX_U16("graphics/evolution_scene/unused_3.pal", ".gbapal");
+static const u16 sUnusedPal4[] = INCGFX_U16("graphics/evolution_scene/unused_4.pal", ".gbapal");
+static const u16 sBgAnim_Pal[] = INCGFX_U16("graphics/evolution_scene/bg_anim.pal", ".gbapal");
 
 static const u8 sText_ShedinjaJapaneseName[] = _("ヌケニン");
 
@@ -249,7 +250,8 @@ void EvolutionScene(struct Pokemon *mon, u16 postEvoSpecies, bool8 canStopEvo, u
     gReservedSpritePaletteCount = 4;
 
     sEvoStructPtr = AllocZeroed(sizeof(struct EvoInfo));
-    AllocateMonSpritesGfx();
+    if (!gMain.inBattle || gMonSpritesGfxPtr == NULL) AllocateMonSpritesGfx();     
+    // If gMonSpritesGfxPtr has been freed (which can also happen at the end of the battle) then it needs to be reallocated
 
     GetMonData(mon, MON_DATA_NICKNAME, name);
     StringCopy_Nickname(gStringVar1, name);
@@ -648,6 +650,8 @@ enum {
 
 // Task data from CycleEvolutionMonSprite
 #define tEvoStopped data[8]
+#define LEFT_PKMN gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)]
+#define RIGHT_PKMN gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)]
 
 static void Task_EvolutionScene(u8 taskId)
 {
@@ -662,6 +666,13 @@ static void Task_EvolutionScene(u8 taskId)
     {
         gTasks[taskId].tState = EVOSTATE_CANCEL;
         gTasks[sEvoGraphicsTaskId].tEvoStopped = TRUE;
+        if (gMain.inBattle && gBattleOutcome == 0)
+        {
+            if (gTasks[taskId].tPartyId == LEFT_PKMN) 
+            gPlayerDoesNotWantToEvolveLeft = TRUE; // Stop trying to make the left Pokémon evolve again in battle
+            else if (gTasks[taskId].tPartyId == RIGHT_PKMN) 
+            gPlayerDoesNotWantToEvolveRight = TRUE; // Stop trying to make the right Pokémon evolve again in battle
+        }
         StopBgAnimation();
         return;
     }
@@ -789,6 +800,17 @@ static void Task_EvolutionScene(u8 taskId)
             GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_SEEN);
             GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_CAUGHT);
             IncrementGameStat(GAME_STAT_EVOLVED_POKEMON);
+            if (gMain.inBattle && gBattleOutcome == 0)
+            { 
+                // Update BattlePokemon stats if in battle
+                u8 monId = gTasks[taskId].tPartyId;
+                if (monId == LEFT_PKMN) 
+                    CopyPartyMonToBattleData(0, monId);
+                else if (monId == RIGHT_PKMN) 
+                {
+                    CopyPartyMonToBattleData(2, monId);
+                }
+            }
         }
         break;
     case EVOSTATE_TRY_LEARN_MOVE:
@@ -801,7 +823,8 @@ static void Task_EvolutionScene(u8 taskId)
                 if (!(gTasks[taskId].tBits & TASK_BIT_LEARN_MOVE))
                 {
                     StopMapMusic();
-                    Overworld_PlaySpecialMapMusic();
+                    if (gMain.inBattle && gBattleOutcome == 0) PlayBattleBGM(); // If battle is still ongoing, replay battle music
+                    else Overworld_PlaySpecialMapMusic();
                 }
 
                 gTasks[taskId].tBits |= TASK_BIT_LEARN_MOVE;
@@ -815,7 +838,20 @@ static void Task_EvolutionScene(u8 taskId)
                 else if (var == MON_ALREADY_KNOWS_MOVE)
                     break;
                 else
+                {
+                    if (gMain.inBattle && gBattleOutcome == 0)
+                    {
+                        if (gTasks[taskId].tPartyId == LEFT_PKMN) 
+                        {
+                            GiveMoveToBattleMon(&gBattleMons[0], var); // Ensure the Pokémon can use the move in battle
+                        }
+                        else if (gTasks[taskId].tPartyId == RIGHT_PKMN) 
+                        {
+                            GiveMoveToBattleMon(&gBattleMons[2], var);  // Ensure the Pokémon can use the move in battle
+                        }
+                    }
                     gTasks[taskId].tState = EVOSTATE_LEARNED_MOVE;
+                }
             }
             else // no move to learn, or evolution was canceled
             {
@@ -830,7 +866,8 @@ static void Task_EvolutionScene(u8 taskId)
             if (!(gTasks[taskId].tBits & TASK_BIT_LEARN_MOVE))
             {
                 StopMapMusic();
-                Overworld_PlaySpecialMapMusic();
+                if (gMain.inBattle && gBattleOutcome == 0) PlayBattleBGM(); // If battle is still ongoing, replay battle music
+                else Overworld_PlaySpecialMapMusic();
 
             }
 
@@ -838,7 +875,7 @@ static void Task_EvolutionScene(u8 taskId)
                 CreateShedinja(gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies, mon);
 
             DestroyTask(taskId);
-            FreeMonSpritesGfx();
+            if (!gMain.inBattle || gBattleOutcome != 0) FreeMonSpritesGfx(); // Free resources if battle is not ongoing
             FREE_AND_SET_NULL(sEvoStructPtr);
             FreeAllWindowBuffers();
             SetMainCallback2(gCB2_AfterEvolution);
@@ -1009,7 +1046,19 @@ static void Task_EvolutionScene(u8 taskId)
                     {
                         // Forget move
                         PREPARE_MOVE_BUFFER(gBattleTextBuff2, move)
-
+                        if (gMain.inBattle && gBattleOutcome == 0)
+                        {
+                            if (gTasks[taskId].tPartyId == LEFT_PKMN) 
+                            {
+                                RemoveBattleMonPPBonus(&gBattleMons[0], var);
+                                SetBattleMonMoveSlot(&gBattleMons[0], gMoveToLearn, var); // Replace in-battle Pokémon's move with the new move
+                            }
+                            else if (gTasks[taskId].tPartyId == RIGHT_PKMN) 
+                            {
+                                RemoveBattleMonPPBonus(&gBattleMons[2], var);
+                                SetBattleMonMoveSlot(&gBattleMons[2], gMoveToLearn, var); // Replace in-battle Pokémon's move with the new move
+                            }
+                        }
                         RemoveMonPPBonus(mon, var);
                         SetMonMoveSlot(mon, gMoveToLearn, var);
                         gTasks[taskId].tLearnMoveState++;

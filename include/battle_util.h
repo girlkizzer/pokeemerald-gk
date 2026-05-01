@@ -419,6 +419,7 @@ bool32 HasPartnerTrainer(enum BattlerId battler);
 bool32 IsAffectedByPowderMove(enum BattlerId battler);
 enum Move GetNaturePowerMove(void);
 void RemoveAbilityFlags(enum BattlerId battler);
+void RemoveRuinAbilityFlags(enum BattlerId battler);
 void CheckSetUnburden(enum BattlerId battler);
 bool32 BattlerHasDazzlingAbility(enum BattlerId battler);
 bool32 IsAllowedToUseBag(void);
@@ -460,6 +461,10 @@ u32 GetMonNextEmptySlot(struct Pokemon *mon, enum Item item);
 u32 GetBattlerNextEmptySlot(enum BattlerId battler, enum Item item);
 u32 GetSlot(u32 *availableSlots, u32 size);
 enum HoldEffect GetBattlerItemHoldEffect(enum BattlerId battler, enum Item item);
+enum HoldEffect GetBattlerHoldEffect(enum BattlerId battler);
+enum HoldEffect GetBattlerHoldEffectIgnoreAbility(enum BattlerId battler);
+enum HoldEffect GetBattlerHoldEffectIgnoreNegation(enum BattlerId battler);
+enum HoldEffect GetBattlerHoldEffectInternal(enum BattlerId battler, enum Ability ability);
 bool32 BattlerHasBerry(enum BattlerId battler);
 bool32 GetBattlerBerrySlot(enum BattlerId battler);
 #endif // GUARD_BATTLE_UTIL_H
