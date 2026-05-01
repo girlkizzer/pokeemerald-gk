@@ -99,15 +99,15 @@ TEST("Berries are sorted correctly in the bag")
 
 TEST("Items are correctly sorted and compacted in the bag")
 {
-    struct BagPocket *pocket = &gBagPockets[POCKET_ITEMS];
-    memset(pocket->itemSlots, 0, sizeof(gSaveBlock1Ptr->bag.items));
+    struct BagPocket *pocket = &gBagPockets[POCKET_TREASURES];
+    memset(pocket->itemSlots, 0, sizeof(gSaveBlock1Ptr->bag.treasures));
 
-    ASSUME(GetItemPocket(ITEM_NUGGET) == POCKET_ITEMS);
-    ASSUME(GetItemPocket(ITEM_BIG_NUGGET) == POCKET_ITEMS);
-    ASSUME(GetItemPocket(ITEM_TINY_MUSHROOM) == POCKET_ITEMS);
-    ASSUME(GetItemPocket(ITEM_BIG_MUSHROOM) == POCKET_ITEMS);
-    ASSUME(GetItemPocket(ITEM_PEARL) == POCKET_ITEMS);
-    ASSUME(GetItemPocket(ITEM_BIG_PEARL) == POCKET_ITEMS);
+    ASSUME(GetItemPocket(ITEM_NUGGET) == POCKET_TREASURES);
+    ASSUME(GetItemPocket(ITEM_BIG_NUGGET) == POCKET_TREASURES);
+    ASSUME(GetItemPocket(ITEM_TINY_MUSHROOM) == POCKET_TREASURES);
+    ASSUME(GetItemPocket(ITEM_BIG_MUSHROOM) == POCKET_TREASURES);
+    ASSUME(GetItemPocket(ITEM_PEARL) == POCKET_TREASURES);
+    ASSUME(GetItemPocket(ITEM_BIG_PEARL) == POCKET_TREASURES);
 
     RUN_OVERWORLD_SCRIPT(
         additem ITEM_NUGGET;
